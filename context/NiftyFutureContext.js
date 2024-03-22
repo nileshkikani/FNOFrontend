@@ -30,7 +30,7 @@ export const NiftyFutureProvider = ({ children }) => {
   const getData = async () => {
     setIsLoading(true);
     await axios
-      .get(`${API_ROUTER.NIFTY_FUTURE_DATA}`)
+      .get(`http://192.168.0.179:8000/${API_ROUTER.NIFTY_FUTURE_DATA}`)
       .then((response) => {
         setData(response.data);
         setIsLoading(false);

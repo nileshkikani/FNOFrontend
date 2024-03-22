@@ -3,9 +3,8 @@ import React from "react";
 import useNiftyFutureData from "@/hooks/useNiftyFutureData";
 
 //--------GRAPH COMPONENTS--------
-import NiftyFuturesGraph from "@/component/NiftyFutures-Graphs/NiftyFuturesGraph"
+import NiftyFuturesGraph from "@/component/NiftyFutures-Graphs/NiftyFuturesGraph";
 // import NiftyFuturesClosePrice from "@/component/NiftyFutures-Graphs/NiftyFuturesClosePriceGraph"
-
 
 export default function Page() {
   const {
@@ -17,36 +16,37 @@ export default function Page() {
     uniqueDatesArray,
     reversedFilteredData,
     handleDateChange,
-    handleExpiryChange
+    handleExpiryChange,
   } = useNiftyFutureData();
-
 
   return (
     <>
       <div className="main-div">
         <div className="mx-10">
           <h1 className="table-title">NIFTY FUTURES</h1>
-          <div>
-            {/* ----EXPIRY DROPDOWN-------- */}
-            <h1 className="table-title">EXPIRY</h1>
-            <select value={selectedOption} onChange={handleExpiryChange}>
-              {expiry.map((item, index) => (
-                <option key={index} value={item.expiration}>
-                  {item.expiration}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            {/* ------CREATED AT DROPDOWN-------- */}
-            <h1 className="table-title">CREATED AT</h1>
-            <select value={selectedDate} onChange={handleDateChange}>
-              {uniqueDatesArray.map((date, index) => (
-                <option key={index} value={date}>
-                  {date}
-                </option>
-              ))}
-            </select>
+          <div className="expiry-created-date">
+            <div>
+              {/* ----EXPIRY DROPDOWN-------- */}
+              <h1 className="table-title">EXPIRY</h1>
+              <select value={selectedOption} onChange={handleExpiryChange}>
+                {expiry.map((item, index) => (
+                  <option key={index} value={item.expiration}>
+                    {item.expiration}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              {/* ------CREATED AT DROPDOWN-------- */}
+              <h1 className="table-title">CREATED AT</h1>
+              <select value={selectedDate} onChange={handleDateChange}>
+                {uniqueDatesArray.map((date, index) => (
+                  <option key={index} value={date}>
+                    {date}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
           {isLoading ? (
             <div className="loading">Loading data...</div>

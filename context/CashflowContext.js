@@ -24,7 +24,7 @@ export const CashflowProvider = ({ children }) => {
   const getData = async () => {
     setIsLoading(true);
     await axios
-      .get(`${API_ROUTER.CASH_FLOW_TOP_TEN}`)
+      .get(`http://192.168.0.179:8000/${API_ROUTER.CASH_FLOW_TOP_TEN}`)
       .then((response) => {
         const responseData = response.data;
         const symbolMap = new Map();
