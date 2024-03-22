@@ -2,14 +2,15 @@
 import React from "react";
 import useCashflowData from "@/hooks/useCashflowData";
 
-const page = () => {
+
+const Page = () => {
   const {
     isLoading,
     handleDropdownChange,
     uniqueSymbolData,
     selectedStock,
     selectedStockData,
-  } = useCashflowData();
+   } = useCashflowData();
 
   return (
     <>
@@ -27,10 +28,8 @@ const page = () => {
           </select>
         </div>
         <div>
-          {isLoading && (
-            <div className="loading">Loading data...</div>
-          ) }
-          { selectedStockData && (
+          {isLoading && <div className="loading">Loading data...</div>}
+          {selectedStockData && (
             <div>
               <table>
                 <thead>
@@ -67,11 +66,11 @@ const page = () => {
                 </tbody>
               </table>
             </div>
-          ) }
+          )}
         </div>
       </div>
     </>
   );
 };
 
-export default page;
+export default Page;
