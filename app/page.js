@@ -28,6 +28,9 @@ export default function Home() {
       <Link className={styles.button} href={"/niftyfutures_api"}>
         NIFTY FUTURES
       </Link>
+      <Link className={styles.button} href={"/cashflow_api"}>
+        CASH FLOW
+      </Link>
     </div>
   );
 }

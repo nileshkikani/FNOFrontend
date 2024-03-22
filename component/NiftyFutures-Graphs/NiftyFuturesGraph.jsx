@@ -8,14 +8,14 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  Line,
   ReferenceLine,
 } from "recharts";
 
 import useNiftyFutureData from "@/hooks/useNiftyFutureData";
 
 const NiftyFuturesGraph = () => {
-  const { filterByCreatedDate } = useNiftyFutureData();
-
+  const { reversedFilteredData } = useNiftyFutureData();
 
   return (
     <>
@@ -24,7 +24,7 @@ const NiftyFuturesGraph = () => {
         <BarChart
           width={1500}
           height={500}
-          data={filterByCreatedDate}
+          data={reversedFilteredData}
           margin={{
             top: 5,
             right: 30,
@@ -33,6 +33,7 @@ const NiftyFuturesGraph = () => {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
+
           <XAxis
             dataKey="created_at"
             tickFormatter={(timeStr) =>
@@ -51,6 +52,7 @@ const NiftyFuturesGraph = () => {
             dataKey="change_in_open_interest"
             fill="#a3c949"
           />
+          <Line dataKey="last_price" stroke="#ff7300" />
         </BarChart>
       </div>
     </>

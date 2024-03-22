@@ -6,6 +6,7 @@ import { FutureProvider } from "@/context/FutureContext";
 import { OptionsProvider } from "@/context/OptionsContext";
 import { ActiveOiProvider } from "@/context/ActiveOIContext";
 import { NiftyFutureProvider } from "@/context/NiftyFutureContext";
+import { CashflowProvider } from "@/context/CashflowContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,9 @@ export default function RootLayout({ children }) {
           <FutureProvider>
             <OptionsProvider>
               <ActiveOiProvider>
-                <NiftyFutureProvider>{children}</NiftyFutureProvider>
+                <CashflowProvider>
+                  <NiftyFutureProvider>{children}</NiftyFutureProvider>
+                </CashflowProvider>
               </ActiveOiProvider>
             </OptionsProvider>
           </FutureProvider>

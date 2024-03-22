@@ -10,36 +10,16 @@ import NiftyFuturesGraph from "@/component/NiftyFutures-Graphs/NiftyFuturesGraph
 export default function Page() {
   const {
     data,
+    expiry,
     isLoading,
     selectedOption,
-    setSelectedOption,
     selectedDate,
-    setSelectedDate,
-    setUniqueDatesArray,
     uniqueDatesArray,
-    reversedFilteredData
+    reversedFilteredData,
+    handleDateChange,
+    handleExpiryChange
   } = useNiftyFutureData();
 
-  const handleExpiryChange = (event) => {
-    const myExpiry = event.target.value;
-    setSelectedOption(myExpiry);
-
-    const filteredData = data.filter((item) => item.expiration === myExpiry);
-
-    const uniqueDatesSet = new Set();
-    filteredData.forEach((item) => {
-      const date = new Date(item.created_at).toLocaleDateString();
-      uniqueDatesSet.add(date);
-    });
-    setUniqueDatesArray(Array.from(uniqueDatesSet));
-  };
-  
-  const handleDateChange = (event) => {
-    const myDate = event.target.value;
-    setSelectedDate(myDate);
-  };
-
-  const expiry = data.slice(0, 3);
 
   return (
     <>

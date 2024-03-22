@@ -8,4 +8,5 @@ export const API_ROUTER = {
   ACTIVE_OI: `activeoi-list/`,
   OPTIONDATA_LIST: `optiondata-list/`,
   NIFTY_FUTURE_DATA: `nifty/list_nifty_future/`,
+  CASH_FLOW_TOP_TEN: `moneyflow/cash/`,
 };
