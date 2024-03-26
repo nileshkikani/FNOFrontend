@@ -8,7 +8,7 @@ import NiftyFuturesGraph from "@/component/NiftyFutures-Graphs/NiftyFuturesGraph
 
 export default function Page() {
   const {
-    data,
+    apiData,
     expiry,
     isLoading,
     selectedOption,
@@ -28,7 +28,11 @@ export default function Page() {
             <div>
               {/* ----EXPIRY DROPDOWN-------- */}
               <h1 className="table-title">EXPIRY</h1>
-              <select value={selectedOption} onChange={handleExpiryChange}>
+              <select
+                value={selectedOption}
+                onChange={handleExpiryChange}
+                className="stock-dropdown"
+              >
                 {expiry.map((item, index) => (
                   <option key={index} value={item.expiration}>
                     {item.expiration}
@@ -39,7 +43,11 @@ export default function Page() {
             <div>
               {/* ------CREATED AT DROPDOWN-------- */}
               <h1 className="table-title">CREATED AT</h1>
-              <select value={selectedDate} onChange={handleDateChange}>
+              <select
+                value={selectedDate}
+                className="stock-dropdown "
+                onChange={handleDateChange}
+              >
                 {uniqueDatesArray.map((date, index) => (
                   <option key={index} value={date}>
                     {date}
@@ -52,7 +60,7 @@ export default function Page() {
             <div className="loading">Loading data...</div>
           ) : (
             <div>
-              <h1>{data.instrument_type}</h1>
+              <h1>{apiData.instrument_type}</h1>
               <table>
                 <thead>
                   <tr>

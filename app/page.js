@@ -1,36 +1,40 @@
-import styles from "./page.module.css";
 import Link from "next/link";
+// import Image from "next/image";
+// import logo from "@/public/assets/algo_trading_logo.png";
 
 export default function Home() {
   return (
-    <div>
-      <Link className={styles.button} href={"/listmarket_api"}>
-        Data List
-      </Link>
-      <Link className={styles.button} href={"/market_api"}>
-        File Import
-      </Link>
-      <Link className={styles.button} href={"/securitywise_api"}>
-        Security Wise Data
-      </Link>
-      <Link className={styles.button} href={"/optionchainlist_api"}>
-        Option Chain List Data
-      </Link>
-      <Link className={styles.button} href={"/stockdata_api"}>
-        Stock Daily Data
-      </Link>
-      <Link className={styles.button} href={"/activeoi_api"}>
-        ACTIVE OI
-      </Link>
-      <Link className={styles.button} href={"/optiondata_api"}>
-        OPTION LIST
-      </Link>
-      <Link className={styles.button} href={"/niftyfutures_api"}>
-        NIFTY FUTURES
-      </Link>
-      <Link className={styles.button} href={"/cashflow_api"}>
-        CASH FLOW
-      </Link>
+    <div className="nav-div">
+      <ul className="navbar-full">
+        {/* <Image src={logo} width={500} height={500} alt="logo" /> */}
+        <li className="nav-item">
+          <Link href={"/listmarket"}>Data List</Link>
+        </li>
+        {/* <li className="nav-item">
+          <Link href={"/market"}>File Import</Link>
+        </li> */}
+        <li className="nav-item">
+          <Link href={"/securitywise"}>Security Wise Data</Link>
+        </li>
+        <li className="nav-item">
+          <Link href={"/optionchainlist"}>Option Chain List Data</Link>
+        </li>
+        <li className="nav-item">
+          <Link href={"/stockdata"}>Stock Daily Data</Link>
+        </li>
+        <li className="nav-item">
+          <Link href={"/activeoi"}>ACTIVE OI</Link>
+        </li>
+        <li className="nav-item">
+          <Link href={"/optiondata"}>OPTION LIST</Link>
+        </li>
+        <li className="nav-item">
+          <Link href={"/niftyfutures"}>NIFTY FUTURES</Link>
+        </li>
+        <li className="nav-item">
+          <Link href={"/cashflow"}>CASH FLOW</Link>
+        </li>
+      </ul>
     </div>
   );
 }

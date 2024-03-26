@@ -17,7 +17,6 @@ export default function StockData() {
         );
 
         setData(response.data);
-        console.log("stockkk", response.data);
       } catch (error) {
         console.error("Error uploading file:", error);
       }

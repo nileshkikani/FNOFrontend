@@ -3,6 +3,7 @@ import React from "react";
 import {
   BarChart,
   Bar,
+  Brush,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -13,18 +14,17 @@ import {
 
 import useActiveOiData from "@/hooks/useActiveOiData";
 
+
 const ActiveOIGraph = () => {
   const { data } = useActiveOiData();
-
   const dataReversed = data.slice(0).reverse();
-  //--reverse time from start to end format
 
   return (
     <>
       <div>
         <h1 className="table-title">Call vs Put Open Interest</h1>
         <BarChart
-          width={900}
+          width={1160}
           height={500}
           data={dataReversed}
           margin={{
@@ -48,6 +48,7 @@ const ActiveOIGraph = () => {
           <Tooltip />
           <Legend />
           <ReferenceLine y={0} stroke="#000" />
+          <Brush dataKey="created_at" height={30} stroke="#8884d8" />
           <Bar dataKey="ce_oi" fill="#a3c949" />
           <Bar dataKey="pe_oi" fill="#bd5853" />
         </BarChart>

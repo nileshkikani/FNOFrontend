@@ -19,9 +19,9 @@ const ScatterPlotGraph = () => {
   return (
     <>
       <div>
-        <h1 className="table-title">PCR vs STRIKE</h1>
+        <h1 className="table-title">PCR</h1>
         <ScatterChart
-          width={900}
+          width={1160}
           height={500}
           margin={{
             top: 20,

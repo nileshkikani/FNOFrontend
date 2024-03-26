@@ -21,14 +21,13 @@ export const FutureProvider = ({ children }) => {
   const handleFatch = async () => {
     try {
       const response = await axiosInstance.get(
-        `http://192.168.0.179:8000/${API_ROUTER.LIST_MARKET_DATAL}`
+        `${API_ROUTER.LIST_MARKET_DATAL}`
         //project is temporary running on this IP
       );
       setData(response.data);
       const updatedData = Object.groupBy(response.data, ({ date }) => date);
       setMarketData(updatedData);
 
-      // Set the default selected date to the first date in the data
       if (Object.keys(updatedData).length > 0) {
         const defaultDate = Object.keys(updatedData)[0];
         //   setSelectedDate(defaultDate);

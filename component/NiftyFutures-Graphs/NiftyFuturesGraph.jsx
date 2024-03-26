@@ -6,6 +6,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
+  Brush,
   Tooltip,
   Legend,
   Line,
@@ -52,7 +53,8 @@ const NiftyFuturesGraph = () => {
             dataKey="change_in_open_interest"
             fill="#a3c949"
           />
-          <Line dataKey="last_price" stroke="#ff7300" />
+          {/* <Line dataKey="last_price" stroke="#ff7300" /> */}
+          <Brush dataKey="created_at" height={30} stroke="#8884d8" />
         </BarChart>
       </div>
     </>

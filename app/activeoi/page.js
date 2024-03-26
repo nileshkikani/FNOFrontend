@@ -52,7 +52,7 @@ export default function Page() {
                 <tbody>
                   {data?.map((item) => (
                     <tr key={item?.id}>
-                      <td>{item?.strike_price}</td>
+                      <td>{(item?.strike_price).slice(0, -3)}</td>
                       <td>{new Date(item?.created_at).toLocaleString()}</td>
                       <td>{item?.ce_oi}</td>
                       <td>{item?.pe_oi}</td>

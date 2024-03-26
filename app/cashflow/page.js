@@ -18,7 +18,7 @@ const Page = () => {
         <div>
           {/* ----SELECT STOCK DROPDOWN-------- */}
           <h1 className="table-title">STOCK</h1>
-          <select value={selectedStock} onChange={handleDropdownChange}>
+          <select value={selectedStock} onChange={handleDropdownChange} className="stock-dropdown">
             <option value="">Select a stock</option>
             {uniqueSymbolData.map((stockData, index) => (
               <option key={index} value={stockData[0]?.symbol}>

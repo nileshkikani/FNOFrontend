@@ -8,15 +8,15 @@ import { toast } from "react-hot-toast";
 export const NiftyFutureContext = createContext({});
 
 export const NiftyFutureProvider = ({ children }) => {
-  const [data, setData] = useState([]);
+  const [apiData, setApiData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [uniqueDatesArray, setUniqueDatesArray] = useState([]);
 
-  const expiry = data.slice(0, 3);
+  const expiry = apiData.slice(0, 3);
 
-  const filterByCreatedDate = data.filter((item) => {
+  const filterByCreatedDate = apiData.filter((item) => {
     return (
       item.expiration === selectedOption &&
       (selectedDate
@@ -30,9 +30,9 @@ export const NiftyFutureProvider = ({ children }) => {
   const getData = async () => {
     setIsLoading(true);
     await axios
-      .get(`http://192.168.0.179:8000/${API_ROUTER.NIFTY_FUTURE_DATA}`)
+      .get(`${API_ROUTER.NIFTY_FUTURE_DATA}`)
       .then((response) => {
-        setData(response.data);
+        setApiData(response.data);
         setIsLoading(false);
         setSelectedOption(response.data[0]?.expiration);
         const uniqueDatesSet = new Set();
@@ -65,7 +65,7 @@ export const NiftyFutureProvider = ({ children }) => {
   return (
     <NiftyFutureContext.Provider
       value={{
-        data,
+        apiData,
         expiry,
         isLoading,
         selectedOption,

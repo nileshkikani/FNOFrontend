@@ -13,7 +13,6 @@ export default function Page() {
     await axiosInstance
       .get(`${API_ROUTER.OPTIONDATA_LIST}?page=${page}`)
       .then((response) => {
-        // console.log(response.data.results);
         setApiData(response.data.results);
         setIsLoading(false);
       })
