@@ -214,7 +214,7 @@ td {
 }
 
 .nav-div {
-  @apply flex justify-center bg-[#0A3D62] text-white font-bold !important;
+  @apply flex justify-center bg-[#0A3D62] text-white font-bold sticky top-0 z-10 !important;
 }
 
 .nav-items {
