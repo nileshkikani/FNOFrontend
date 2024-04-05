@@ -62,25 +62,25 @@ function OptionsData() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Date</th>
+                      {/* <th>Date</th> */}
                       <th>Client Type</th>
-                      <th>Option Index Call Long</th>
-                      <th>Option Index Call Short</th>
+                      <th>Call Long</th>
+                      <th>Call Short</th>
                       <th>Net Diff</th>
                       <th>L/S Ratio</th>
                       <th></th>
-                      <th>Option Index Put Long</th>
-                      <th>Option Index Put Short</th>
+                      <th>Put Long</th>
+                      <th>Put Short</th>
                       <th>Net Diff</th>
                       <th>L/S Ratio</th>
                       <th></th>
-                      <th>Option Stock Call Long</th>
-                      <th>Option Stock Call Short</th>
+                      <th>Call Long</th>
+                      <th>Call Short</th>
                       <th>Net Diff</th>
                       <th>L/S Ratio</th>
                       <th></th>
-                      <th>Option Stock Put Long</th>
-                      <th>Option Stock Put Short</th>
+                      <th>Put Long</th>
+                      <th>Put Short</th>
                       <th>Net Diff</th>
                       <th>L/S Ratio</th>
                     </tr>
@@ -88,7 +88,7 @@ function OptionsData() {
                   <tbody>
                     {FIRST_TABLE_DATA?.map((item) => (
                       <tr key={item.id}>
-                        <td>{item.date}</td>
+                        {/* <td>{item.date}</td> */}
                         <td>{item.client_type}</td>
                         <td>{item.option_index_call_long}</td>
                         <td>{item.option_index_call_short}</td>
@@ -202,25 +202,25 @@ function OptionsData() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Date</th>
+                      {/* <th>Date</th> */}
                       <th>Client Type</th>
-                      <th>Option Index Call Long</th>
-                      <th>Option Index Call Short</th>
+                      <th>Call Long</th>
+                      <th>Call Short</th>
                       <th>Net Diff</th>
                       <th>L/S Ratio</th>
                       <th></th>
-                      <th>Option Index Put Long</th>
-                      <th>Option Index Put Short</th>
+                      <th>Put Long</th>
+                      <th>Put Short</th>
                       <th>Net Diff</th>
                       <th>L/S Ratio</th>
                       <th></th>
-                      <th>Option Stock Call Long</th>
-                      <th>Option Stock Call Short</th>
+                      <th>Call Long</th>
+                      <th>Call Short</th>
                       <th>Net Diff</th>
                       <th>L/S Ratio</th>
                       <th></th>
-                      <th>Option Stock Put Long</th>
-                      <th>Option Stock Put Short</th>
+                      <th>Put Long</th>
+                      <th>Put Short</th>
                       <th>Net Diff</th>
                       <th>L/S Ratio</th>
                     </tr>
@@ -228,7 +228,7 @@ function OptionsData() {
                   <tbody>
                     {SECOND_TABLE_DATA?.map((item) => (
                       <tr key={item.id}>
-                        <td>{item.date}</td>
+                        {/* <td>{item.date}</td> */}
                         <td>{item.client_type}</td>
                         <td>{item.option_index_call_long}</td>
                         <td>{item.option_index_call_short}</td>

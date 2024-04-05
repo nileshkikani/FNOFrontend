@@ -1,40 +1,69 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+// import AdvanceDecline from "@/component/AdvanceDecline"
+
+const DATA = [
+  {
+    path: "/listmarket",
+    title: "DATA LIST",
+  },
+  {
+    path: "/securitywise",
+    title: "SECURITY WISE DATA",
+  },
+  {
+    path: "/optionchainlist",
+    title: "OPTION CHAIN LIST DATA",
+  },
+  {
+    path: "/stockdata",
+    title: "STOCK DAILY DATA",
+  },
+  {
+    path: "/activeoi",
+    title: "ACTIVE OI",
+  },
+  {
+    path: "/optiondata",
+    title: "OPTION LIST",
+  },
+  {
+    path: "/niftyfutures",
+    title: "NIFTY FUTURES",
+  },
+  {
+    path: "/cashflow",
+    title: "CASH FLOWS",
+  },
+];
 
 const Navbar = () => {
+  const currentPath = usePathname();
+
+  const isActive = (path) => {
+    return currentPath === path;
+  };
 
   return (
-    <div className="nav-div">
-      <ul className="navbar-full">
-        <li className="nav-item">
-          <Link href={"/listmarket"}>Data List</Link>
-        </li>
-        {/* <li className="nav-item">
-          <Link href={"/market"}>File Import</Link>
-        </li> */}
-        <li className="nav-item">
-          <Link href={"/securitywise"}>Security Wise Data</Link>
-        </li>
-        <li className="nav-item">
-          <Link href={"/optionchainlist"}>Option Chain List Data</Link>
-        </li>
-        <li className="nav-item">
-          <Link href={"/stockdata"}>Stock Daily Data</Link>
-        </li>
-        <li className="nav-item">
-          <Link href={"/activeoi"}>ACTIVE OI</Link>
-        </li>
-        <li className="nav-item">
-          <Link href={"/optiondata"}>OPTION LIST</Link>
-        </li>
-        <li className="nav-item">
-          <Link href={"/niftyfutures"}>NIFTY FUTURES</Link>
-        </li>
-        <li className="nav-item">
-          <Link href={"/cashflow"}>CASH FLOW</Link>
-        </li>
-      </ul>
-    </div>
+    <>
+      <div className="nav-div">
+        <ul className="navbar-full">
+          {DATA?.map((item,index) => (
+            <li className="nav-item" key={index}>
+              <Link
+                href={item?.path}
+                className={isActive(item.path) ? "active-link" : ""}
+              >
+                {item.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+        {/* <AdvanceDecline/> */}
+      </div>
+    </>
   );
 };
 

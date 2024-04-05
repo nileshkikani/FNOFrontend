@@ -82,12 +82,26 @@
   padding: 0;
   margin: 0;
 }
+.table-container {
+  overflow-x: auto;
+  max-width: 100%;
+}
 
-/* html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-} */
+select {
+  @apply px-2 py-1 rounded-sm !important;
+}
+
+th,
+td {
+  padding: 2px;
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2;
+  position: sticky;
+  top: 0;
+}
 
 body {
   color: rgb(var(--foreground-rgb));
@@ -108,41 +122,46 @@ a {
 }
 
 table {
-  border: 2px solid rgb(82, 82, 82);
-  width: auto;
+  /* border: 2px solid rgb(93, 93, 93); */
+  border-radius: 2px;
+  width: 100%;
   height: 200px;
-  border-collapse: separate;
+  /* border-collapse: separate; */
 }
 
 th {
   background-color: #eaeaea;
-  padding: 15px 25px;
+  padding: 10px 20px;
 }
 
 .loading {
   color: #000000;
 }
 
-.main-div {
+/* .main-div {
   display: flex;
   justify-content: center;
-}
+} */
 
 .navbar {
   display: flex;
 }
 
+.active-oi-table {
+  overflow-x: auto;
+}
+
 .table-title,
 .expiry {
   color: #000000;
+  font-weight: 500;
+  font-size: 20px;
+  color: #0a3d62;
 }
 
 td {
   text-align: center;
-  border: #000000;
-  border-radius: 2px;
-  background-color: #bcbcbc;
-  padding: 5px 10px;
+  border: solid 2px lightgrey;
 }
 
 .scrolling-table th {
@@ -180,7 +199,7 @@ td {
 .custom-date-input {
   padding: 4px;
   margin-right: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid #e44545;
   border-radius: 4px;
   font-size: 14px;
 }
@@ -191,6 +210,17 @@ td {
 
 .prevbtn {
   @apply bg-white border-gray-950 border px-3 py-2 rounded !important;
+}
+
+.pageno {
+  @apply p-2 text-blue-600 font-bold !important;
+}
+.activepage {
+  @apply text-black p-2 underline !important;
+}
+
+.active-link {
+  @apply text-yellow-300  !important;
 }
 
 .nextbtn {
@@ -213,16 +243,40 @@ td {
   @apply container flex justify-around flex-wrap p-5 flex-col md:flex-row items-center !important;
 }
 
+.in-thousand {
+  @apply font-light text-xs italic right-1 !important;
+}
+
+.advance {
+  @apply text-green-400 !important;
+}
+
+.decline {
+  @apply text-red-400 !important;
+}
+
 .nav-div {
-  @apply flex justify-center bg-[#0A3D62] text-white font-bold sticky top-0 z-10 !important;
+  @apply flex justify-center items-center bg-[#0A3D62] text-white font-bold sticky top-0 z-10 !important;
 }
 
 .nav-items {
   @apply md:ml-auto flex flex-wrap items-center text-base justify-center !important;
 }
 
+.timer {
+  @apply text-[#0A3D62] font-bold text-2xl !important;
+}
+
 .nav-item {
-  @apply mr-5 hover:text-gray-400 !important;
+  @apply mr-5 hover:text-gray-400 flex !important;
+}
+
+.grand-div {
+  @apply px-10 !important;
+}
+
+.graph-div {
+  @apply py-8 !important;
 }
 
 .custom-date-input::-webkit-inner-spin-button,

@@ -40,9 +40,7 @@ export default function Page() {
                 ))}
               </select>
             </div>
-            <div>
-              {/* ------CREATED AT DROPDOWN-------- */}
-              <h1 className="table-title">CREATED AT</h1>
+            {uniqueDatesArray && (
               <select
                 value={selectedDate}
                 className="stock-dropdown "
@@ -54,13 +52,13 @@ export default function Page() {
                   </option>
                 ))}
               </select>
-            </div>
+            )}
           </div>
           {isLoading ? (
             <div className="loading">Loading data...</div>
           ) : (
             <div>
-              <h1>{apiData.instrument_type}</h1>
+              <h1>{apiData?.instrument_type}</h1>
               <table>
                 <thead>
                   <tr>
@@ -82,7 +80,12 @@ export default function Page() {
                       <td>{item?.change_in_open_interest}</td>
                       <td>{item?.percentage_change_in_open_interest}</td>
                       <td>{item?.vwap}</td>
-                      <td>{new Date(item?.created_at).toLocaleString()}</td>
+                      <td>
+                        {new Date(item?.created_at).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

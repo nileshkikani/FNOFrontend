@@ -51,15 +51,15 @@ function FutureData() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Date</th>
+                      {/* <th>Date</th> */}
                       <th>Client Type</th>
-                      <th>Future Index Long</th>
-                      <th>Future Index Short</th>
+                      <th>Future Long</th>
+                      <th>Future Short</th>
                       <th>Net Diff</th>
                       <th>L/S Ratio</th>
                       <th></th>
-                      <th>Future Stock Long</th>
-                      <th>Future Stock Short</th>
+                      <th>Future Long</th>
+                      <th>Future Short</th>
                       <th>Net Diff</th>
                       <th>L/S Ratio</th>
                     </tr>
@@ -67,36 +67,36 @@ function FutureData() {
                   <tbody>
                     {FIRST_TABLE_DATA?.map((item) => (
                       <tr key={item.id}>
-                        <td>{item.date}</td>
+                        {/* <td>{item.date}</td> */}
                         <td>{item.client_type}</td>
                         <td>{item.future_index_long}</td>
                         <td>{item.future_index_short}</td>
                         <td>
                           {item.future_index_long && item.future_index_short
                             ? item.future_index_long - item.future_index_short
-                            : "N/A"}{" "}
+                            : "N/A"}
                         </td>
                         <td>
                           {item.future_index_long && item.future_index_short
                             ? (
                                 item.future_index_long / item.future_index_short
                               ).toFixed(3)
-                            : "N/A"}{" "}
+                            : "N/A"}
                         </td>
-                        <td>|</td>
+                        <th>|</th>
                         <td>{item.future_stock_long}</td>
                         <td>{item.future_stock_short}</td>
                         <td>
                           {item.future_stock_long && item.future_stock_short
                             ? item.future_stock_long - item.future_stock_short
-                            : "N/A"}{" "}
+                            : "N/A"}
                         </td>
                         <td>
                           {item.future_stock_long && item.future_stock_short
                             ? (
                                 item.future_stock_long / item.future_stock_short
                               ).toFixed(3)
-                            : "N/A"}{" "}
+                            : "N/A"}
                         </td>
                       </tr>
                     ))}
@@ -131,15 +131,15 @@ function FutureData() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Date</th>
+                      {/* <th>Date</th> */}
                       <th>Client Type</th>
-                      <th>Future Index Long</th>
-                      <th>Future Index Short</th>
+                      <th>Future Long</th>
+                      <th>Future Short</th>
                       <th>Net Diff</th>
                       <th>L/S Ratio</th>
                       <th></th>
-                      <th>Future Stock Long</th>
-                      <th>Future Stock Short</th>
+                      <th>Future Long</th>
+                      <th>Future Short</th>
                       <th>Net Diff</th>
                       <th>L/S Ratio</th>
                     </tr>
@@ -147,7 +147,7 @@ function FutureData() {
                   <tbody>
                     {SECOND_TABLE_DATA?.map((item) => (
                       <tr key={item.id}>
-                        <td>{item.date}</td>
+                        {/* <td>{item.date}</td> */}
                         <td>{item.client_type}</td>
                         <td>{item.future_index_long}</td>
                         <td>{item.future_index_short}</td>
@@ -163,7 +163,7 @@ function FutureData() {
                               ).toFixed(3)
                             : "N/A"}{" "}
                         </td>
-                        <td>|</td>
+                        <th>|</th>
                         <td>{item.future_stock_long}</td>
                         <td>{item.future_stock_short}</td>
                         <td>

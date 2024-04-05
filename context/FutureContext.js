@@ -1,7 +1,8 @@
 "use client";
 import { API_ROUTER } from "@/services/apiRouter";
-import axiosInstance from "@/utils/axios";
+// import axiosInstance from "@/utils/axios";
 import { createContext, useMemo, useState, useEffect } from "react";
+import axios from "axios";
 
 export const FutureContext = createContext({});
 
@@ -14,16 +15,11 @@ export const FutureProvider = ({ children }) => {
     secondTableDate: "",
   });
 
-  useEffect(() => {
-    handleFatch();
-  }, []);
-
   const handleFatch = async () => {
     try {
-      const response = await axiosInstance.get(
-        `${API_ROUTER.LIST_MARKET_DATAL}`
-        //project is temporary running on this IP
-      );
+      const response = await axiosInstance.get(`${API_ROUTER.LIST_MARKET_DATAL}
+        `);
+      //project is temporary running on this IP
       setData(response.data);
       const updatedData = Object.groupBy(response.data, ({ date }) => date);
       setMarketData(updatedData);
@@ -42,6 +38,10 @@ export const FutureProvider = ({ children }) => {
       console.error("Error uploading file:", error);
     }
   };
+
+  useEffect(() => {
+    handleFatch();
+  }, []);
 
   const FIRST_TABLE_DATA = useMemo(() => {
     if (marketData) {

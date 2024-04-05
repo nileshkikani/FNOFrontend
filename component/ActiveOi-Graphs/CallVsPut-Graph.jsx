@@ -1,24 +1,24 @@
 "use client";
-import React, { useState } from "react";
+import React,{useState} from "react";
 import {
-  Line,
   Brush,
-  LineChart,
   XAxis,
+  ComposedChart,
+  Line,
   ResponsiveContainer,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
 } from "recharts";
+
 import useActiveOiData from "@/hooks/useActiveOiData";
 
-const ScatterPlotGraph = () => {
+const CallVsPutGraph = () => {
   const { data } = useActiveOiData();
-  const [checkFive, setCheckFive] = useState(false);
-
   const dataReversed = data.slice(0).reverse();
-  //--reverse time from start to end format
+  const [checkFive,setCheckFive] = useState(false);
+
   const maxLiveNifty = Math.max(...dataReversed.map((item) => item.live_nifty));
 
   const currentLevel = maxLiveNifty;
@@ -37,7 +37,7 @@ const ScatterPlotGraph = () => {
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <h1 className="table-title">PCR</h1>
+      <h1 className="table-title">Call vs Put OI</h1>
       <label>
         Strikes above/below ATM
         <select onChange={dropDownChange}>
@@ -46,7 +46,7 @@ const ScatterPlotGraph = () => {
         </select>
       </label>
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart
+        <ComposedChart
           width={500}
           height={300}
           data={dataReversed}
@@ -74,22 +74,30 @@ const ScatterPlotGraph = () => {
             domain={[adjustedStart, adjustedEnd]}
             hide
           />
-          <Tooltip
-            labelFormatter={(timeStr) =>
-              new Date(timeStr).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            }
-          />
+          <Tooltip  labelFormatter={(timeStr) =>
+    new Date(timeStr).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  } />
           <Legend />
           {checkFive ? (
             <>
               <Line
                 yAxisId="left"
-                type="linear"
-                dataKey="pcr"
-                stroke="#545454"
+                type="monotone"
+                name="call oi"
+                dataKey="call_oi_difference"
+                stroke="#8FCE00"
+                activeDot={{ r: 8 }}
+                strokeWidth={2}
+              />
+              <Line
+                yAxisId="left"
+                type="monotone"
+                name="put oi"
+                dataKey="put_oi_difference"
+                stroke="#CC3333"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
               />
@@ -98,17 +106,27 @@ const ScatterPlotGraph = () => {
             <>
               <Line
                 yAxisId="left"
-                type="linear"
-                dataKey="large_pcr"
-                stroke="#545454"
+                name="call oi difference"
+                type="monotone"
+                dataKey="large_call_oi_difference"
+                stroke="#8FCE00"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
+              />
+              <Line
+                yAxisId="left"
+                name="put oi difference"
+                type="monotone"
+                dataKey="large_put_oi_difference"
+                activeDot={{ r: 8 }}
+                strokeWidth={2}
+                stroke="#CC3333"
               />
             </>
           )}
           <Line
-            name="NIFTY"
             yAxisId="right"
+            name="NIFTY"
             type="linear"
             dataKey="live_nifty"
             stroke="#f55abe"
@@ -117,10 +135,10 @@ const ScatterPlotGraph = () => {
             dot={false}
           />
           <Brush dataKey="created_at" height={30} stroke="#8884d8" />
-        </LineChart>
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );
 };
 
-export default ScatterPlotGraph;
+export default CallVsPutGraph;

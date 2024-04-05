@@ -1,10 +1,9 @@
-"use client"
+"use client";
 import React, { useMemo } from "react";
 import axiosInstance from "@/utils/axios";
 import { API_ROUTER } from "@/services/apiRouter";
 import { useEffect, useState } from "react";
-
-import axios from "axios";
+// import axios from "axios";
 
 function TotalData() {
   const [data, setData] = useState([]);
@@ -19,7 +18,7 @@ function TotalData() {
       try {
         const response = await axiosInstance
           .get(`${API_ROUTER.LIST_MARKET_DATAL}`)
-          
+
           .then((response) => {
             setData(response.data);
           })
@@ -109,7 +108,7 @@ function TotalData() {
         <h1 style={{ textAlign: "center", marginTop: "20px", color: "green" }}>
           Total Data
         </h1>
-        <table>
+        <table style={{ align: "center" }}>
           <thead>
             <tr>
               <th>Date</th>

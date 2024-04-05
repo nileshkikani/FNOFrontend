@@ -2,25 +2,25 @@
 import React, { useState } from "react";
 import {
   Line,
+  Bar,
   Brush,
-  LineChart,
   XAxis,
   ResponsiveContainer,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
+  ComposedChart,
 } from "recharts";
+
 import useActiveOiData from "@/hooks/useActiveOiData";
 
-const ScatterPlotGraph = () => {
+const ChangeOIGraph = () => {
   const { data } = useActiveOiData();
+  const dataReversed = data.slice(0).reverse();
   const [checkFive, setCheckFive] = useState(false);
 
-  const dataReversed = data.slice(0).reverse();
-  //--reverse time from start to end format
   const maxLiveNifty = Math.max(...dataReversed.map((item) => item.live_nifty));
-
   const currentLevel = maxLiveNifty;
   const range = 20;
   const adjustedStart = currentLevel - range;
@@ -37,7 +37,7 @@ const ScatterPlotGraph = () => {
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <h1 className="table-title">PCR</h1>
+      <h1 className="table-title">Change in OI</h1>
       <label>
         Strikes above/below ATM
         <select onChange={dropDownChange}>
@@ -46,15 +46,15 @@ const ScatterPlotGraph = () => {
         </select>
       </label>
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart
+        <ComposedChart
           width={500}
-          height={300}
+          height={400}
           data={dataReversed}
           margin={{
-            top: 5,
-            right: 30,
+            top: 20,
+            right: 20,
+            bottom: 20,
             left: 20,
-            bottom: 5,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
@@ -74,35 +74,42 @@ const ScatterPlotGraph = () => {
             domain={[adjustedStart, adjustedEnd]}
             hide
           />
-          <Tooltip
-            labelFormatter={(timeStr) =>
-              new Date(timeStr).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            }
-          />
+          <Tooltip  labelFormatter={(timeStr) =>
+    new Date(timeStr).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  } />
           <Legend />
+          <Brush dataKey="created_at" height={30} stroke="#8884d8" />
           {checkFive ? (
             <>
-              <Line
+              <Bar
                 yAxisId="left"
-                type="linear"
-                dataKey="pcr"
-                stroke="#545454"
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
+                name="coi difference"
+                dataKey="call_oi_difference"
+                fill="#8FCE00"
+              />
+              <Bar
+                yAxisId="left"
+                name="poi difference "
+                dataKey="put_oi_difference"
+                fill="#CC3333"
               />
             </>
           ) : (
             <>
-              <Line
+              <Bar
                 yAxisId="left"
-                type="linear"
-                dataKey="large_pcr"
-                stroke="#545454"
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
+                name="coi difference"
+                dataKey="large_call_oi_difference"
+                fill="#8FCE00"
+              />
+              <Bar
+                yAxisId="left"
+                name="poi difference "
+                dataKey="large_put_oi_difference"
+                fill="#CC3333"
               />
             </>
           )}
@@ -116,11 +123,10 @@ const ScatterPlotGraph = () => {
             strokeWidth={2}
             dot={false}
           />
-          <Brush dataKey="created_at" height={30} stroke="#8884d8" />
-        </LineChart>
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );
 };
 
-export default ScatterPlotGraph;
+export default ChangeOIGraph;

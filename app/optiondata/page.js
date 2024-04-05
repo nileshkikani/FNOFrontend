@@ -2,6 +2,7 @@
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import { useEffect, useState } from "react";
+import axios from "axios"
 
 export default function Page() {
   const [apiData, setApiData] = useState([]);
@@ -10,7 +11,7 @@ export default function Page() {
 
   const getData = async (page) => {
     setIsLoading(true);
-    await axiosInstance
+    await axios
       .get(`${API_ROUTER.OPTIONDATA_LIST}?page=${page}`)
       .then((response) => {
         setApiData(response.data.results);
