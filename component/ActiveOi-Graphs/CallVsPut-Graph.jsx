@@ -1,5 +1,5 @@
 "use client";
-import React,{useState} from "react";
+import React, { useState } from "react";
 import {
   Brush,
   XAxis,
@@ -17,7 +17,8 @@ import useActiveOiData from "@/hooks/useActiveOiData";
 const CallVsPutGraph = () => {
   const { data } = useActiveOiData();
   const dataReversed = data.slice(0).reverse();
-  const [checkFive,setCheckFive] = useState(false);
+
+  const [checkFive, setCheckFive] = useState(false);
 
   const maxLiveNifty = Math.max(...dataReversed.map((item) => item.live_nifty));
 
@@ -45,10 +46,10 @@ const CallVsPutGraph = () => {
           <option value="15">15</option>
         </select>
       </label>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="110%">
         <ComposedChart
           width={500}
-          height={300}
+          height={400}
           data={dataReversed}
           margin={{
             top: 5,
@@ -74,20 +75,22 @@ const CallVsPutGraph = () => {
             domain={[adjustedStart, adjustedEnd]}
             hide
           />
-          <Tooltip  labelFormatter={(timeStr) =>
-    new Date(timeStr).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  } />
+          <Tooltip
+            labelFormatter={(timeStr) =>
+              new Date(timeStr).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            }
+          />
           <Legend />
-          {checkFive ? (
+          {!checkFive ? (
             <>
               <Line
                 yAxisId="left"
                 type="monotone"
                 name="call oi"
-                dataKey="call_oi_difference"
+                dataKey="ce_oi"
                 stroke="#8FCE00"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
@@ -96,7 +99,7 @@ const CallVsPutGraph = () => {
                 yAxisId="left"
                 type="monotone"
                 name="put oi"
-                dataKey="put_oi_difference"
+                dataKey="pe_oi"
                 stroke="#CC3333"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
@@ -106,18 +109,18 @@ const CallVsPutGraph = () => {
             <>
               <Line
                 yAxisId="left"
-                name="call oi difference"
+                name="call oi "
                 type="monotone"
-                dataKey="large_call_oi_difference"
+                dataKey="large_ce_oi"
                 stroke="#8FCE00"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
               />
               <Line
                 yAxisId="left"
-                name="put oi difference"
+                name="put oi "
                 type="monotone"
-                dataKey="large_put_oi_difference"
+                dataKey="large_pe_oi"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
                 stroke="#CC3333"
@@ -134,7 +137,7 @@ const CallVsPutGraph = () => {
             strokeWidth={2}
             dot={false}
           />
-          <Brush dataKey="created_at" height={30} stroke="#8884d8" />
+          <Brush dataKey="created_at" height={30} stroke="#0A3D62" />
         </ComposedChart>
       </ResponsiveContainer>
     </div>

@@ -91,11 +91,10 @@ select {
   @apply px-2 py-1 rounded-sm !important;
 }
 
-th,
+/* th,
 td {
-  padding: 2px;
   text-align: center;
-}
+} */
 
 th {
   background-color: #f2f2f2;
@@ -122,11 +121,9 @@ a {
 }
 
 table {
-  /* border: 2px solid rgb(93, 93, 93); */
   border-radius: 2px;
   width: 100%;
   height: 200px;
-  /* border-collapse: separate; */
 }
 
 th {
@@ -164,13 +161,13 @@ td {
   border: solid 2px lightgrey;
 }
 
-.scrolling-table th {
+/* .scrolling-table th {
   white-space: nowrap;
   padding: 5px;
-}
-.scrolling-table td {
+} */
+/* .scrolling-table td {
   white-space: nowrap;
-}
+} */
 .scrolling-table {
   overflow-x: auto;
 }
@@ -194,12 +191,16 @@ td {
   display: block;
 }
 
+.custom-date-input-title{
+  color:white;
+}
+
 /* DateInput.css */
 
 .custom-date-input {
   padding: 4px;
   margin-right: 5px;
-  border: 1px solid #e44545;
+  border: 1px solid;
   border-radius: 4px;
   font-size: 14px;
 }
@@ -279,16 +280,16 @@ td {
   @apply py-8 !important;
 }
 
-.custom-date-input::-webkit-inner-spin-button,
+/* .custom-date-input::-webkit-inner-spin-button,
 .custom-date-input::-webkit-calendar-picker-indicator {
   display: none;
   -webkit-appearance: none;
   margin: 0;
-}
+} */
 
-.custom-date-input {
+/* .custom-date-input {
   -moz-appearance: textfield;
-}
+} */
 
 .fileInput {
   border: 1px solid #ccc;

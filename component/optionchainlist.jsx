@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 

@@ -1,8 +1,8 @@
 "use client";
 import { API_ROUTER } from "@/services/apiRouter";
-// import axiosInstance from "@/utils/axios";
+import axiosInstance from "@/utils/axios";
 import { createContext, useMemo, useState, useEffect } from "react";
-import axios from "axios";
+// import axios from "axios";
 
 export const FutureContext = createContext({});
 

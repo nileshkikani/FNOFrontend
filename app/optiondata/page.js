@@ -11,7 +11,7 @@ export default function Page() {
 
   const getData = async (page) => {
     setIsLoading(true);
-    await axios
+    await axiosInstance
       .get(`${API_ROUTER.OPTIONDATA_LIST}?page=${page}`)
       .then((response) => {
         setApiData(response.data.results);

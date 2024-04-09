@@ -16,12 +16,16 @@ const Page = () => {
     selectedDate,
     uniqueDates,
     selectedStockData,
+    data,
   } = useCashflowData();
+
+  // const finalData = selectedStockData.filter()
+
   return (
     <>
-      <div>
+      {/* <div>
         <ActiveMoneyFlow />
-      </div>
+      </div> */}
       <div className="main-div">
         <div>
           {/* ----SELECT STOCK DROPDOWN-------- */}
@@ -64,9 +68,16 @@ const Page = () => {
                     <th>High</th>
                     <th>Low</th>
                     <th>Average</th>
-                    <th>Volume<span className="in-thousand">in thousand</span></th>
-                    <th>Money Flow<span className="in-thousand">in thousand</span></th>
-                    <th>Net Money Flow<span className="in-thousand">in thousand</span></th>
+                    <th>
+                      Volume<span className="in-thousand">in thousand</span>
+                    </th>
+                    <th>
+                      Money Flow<span className="in-thousand">in thousand</span>
+                    </th>
+                    <th>
+                      Net Money Flow
+                      <span className="in-thousand">in thousand</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

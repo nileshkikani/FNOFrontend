@@ -81,7 +81,7 @@ function FileImport() {
           }}
         >
           <label>
-            Select File Date:
+            <span className="custom-date-input-title">Select File Date:</span>
             <input
               label="label"
               type="date"
@@ -106,7 +106,8 @@ function FileImport() {
             style={{
               backgroundColor: "#04AA6D",
               color: "black",
-              padding: "5px",
+              padding: "5px 20px",
+              borderRadius: "5px",
               textAlign: "center",
               textDecoration: "none",
               display: "inline-block",

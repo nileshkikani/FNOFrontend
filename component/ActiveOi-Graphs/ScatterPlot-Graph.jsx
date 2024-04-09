@@ -45,7 +45,7 @@ const ScatterPlotGraph = () => {
           <option value="15">15</option>
         </select>
       </label>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="110%">
         <LineChart
           width={500}
           height={300}
@@ -83,7 +83,7 @@ const ScatterPlotGraph = () => {
             }
           />
           <Legend />
-          {checkFive ? (
+          {!checkFive ? (
             <>
               <Line
                 yAxisId="left"
@@ -116,7 +116,7 @@ const ScatterPlotGraph = () => {
             strokeWidth={2}
             dot={false}
           />
-          <Brush dataKey="created_at" height={30} stroke="#8884d8" />
+          <Brush dataKey="created_at" height={30} stroke="#0A3D62" />
         </LineChart>
       </ResponsiveContainer>
     </div>

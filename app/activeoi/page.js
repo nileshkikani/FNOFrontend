@@ -91,11 +91,11 @@ export default function Page() {
           <table className="active-oi-table">
             <thead>
               <tr>
-                <th>Strike Price</th>
+                {/* <th>Strike Price</th> */}
                 <th>Live Nifty</th>
-                <th>Created At</th>
+                <th>Time</th>
                 {/* -------5-------- */}
-                {checkFive ? (
+                {!checkFive ? (
                   <>
                     <th>CE OI</th>
                     <th>PE OI</th>
@@ -124,11 +124,11 @@ export default function Page() {
             <tbody>
               {data?.map((item) => (
                 <tr key={item?.id}>
-                  <td>
+                  {/* <td>
                     {Number(item?.strike_price).toLocaleString("en-IN", {
                       maximumFractionDigits: 0,
                     })}
-                  </td>
+                  </td> */}
                   <td>
                     {Number(item?.live_nifty).toLocaleString("en-IN", {
                       maximumFractionDigits: 0,
@@ -140,7 +140,7 @@ export default function Page() {
                       minute: "2-digit",
                     })}
                   </td>
-                  {checkFive ? (
+                  {!checkFive ? (
                     <>
                       <td>
                         {Number(item?.ce_oi).toLocaleString("en-IN", {

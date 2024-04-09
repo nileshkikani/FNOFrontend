@@ -52,7 +52,6 @@ export default function Page() {
         setData(response.data);
         console.log("response.data", response.data);
 
-        // Set the default selected date to the first date in the data
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -116,32 +115,31 @@ export default function Page() {
           <thead>
             <tr>
               <th>Symbol</th>
-              <th></th>
+              {/* <th></th> */}
               <th>Series</th>
-              <th></th>
+              {/* <th></th> */}
               <th>Date</th>
-              <th></th>
+              {/* <th></th> */}
               <th>Prev Close</th>
-              <th></th>
+              {/* <th></th> */}
               <th>Open Price</th>
-              <th></th>
+              {/* <th></th> */}
               <th>High Price</th>
-              <th></th>
+              {/* <th></th> */}
               <th>Low Price</th>
-              <th></th>
+              {/* <th></th> */}
               <th>Last Price</th>
-              <th></th>
+              {/* <th></th> */}
               <th>Close Price</th>
-              <th></th>
-
+              {/* <th></th> */}
               <th>Total Traded Quantity</th>
-              <th></th>
+              {/* <th></th> */}
               <th>Turnover ₹ </th>
-              <th></th>
+              {/* <th></th> */}
               <th>No. of Trades</th>
-              <th></th>
+              {/* <th></th> */}
               <th>Deliverable Qty</th>
-              <th></th>
+              {/* <th></th> */}
               <th>% Dly Qt to Traded Qty</th>
             </tr>
           </thead>
@@ -149,31 +147,31 @@ export default function Page() {
             {data?.map((item) => (
               <tr key={item.id}>
                 <td>{item.symbol}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.series}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.date}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.prev_close}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.open_price}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.high_price}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.low_price}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.last_price}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.close_price}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.total_traded_quantity}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.turnover}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.no_of_trades}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.deliverable_qty}</td>
-                <td>|</td>
+                {/* <td>|</td> */}
                 <td>{item.dly_qt_to_traded_qty}</td>
               </tr>
             ))}

@@ -45,7 +45,7 @@ const ChangeOIGraph = () => {
           <option value="15">15</option>
         </select>
       </label>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="110%">
         <ComposedChart
           width={500}
           height={400}
@@ -74,27 +74,29 @@ const ChangeOIGraph = () => {
             domain={[adjustedStart, adjustedEnd]}
             hide
           />
-          <Tooltip  labelFormatter={(timeStr) =>
-    new Date(timeStr).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  } />
+          <Tooltip
+            labelFormatter={(timeStr) =>
+              new Date(timeStr).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            }
+          />
           <Legend />
-          <Brush dataKey="created_at" height={30} stroke="#8884d8" />
+          <Brush dataKey="created_at" height={30} stroke="#0A3D62" />
           {checkFive ? (
             <>
               <Bar
                 yAxisId="left"
                 name="coi difference"
                 dataKey="call_oi_difference"
-                fill="#8FCE00"
+                fill="#CC3333"
               />
               <Bar
                 yAxisId="left"
                 name="poi difference "
                 dataKey="put_oi_difference"
-                fill="#CC3333"
+                fill="#8FCE00"
               />
             </>
           ) : (
@@ -103,13 +105,13 @@ const ChangeOIGraph = () => {
                 yAxisId="left"
                 name="coi difference"
                 dataKey="large_call_oi_difference"
-                fill="#8FCE00"
+                fill="#CC3333"
               />
               <Bar
                 yAxisId="left"
                 name="poi difference "
                 dataKey="large_put_oi_difference"
-                fill="#CC3333"
+                fill="#8FCE00"
               />
             </>
           )}

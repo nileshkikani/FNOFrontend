@@ -22,11 +22,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         data: action.payload,
-      };
-    case "SET_IS_LOADING":
-      return {
-        ...state,
-        isLoading: action.payload,
+        isLoading: false,
       };
     case "SET_UNIQUE_SYMBOL_DATA":
       return {
@@ -54,7 +50,8 @@ const reducer = (state, action) => {
 export const CashflowProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { isLoading, uniqueSymbolData, selectedStock, uniqueDates } = state;
+  const { isLoading, uniqueSymbolData, selectedStock, uniqueDates, data } =
+    state;
 
   const handleDropdownChange = (event) => {
     dispatch({ type: "SET_SELECTED_STOCK", payload: event.target.value });
@@ -69,24 +66,26 @@ export const CashflowProvider = ({ children }) => {
   };
 
   const getData = async () => {
-    dispatch({ type: "SET_IS_LOADING", payload: true });
+    // ----------API CALL------------------
     await axiosInstance
       .get(`${API_ROUTER.CASH_FLOW_TOP_TEN}`)
       .then((response) => {
         const responseData = response.data;
-        
+
         // ----GETTING UNIQUE DATES-------
         const uniqueDatesSet = new Set();
         response.data.forEach((item) => {
-          const date = new Date(item?.created_at).toLocaleDateString();
-          uniqueDatesSet.add(date);
+          const date = new Date(item?.created_at);
+          const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+          const formattedDate = date.toLocaleDateString("en-US", options);
+          uniqueDatesSet.add(formattedDate);
         });
 
-        dispatch({ 
-          type: "SET_UNIQUE_DATES", 
-          payload: Array.from(uniqueDatesSet)
+        dispatch({
+          type: "SET_UNIQUE_DATES",
+          payload: Array.from(uniqueDatesSet),
         });
-        
+
         //-------STOCK LIST------
         const symbolMap = new Map();
         responseData.forEach((item) => {
@@ -100,8 +99,7 @@ export const CashflowProvider = ({ children }) => {
 
         const uniqueSymbolData = Array.from(symbolMap.values());
         dispatch({ type: "SET_UNIQUE_SYMBOL_DATA", payload: uniqueSymbolData });
-        dispatch({ type: "SET_DATA", payload: response.data });
-        dispatch({ type: "SET_IS_LOADING", payload: false });
+        dispatch({ type: "SET_DATA", payload: responseData });
         dispatch({
           type: "SET_SELECTED_STOCK",
           payload: uniqueSymbolData[0][0]?.symbol,
@@ -127,6 +125,7 @@ export const CashflowProvider = ({ children }) => {
         uniqueDates,
         selectedStock,
         selectedStockData,
+        data,
       }}
     >
       {children}

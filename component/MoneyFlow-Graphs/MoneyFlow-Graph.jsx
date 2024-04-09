@@ -5,6 +5,7 @@ import {
   LineChart,
   Line,
   XAxis,
+  Brush,
   YAxis,
   CartesianGrid,
   Tooltip,
@@ -55,6 +56,7 @@ const MoneyFlowGraph = () => {
             stroke="#82ca9d"
             activeDot={{ r: 8 }}
           />
+          <Brush dataKey="created_at" height={30} stroke="#8884d8" />
         </LineChart>
       </ResponsiveContainer>
     </div>

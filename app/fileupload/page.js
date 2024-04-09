@@ -80,8 +80,10 @@ export default function FileUpload() {
             padding: 12,
           }}
         >
-          <label>
+          <label><span className="custom-date-input-title">
+
             Select File Date:
+            </span>
             <input
               label="label"
               type="date"
