@@ -12,19 +12,25 @@ function TotalData() {
     firstTableDate: "",
     secondTableDate: "",
   });
+  const [uniqueDate, setUniqueDate] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
 
   useEffect(() => {
     const handleFatch = async () => {
       try {
         const response = await axiosInstance
           .get(`${API_ROUTER.LIST_MARKET_DATAL}`)
-
           .then((response) => {
             setData(response.data);
+            const uniqueDatesSet = new Set();
+      data.forEach((item) => {
+        const date = new Date(item?.date).toLocaleDateString();
+        uniqueDatesSet.add(date);
+      });
           })
           .catch((err) => console.log("error while fetching data", err));
 
-        const updatedData = Object.groupBy(response.data, ({ date }) => date);
+        const updatedData = Object.groupBy(data, ({ date }) => date);
         setMarketData(updatedData);
 
         // Set the default selected date to the first date in the data
@@ -44,6 +50,11 @@ function TotalData() {
     };
     handleFatch();
   }, []);
+
+  const filteredData = useMemo(() => {
+    //---------------------
+    return data.filter((item) => item.date === selectedDate);
+  }, [data, selectedDate]);
 
   const FIRST_TABLE_DATA = useMemo(() => {
     if (marketData) {
@@ -76,6 +87,7 @@ function TotalData() {
   const handleDateChange = (e, selectedDateKey) => {
     const selectedData = Object.keys(marketData);
     console.log("selectedData", selectedData);
+    setSelectedDate(e.target.value); //-----------------------------------------
     setDateConfig((prev) => ({
       ...prev,
       [selectedDateKey]: e.target.value,
@@ -108,6 +120,16 @@ function TotalData() {
         <h1 style={{ textAlign: "center", marginTop: "20px", color: "green" }}>
           Total Data
         </h1>
+        <label>
+          Date:
+          <select>
+            {uniqueDate.map((date) => (
+              <option key={date} value={date} onChange={handleDateChange}>
+                {date}
+              </option>
+            ))}
+          </select>
+        </label>
         <table style={{ align: "center" }}>
           <thead>
             <tr>

@@ -11,5 +11,6 @@ module.exports = {
     plugin(function ({ addVariant }) {
       addVariant("children", "&>*");
     }),
+    // require('@tailwindcss/custom-forms'),
   ],
 };

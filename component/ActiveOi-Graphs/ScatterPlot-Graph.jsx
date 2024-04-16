@@ -14,42 +14,26 @@ import {
 import useActiveOiData from "@/hooks/useActiveOiData";
 
 const ScatterPlotGraph = () => {
-  const { data } = useActiveOiData();
-  const [checkFive, setCheckFive] = useState(false);
+  const { data,checkFive,
+    dropDownChange  } = useActiveOiData();
 
-  const dataReversed = data.slice(0).reverse();
-  //--reverse time from start to end format
-  const maxLiveNifty = Math.max(...dataReversed.map((item) => item.live_nifty));
+  const maxLiveNifty = Math.max(...data.map((item) => item.live_nifty));
 
   const currentLevel = maxLiveNifty;
   const range = 20;
   const adjustedStart = currentLevel - range;
   const adjustedEnd = currentLevel + range;
 
-  const dropDownChange = (event) => {
-    const selectedValue = event.target.value;
-    if (selectedValue === "5") {
-      setCheckFive(false);
-    } else if (selectedValue === "15") {
-      setCheckFive(true);
-    }
-  };
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
       <h1 className="table-title">PCR</h1>
-      <label>
-        Strikes above/below ATM
-        <select onChange={dropDownChange}>
-          <option value="5">5</option>
-          <option value="15">15</option>
-        </select>
-      </label>
+ 
       <ResponsiveContainer width="100%" height="110%">
         <LineChart
           width={500}
           height={300}
-          data={dataReversed}
+          data={data}
           margin={{
             top: 5,
             right: 30,
@@ -66,6 +50,7 @@ const ScatterPlotGraph = () => {
                 minute: "2-digit",
               })
             }
+            reversed={true}
           />
           <YAxis yAxisId="left" />
           <YAxis
@@ -77,6 +62,9 @@ const ScatterPlotGraph = () => {
           <Tooltip
             labelFormatter={(timeStr) =>
               new Date(timeStr).toLocaleTimeString([], {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
                 hour: "2-digit",
                 minute: "2-digit",
               })
@@ -97,6 +85,7 @@ const ScatterPlotGraph = () => {
           ) : (
             <>
               <Line
+              name="pcr"
                 yAxisId="left"
                 type="linear"
                 dataKey="large_pcr"
@@ -116,7 +105,7 @@ const ScatterPlotGraph = () => {
             strokeWidth={2}
             dot={false}
           />
-          <Brush dataKey="created_at" height={30} stroke="#0A3D62" />
+          <Brush dataKey="created_at" height={30} stroke="#0A3D62"  reversed={true} tickFormatter={(value) => new Date(value).toISOString().split('T')[0]} />
         </LineChart>
       </ResponsiveContainer>
     </div>

@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+
+//--------HOOKS---------------
 import useCashflowData from "@/hooks/useCashflowData";
 
 //-----GRAPH COMPONENTS----------

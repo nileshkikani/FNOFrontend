@@ -7,7 +7,6 @@ import { createContext, useMemo, useState, useEffect } from "react";
 export const FutureContext = createContext({});
 
 export const FutureProvider = ({ children }) => {
-  // States
   const [data, setData] = useState([]);
   const [marketData, setMarketData] = useState({});
   const [dateConfig, setDateConfig] = useState({
@@ -19,7 +18,6 @@ export const FutureProvider = ({ children }) => {
     try {
       const response = await axiosInstance.get(`${API_ROUTER.LIST_MARKET_DATAL}
         `);
-      //project is temporary running on this IP
       setData(response.data);
       const updatedData = Object.groupBy(response.data, ({ date }) => date);
       setMarketData(updatedData);

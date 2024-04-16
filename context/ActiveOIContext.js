@@ -1,31 +1,28 @@
 "use client";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
-import React, { createContext, useReducer, useMemo, useCallback } from "react";
+import React, { createContext, useReducer, useCallback, useEffect, useMemo } from "react";
 import { toast } from "react-hot-toast";
 
 export const ActiveOiContext = createContext({});
 
-
-// -------INITIAL STATES--------
-
 const initialState = {
   data: [],
-  currentPage: 1,
-  recordCount: 0,
+  uniqueDates: [],
+  filteredByDate: [],
+  selectedDate: "",
   isLoading: true,
   checkFive: true,
 };
 
-// ----------REDUCERS-----------
 const reducer = (state, action) => {
   switch (action.type) {
     case "SET_DATA":
       return { ...state, data: action.payload };
-    case "SET_CURRENT_PAGE":
-      return { ...state, currentPage: action.payload };
-    case "SET_RECORD_COUNT":
-      return { ...state, recordCount: action.payload };
+    case "SET_UNIQUE_DATES":
+      return { ...state, uniqueDates: action.payload };
+    case "FILTERED_BY_DATE":
+      return { ...state, filteredByDate: action.payload };
     case "SET_IS_LOADING":
       return { ...state, isLoading: action.payload };
     case "CHECK_FIVE":
@@ -38,49 +35,44 @@ const reducer = (state, action) => {
 export const ActiveOiProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // -------API CALL----------
-  const getData = useCallback(async (page) => {
+  // -----------API CALL---------------------------
+  const getData = useCallback(async () => {
     dispatch({ type: "SET_IS_LOADING", payload: true });
     try {
-      const response = await axiosInstance.get(
-        `${API_ROUTER.ACTIVE_OI}?page=${page}`
-      );
-      dispatch({ type: "SET_DATA", payload: response.data.results });
-      dispatch({ type: "SET_RECORD_COUNT", payload: response.data.count });
+      const response = await axiosInstance.get(API_ROUTER.ACTIVE_OI);
+      const uDate = Array.from(new Set(response.data.map(item => item.created_at.split("T")[0])));
+      dispatch({ type: "SET_DATA", payload: response.data });
+      dispatch({ type: "SET_UNIQUE_DATES", payload: uDate });
+      const initiald = uDate[0];
+      const initialData = response.data.filter(item => item.created_at.split("T")[0] === initiald);
+      dispatch({ type: "FILTERED_BY_DATE", payload: initialData });
       dispatch({ type: "SET_IS_LOADING", payload: false });
     } catch (err) {
-      toast.error("error getting data");
-      console.log("error is this:", err);
+      toast.error("Error getting data");
+      console.log("Error is this:", err);
     }
   }, []);
 
-  const fetchActiveOIData = useCallback(
-    async (page) => {
-      dispatch({ type: "SET_CURRENT_PAGE", payload: page });
-      await getData(page);
-    },
-    [getData]
-  );
+  
+  // --------DATE DROPDOWN---------
+  const dateDropDownChange = useCallback(event => {
+    const selectedDate = event.target.value;
+    const filteredByDate = state.data.filter(item => item.created_at.split("T")[0] === selectedDate);
+    dispatch({ type: "FILTERED_BY_DATE", payload: filteredByDate });
+  }, [state.data]);
 
-  // --------PREVIOUS BUTTON-------------
-  const handlePrevious = useCallback(() => {
-    dispatch({ type: "SET_CURRENT_PAGE", payload: state.currentPage - 1 });
-  }, [state.currentPage]);
+  // -----------CHECK 5 or 15-----------
+  const dropDownChange = useCallback(event => {
+    const selectedValue = event.target.value;
+    dispatch({ type: "CHECK_FIVE", payload: selectedValue === "15" });
+  }, []);
 
-  // --------------NEXT BUTTON--------
-  const handleNext = useCallback(() => {
-    dispatch({ type: "SET_CURRENT_PAGE", payload: state.currentPage + 1 });
-  }, [state.currentPage]);
-
-  const contextValue = useMemo(
-    () => ({
-      ...state,
-      fetchActiveOIData,
-      handlePrevious,
-      handleNext,
-    }),
-    [state, fetchActiveOIData, handlePrevious, handleNext]
-  );
+  const contextValue = useMemo(() => ({
+    ...state,
+    getData,
+    dateDropDownChange,
+    dropDownChange
+  }), [state, getData, dateDropDownChange, dropDownChange]);
 
   return (
     <ActiveOiContext.Provider value={contextValue}>

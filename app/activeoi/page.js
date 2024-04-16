@@ -1,5 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useMemo } from "react";
+
+// -------HOOKS-------------
 import useActiveOiData from "@/hooks/useActiveOiData";
 
 //---------GRAPH COMPONENTS----------
@@ -9,36 +11,29 @@ import CallVsPutGraph from "@/component/ActiveOi-Graphs/CallVsPut-Graph";
 
 export default function Page() {
   const {
-    data,
-    fetchActiveOIData,
-    handlePrevious,
-    handleNext,
-    currentPage,
+    getData,
+    filteredByDate,
+    dateDropDownChange,
+    uniqueDates,
     isLoading,
-    recordCount,
+    checkFive,
+    dropDownChange
   } = useActiveOiData();
+  // console.log('UNIQUE DATEs from page',uniqueDates);
 
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);
-  const [checkFive, setCheckFive] = useState(false);
 
-  const dropDownChange = (event) => {
-    const selectedValue = event.target.value;
-    if (selectedValue === "5") {
-      setCheckFive(false);
-    } else if (selectedValue === "15") {
-      setCheckFive(true);
-    }
-  };
+  const memoizedTimeLeft = useMemo(() => timeLeft, [timeLeft]);
 
   useEffect(() => {
-    fetchActiveOIData(currentPage);
+    getData();
     const intervalId = setInterval(() => {
       setTimeLeft((prevTime) => prevTime - 1);
     }, 1000); //--updates states every sec
 
     return () => clearInterval(intervalId);
-  }, [currentPage]);
+  }, []);
 
   useEffect(() => {
     const now = new Date();
@@ -57,16 +52,15 @@ export default function Page() {
     } else {
       setMarketClosed(true);
     }
-  }, [timeLeft]);
+  }, [memoizedTimeLeft]);
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
-  const totalPages = Math.ceil(recordCount / 30);
-
+  // console.log(typeof uniqueDates);
+  // console.log("filtered by log",typeof filteredByDate);
   return (
     <>
-      <h1>total records : {recordCount || 0}</h1>
       {marketClosed ? (
         <h1 className="timer">MARKET CLOSED</h1>
       ) : (
@@ -80,8 +74,16 @@ export default function Page() {
       <label>
         Strikes above/below ATM
         <select onChange={dropDownChange}>
-          <option value="5">5</option>
           <option value="15">15</option>
+          <option value="5">5</option>
+        </select>
+      </label>
+      <label>
+        Date
+        <select onChange={dateDropDownChange}>
+        {uniqueDates.map(date => (
+            <option key={date} value={date}>{date}</option>
+          ))}
         </select>
       </label>
       {isLoading ? (
@@ -122,7 +124,7 @@ export default function Page() {
               </tr>
             </thead>
             <tbody>
-              {data?.map((item) => (
+              {filteredByDate?.map((item) => (
                 <tr key={item?.id}>
                   {/* <td>
                     {Number(item?.strike_price).toLocaleString("en-IN", {
@@ -249,28 +251,6 @@ export default function Page() {
           </table>
         </div>
       )}
-      <div className="btndiv">
-        {currentPage > 1 && (
-          <button className="prevbtn" onClick={handlePrevious}>
-            Previous
-          </button>
-        )}
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <button
-            key={page}
-            onClick={() => fetchActiveOIData(page)}
-            disabled={page === currentPage}
-            className={`${page === currentPage ? `activepage` : `pageno`}`}
-          >
-            {page}
-          </button>
-        ))}
-        {currentPage < totalPages && totalPages > 0 && (
-          <button className="nextbtn" onClick={handleNext}>
-            Next
-          </button>
-        )}
-      </div>
       <div className="graph-div">
         <ChangeOIGraph />
       </div>

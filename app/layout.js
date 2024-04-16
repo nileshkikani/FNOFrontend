@@ -4,9 +4,12 @@ import "./globals.css";
 //-------CONTEXTS------
 import { FutureProvider } from "@/context/FutureContext";
 import { OptionsProvider } from "@/context/OptionsContext";
+//-------remove above context after successfully implementation of FiiDiiDataContext
+
 import { ActiveOiProvider } from "@/context/ActiveOIContext";
 import { NiftyFutureProvider } from "@/context/NiftyFutureContext";
 import { CashflowProvider } from "@/context/CashflowContext";
+import { FiiDiiDataProvider } from "@/context/FiiDiiDataContext";
 
 //--------COMPONENTS-----------
 import Navbar from "@/component/Navbar";
@@ -26,11 +29,13 @@ export default function RootLayout({ children }) {
         {
           <FutureProvider>
             <OptionsProvider>
-              <ActiveOiProvider>
-                <CashflowProvider>
-                  <NiftyFutureProvider>{children}</NiftyFutureProvider>
-                </CashflowProvider>
-              </ActiveOiProvider>
+              <FiiDiiDataProvider>
+                <ActiveOiProvider>
+                  <CashflowProvider>
+                    <NiftyFutureProvider>{children}</NiftyFutureProvider>
+                  </CashflowProvider>
+                </ActiveOiProvider>
+              </FiiDiiDataProvider>
             </OptionsProvider>
           </FutureProvider>
         }

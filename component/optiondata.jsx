@@ -17,13 +17,6 @@ function OptionsData() {
     SECOND_DATE_OPTIONS,
   } = useOptionsData();
 
-  // const [data, setData] = useState([]);
-  // const [marketData, setMarketData] = useState({});
-  // const [dateConfig, setDateConfig] = useState({
-  //   firstTableDate: "",
-  //   secondTableDate: "",
-  // });
-
   return (
     <>
       <h1 style={{ textAlign: "center", marginTop: "20px", color: "green" }}>
@@ -46,11 +39,14 @@ function OptionsData() {
               value={dateConfig.firstTableDate}
               onChange={(e) => handleDateChange(e, "firstTableDate")}
             >
-              {FIRST_DATE_OPTIONS?.map((date) => (
-                <option key={date} value={date}>
-                  {date}
-                </option>
-              ))}
+               {/*-------CHRONOLOGICALLY DATE SORTING------- */}
+              {FIRST_DATE_OPTIONS?.slice()
+                .sort((a, b) => new Date(a) - new Date(b))
+                .map((date) => (
+                  <option key={date} value={date}>
+                    {date}
+                  </option>
+                ))}
             </select>
           </div>
           {dateConfig?.firstTableDate && (
