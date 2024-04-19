@@ -1,20 +1,19 @@
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
+// import dynamic from "next/dynamic";
 import "./globals.css";
 
 //-------CONTEXTS------
-import { FutureProvider } from "@/context/FutureContext";
-import { OptionsProvider } from "@/context/OptionsContext";
-//-------remove above context after successfully implementation of FiiDiiDataContext
-
 import { ActiveOiProvider } from "@/context/ActiveOIContext";
 import { NiftyFutureProvider } from "@/context/NiftyFutureContext";
 import { CashflowProvider } from "@/context/CashflowContext";
 import { FiiDiiDataProvider } from "@/context/FiiDiiDataContext";
+import { SecurityWiseProvider } from "@/context/SecurityWiseContext";
 
 //--------COMPONENTS-----------
+// const Navbar = dynamic(() => import('@/component/Navbar'), { ssr: false })
 import Navbar from "@/component/Navbar";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Algo Trading",
@@ -27,17 +26,15 @@ export default function RootLayout({ children }) {
       <body>
         <Navbar />
         {
-          <FutureProvider>
-            <OptionsProvider>
-              <FiiDiiDataProvider>
-                <ActiveOiProvider>
-                  <CashflowProvider>
-                    <NiftyFutureProvider>{children}</NiftyFutureProvider>
-                  </CashflowProvider>
-                </ActiveOiProvider>
-              </FiiDiiDataProvider>
-            </OptionsProvider>
-          </FutureProvider>
+          <SecurityWiseProvider>
+            <FiiDiiDataProvider>
+              <ActiveOiProvider>
+                <CashflowProvider>
+                  <NiftyFutureProvider>{children}</NiftyFutureProvider>
+                </CashflowProvider>
+              </ActiveOiProvider>
+            </FiiDiiDataProvider>
+          </SecurityWiseProvider>
         }
       </body>
     </html>

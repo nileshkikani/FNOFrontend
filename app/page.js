@@ -1,9 +1,17 @@
-import Link from "next/link";
-// import Image from "next/image";
-// import logo from "@/public/assets/algo_trading_logo.png";
+"use client"
+import { useEffect } from 'react';
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (<>
-  </>
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push('/activeoi');
+  }, []);
+
+  return (
+    <div>
+      <p>Redirecting to activeoi...</p>
+    </div>
   );
 }

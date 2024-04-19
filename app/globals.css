@@ -221,8 +221,12 @@ td {
   @apply text-black p-2 underline !important;
 }
 
+.green{
+  @apply text-[#0A8B3D] !important;
+}
+
 .active-link {
-  @apply text-yellow-300  !important;
+  @apply text-yellow-300 !important;
 }
 
 .nextbtn {

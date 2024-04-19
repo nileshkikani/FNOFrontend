@@ -19,7 +19,6 @@ export default function Page() {
     checkFive,
     dropDownChange
   } = useActiveOiData();
-  // console.log('UNIQUE DATEs from page',uniqueDates);
 
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);
@@ -30,10 +29,9 @@ export default function Page() {
     getData();
     const intervalId = setInterval(() => {
       setTimeLeft((prevTime) => prevTime - 1);
-    }, 1000); //--updates states every sec
-
+    }, 1000); 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [getData, setTimeLeft]);
 
   useEffect(() => {
     const now = new Date();
@@ -52,13 +50,11 @@ export default function Page() {
     } else {
       setMarketClosed(true);
     }
-  }, [memoizedTimeLeft]);
+  }, [memoizedTimeLeft,timeLeft]);
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
-  // console.log(typeof uniqueDates);
-  // console.log("filtered by log",typeof filteredByDate);
   return (
     <>
       {marketClosed ? (
@@ -74,8 +70,8 @@ export default function Page() {
       <label>
         Strikes above/below ATM
         <select onChange={dropDownChange}>
-          <option value="15">15</option>
           <option value="5">5</option>
+          <option value="15">15</option>
         </select>
       </label>
       <label>
@@ -93,7 +89,6 @@ export default function Page() {
           <table className="active-oi-table">
             <thead>
               <tr>
-                {/* <th>Strike Price</th> */}
                 <th>Live Nifty</th>
                 <th>Time</th>
                 {/* -------5-------- */}
@@ -126,11 +121,6 @@ export default function Page() {
             <tbody>
               {filteredByDate?.map((item) => (
                 <tr key={item?.id}>
-                  {/* <td>
-                    {Number(item?.strike_price).toLocaleString("en-IN", {
-                      maximumFractionDigits: 0,
-                    })}
-                  </td> */}
                   <td>
                     {Number(item?.live_nifty).toLocaleString("en-IN", {
                       maximumFractionDigits: 0,

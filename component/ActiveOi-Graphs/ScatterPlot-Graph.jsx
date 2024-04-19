@@ -1,8 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import {
   Line,
-  Brush,
   LineChart,
   XAxis,
   ResponsiveContainer,
@@ -14,34 +13,27 @@ import {
 import useActiveOiData from "@/hooks/useActiveOiData";
 
 const ScatterPlotGraph = () => {
-  const { data,checkFive,
-    dropDownChange  } = useActiveOiData();
-
-  const maxLiveNifty = Math.max(...data.map((item) => item.live_nifty));
-
-  const currentLevel = maxLiveNifty;
-  const range = 20;
-  const adjustedStart = currentLevel - range;
-  const adjustedEnd = currentLevel + range;
-
+  const { checkFive, adjustedNiftyStart, adjustedNiftyEnd,filteredByDateForRange } =
+    useActiveOiData();
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
       <h1 className="table-title">PCR</h1>
- 
-      <ResponsiveContainer width="100%" height="110%">
+
+      <ResponsiveContainer width="100%" height="100%">
         <LineChart
           width={500}
           height={300}
-          data={data}
+          data={filteredByDateForRange}
           margin={{
             top: 5,
             right: 30,
             left: 20,
             bottom: 5,
           }}
+          syncId="change_oi_brush"
         >
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid stroke="#E5E5E5" />
           <XAxis
             dataKey="created_at"
             tickFormatter={(timeStr) =>
@@ -50,13 +42,13 @@ const ScatterPlotGraph = () => {
                 minute: "2-digit",
               })
             }
-            reversed={true}
+            // reversed={true}
           />
           <YAxis yAxisId="left" />
           <YAxis
             yAxisId="right"
             orientation="right"
-            domain={[adjustedStart, adjustedEnd]}
+            domain={[adjustedNiftyStart, adjustedNiftyEnd]}
             hide
           />
           <Tooltip
@@ -85,7 +77,7 @@ const ScatterPlotGraph = () => {
           ) : (
             <>
               <Line
-              name="pcr"
+                name="pcr"
                 yAxisId="left"
                 type="linear"
                 dataKey="large_pcr"
@@ -101,11 +93,18 @@ const ScatterPlotGraph = () => {
             type="linear"
             dataKey="live_nifty"
             stroke="#f55abe"
-            strokeDasharray="6 2"
             strokeWidth={2}
             dot={false}
           />
-          <Brush dataKey="created_at" height={30} stroke="#0A3D62"  reversed={true} tickFormatter={(value) => new Date(value).toISOString().split('T')[0]} />
+          {/* <Brush
+            dataKey="created_at"
+            height={30}
+            stroke="#0A3D62"
+            // reversed={true}
+            tickFormatter={(value) =>
+              new Date(value).toISOString().split("T")[0]
+            }
+          /> */}
         </LineChart>
       </ResponsiveContainer>
     </div>

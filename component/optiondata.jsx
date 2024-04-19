@@ -39,7 +39,7 @@ function OptionsData() {
               value={dateConfig.firstTableDate}
               onChange={(e) => handleDateChange(e, "firstTableDate")}
             >
-               {/*-------CHRONOLOGICALLY DATE SORTING------- */}
+              {/*-------CHRONOLOGICALLY DATE SORTING------- */}
               {FIRST_DATE_OPTIONS?.slice()
                 .sort((a, b) => new Date(a) - new Date(b))
                 .map((date) => (

@@ -45,7 +45,17 @@ const NiftyFuturesGraph = () => {
             }
           />
           <YAxis />
-          <Tooltip />
+          <Tooltip
+            labelFormatter={(timeStr) =>
+              new Date(timeStr).toLocaleTimeString([], {
+                // year: "numeric",
+                // month: "numeric",
+                // day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            }
+          />
           <Legend />
           <ReferenceLine y={0} stroke="#000" />
           <Bar

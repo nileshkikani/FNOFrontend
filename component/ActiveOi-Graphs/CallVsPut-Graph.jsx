@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import {
-  Brush,
   XAxis,
   ComposedChart,
   Line,
@@ -15,33 +14,31 @@ import {
 import useActiveOiData from "@/hooks/useActiveOiData";
 
 const CallVsPutGraph = () => {
-  const { data, checkFive } = useActiveOiData();
-
-  const maxLiveNifty = Math.max(...data.map((item) => item.live_nifty));
-
-  const currentLevel = maxLiveNifty;
-  const range = 20;
-  const adjustedStart = currentLevel - range;
-  const adjustedEnd = currentLevel + range;
-
-  console.log(typeof data, "FROM ACTIVEOI");
+  const {
+    checkFive,
+    // filteredByDate,
+    adjustedNiftyStart,
+    adjustedNiftyEnd,
+    filteredByDateForRange
+  } = useActiveOiData();
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
       <h1 className="table-title">Call vs Put OI</h1>
-      <ResponsiveContainer width="100%" height="110%">
+      <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           width={500}
           height={400}
-          data={data}
+          data={filteredByDateForRange}
           margin={{
             top: 5,
             right: 30,
             left: 20,
             bottom: 5,
           }}
+          syncId="change_oi_brush"
         >
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid stroke="#E5E5E5" />
           <XAxis
             dataKey="created_at"
             tickFormatter={(timeStr) =>
@@ -50,13 +47,13 @@ const CallVsPutGraph = () => {
                 minute: "2-digit",
               })
             }
-            reversed={true}
+            // reversed={true}
           />
           <YAxis yAxisId="left" />
           <YAxis
             yAxisId="right"
             orientation="right"
-            domain={[adjustedStart, adjustedEnd]}
+            domain={[adjustedNiftyStart, adjustedNiftyEnd]}
             hide
           />
           <Tooltip
@@ -120,17 +117,18 @@ const CallVsPutGraph = () => {
             type="linear"
             dataKey="live_nifty"
             stroke="#f55abe"
-            strokeDasharray="6 2"
             strokeWidth={2}
             dot={false}
           />
-          <Brush
+          {/* <Brush
             dataKey="created_at"
             height={30}
             stroke="#0A3D62"
-            reversed={true}
-            tickFormatter={(value) => new Date(value).toISOString().split('T')[0]}
-          />
+            // reversed={true}
+            tickFormatter={(value) =>
+              new Date(value).toISOString().split("T")[0]
+            }
+          /> */}
         </ComposedChart>
       </ResponsiveContainer>
     </div>

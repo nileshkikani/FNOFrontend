@@ -5,29 +5,19 @@ import { useRouter } from "next/navigation";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 
+// --------------ICONS-------------
+// import { FaChartLine } from "react-icons/fa";
 // import AdvanceDecline from "@/component/AdvanceDecline";
 
 const DATA = [
-  // {
-  //   path: "/listmarket",
-  //   title: "DATA LIST",
-  // },
   {
     path: "/securitywise",
     title: "SECURITY WISE DATA",
   },
-  // {
-  //   path: "/optionchainlist",
-  //   title: "OPTION CHAIN LIST DATA",
-  // },
   {
     path: "/stockdata",
     title: "STOCK DAILY DATA",
   },
-  // {
-  //   path: "/activeoi",
-  //   title: "ACTIVE OI",
-  // },
   {
     path: "/optiondata",
     title: "OPTION LIST",
@@ -72,6 +62,8 @@ const Navbar = () => {
     router.push(selectedPath);
   };
 
+  // const defaultOption = { value: "", label: "select chart" };
+
   return (
     <>
       <div className="nav-div">
@@ -111,7 +103,9 @@ const Navbar = () => {
           ))}
           <li>
             <select className="nav-div " onChange={handleSelectChange}>
+            <option disabled selected value>select chart</option>
               <option value="/activeoi" className="nav-item nav-dropdown ">
+                
                 Live Charts
               </option>
               <option value="/fii-dii-data" className="nav-item">
