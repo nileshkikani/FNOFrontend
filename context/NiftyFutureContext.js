@@ -1,9 +1,11 @@
 "use client";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
-// import axios from "axios"
 import React, { createContext, useEffect, useReducer, useMemo } from "react";
 import { toast } from "react-hot-toast";
+// import axios from "axios";
+import Cookies from 'js-cookie';
+// import useAuth from "@/hooks/useAuth";
 
 export const NiftyFutureContext = createContext({});
 
@@ -12,7 +14,9 @@ const initialState = {
   isLoading: true,
   selectedOption: null,
   selectedDate: "",
-  uniqueDatesArray: [],
+  uniqueExpiryDatesArray: [],
+  uniqueCreatedDatesArray: [],
+  checkMonth: 0,
 };
 
 const reducer = (state, action) => {
@@ -20,15 +24,15 @@ const reducer = (state, action) => {
     case "SET_DATA":
       return {
         ...state,
-        apiData: action.payload.apiData,
+        ...action.payload,
+        uniqueCreatedDatesArray: action.payload.uniqueCreatedDatesArray,
         isLoading: false,
-        selectedOption: action.payload.selectedOption,
-        uniqueDatesArray: action.payload.uniqueDatesArray,
       };
     case "SET_SELECTED_DATE":
       return {
         ...state,
-        selectedDate: action.payload,
+        selectedDate: action.payload.selectedDate,
+        checkMonth: action.payload.selectedMonth,
       };
     case "SET_SELECTED_OPTION":
       return {
@@ -42,83 +46,112 @@ const reducer = (state, action) => {
 
 export const NiftyFutureProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  // const { isLoggedIn } = useAuth();
 
-  const { apiData, isLoading, selectedOption, selectedDate, uniqueDatesArray } =
-    state;
+  const {
+    apiData,
+    isLoading,
+    selectedOption,
+    selectedDate,
+    uniqueExpiryDatesArray,
+    checkMonth,
+    uniqueCreatedDatesArray,
+  } = state;
 
-  const expiry = useMemo(() => apiData?.slice(0, 3) || [], [apiData]);
-
-  const filterByCreatedDate = useMemo(
-    () =>
-      apiData?.filter((item) => {
-        return (
-          item.expiration === selectedOption &&
-          (selectedDate
-            ? new Date(item.created_at).toLocaleDateString() === selectedDate
-            : true)
-        );
-      }) || [],
-    [apiData, selectedOption, selectedDate]
-  );
-
-  const reversedFilteredData = useMemo(
-    () => filterByCreatedDate?.reverse().slice(0, 20) || [],
-    [filterByCreatedDate]
-  );
+  // ----------API CALL FUNCTION------------
 
   const getData = async () => {
     dispatch({ type: "SET_DATA", payload: { isLoading: true } });
-
-    // ------API CALL------------
     try {
-      const response = await axiosInstance.get(`${API_ROUTER.NIFTY_FUTURE_DATA}`);
+      const token = Cookies.get("access");
+      // console.log("NIFTY FUTURE CALL:::::,",token);
+
+      const response = await axiosInstance.get(API_ROUTER.NIFTY_FUTURE_DATA,
+        { headers: { Authorization: `Bearer ${token}` } } 
+      );
+
+      // ---------UNIQUE DATE n EXPIRY SELECTION----------
       const uniqueDatesSet = new Set();
+      const uniqueCreatedDateSet = new Set();
+
       response.data.forEach((item) => {
-        const date = new Date(item?.created_at).toLocaleDateString();
-        uniqueDatesSet.add(date);
+        uniqueDatesSet.add(item?.expiration);
+        const formattedDate = new Date(item?.created_at).toLocaleDateString();
+        uniqueCreatedDateSet.add(formattedDate);
       });
+
       dispatch({
         type: "SET_DATA",
         payload: {
           apiData: response.data,
           selectedOption: response.data[0]?.expiration,
-          uniqueDatesArray: Array.from(uniqueDatesSet),
+          uniqueExpiryDatesArray: Array.from(uniqueDatesSet).reverse(),
+          uniqueCreatedDatesArray: Array.from(uniqueCreatedDateSet).reverse(),
         },
       });
-    } catch (err) {
-      toast.error("error getting data");
-      console.log("error is this:", err);
+    } catch (error) {
+      toast.error("Error getting data");
+      console.error("Error:", error);
     }
   };
 
-  //---------DATE CHANGE DROPDOWN-----------
+  // -------------DATE FILTER--------------
+  const filterByCreatedDate = useMemo(
+    () =>
+      apiData.filter(
+        (item) =>
+          item.expiration === selectedOption &&
+          (!selectedDate ||
+            new Date(item.created_at).toLocaleDateString() === selectedDate)
+      ),
+    [apiData, selectedOption, selectedDate]
+  );
 
+  // -------CREATED DATE----------
   const handleDateChange = (event) => {
-    const myDate = event.target.value;
-    dispatch({ type: "SET_SELECTED_DATE", payload: myDate });
+    const selectedDate = event.target.value;
+    console.log("from fate change function", selectedDate);
+    const [day, month, year] = selectedDate.split("/");
+    const formattedDate = `${year}-${month}-${day}`;
+    const dateObject = new Date(formattedDate);
+    const selectedMonth = dateObject.getMonth();
+
+    dispatch({
+      type: "SET_SELECTED_DATE",
+      payload: { selectedMonth: selectedMonth + 1, selectedDate: selectedDate },
+    });
   };
 
-  //---------EXPIRY DATE DROPDOWN-----------
+  // console.log("check cheek month from state:",checkMonth);
+  // console.log("expiry:",uniqueExpiryDatesArray);
+
+  //----------EXPIRY DROPDOWN HANDLE-----------
   const handleExpiryChange = (event) => {
-    const myExpiry = event.target.value;
-    dispatch({ type: "SET_SELECTED_OPTION", payload: myExpiry });
+    if (checkMonth >= 4) {
+      const newArr = uniqueExpiryDatesArray.slice(1);
+      dispatch({
+        type: "SET_DATA",
+        payload: { uniqueCreatedDatesArray: newArr },
+      });
+    }
+    dispatch({ type: "SET_SELECTED_OPTION", payload: event.target.value });
   };
 
   useEffect(() => {
-    getData();
+      getData();
   }, []);
 
   return (
     <NiftyFutureContext.Provider
       value={{
         apiData,
-        expiry,
         isLoading,
         selectedOption,
         filterByCreatedDate,
         selectedDate,
-        uniqueDatesArray,
-        reversedFilteredData,
+        uniqueExpiryDatesArray,
+        uniqueCreatedDatesArray,
+        // reversedFilteredData,
         handleDateChange,
         handleExpiryChange,
       }}

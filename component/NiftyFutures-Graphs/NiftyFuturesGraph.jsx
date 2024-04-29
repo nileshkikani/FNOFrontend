@@ -9,14 +9,13 @@ import {
   Brush,
   Tooltip,
   Legend,
-  Line,
   ReferenceLine,
 } from "recharts";
 
 import useNiftyFutureData from "@/hooks/useNiftyFutureData";
 
 const NiftyFuturesGraph = () => {
-  const { reversedFilteredData } = useNiftyFutureData();
+  const { filterByCreatedDate } = useNiftyFutureData();
 
   return (
     <>
@@ -25,7 +24,7 @@ const NiftyFuturesGraph = () => {
         <BarChart
           width={1500}
           height={500}
-          data={reversedFilteredData}
+          data={filterByCreatedDate}
           margin={{
             top: 5,
             right: 30,
@@ -43,6 +42,7 @@ const NiftyFuturesGraph = () => {
                 minute: "2-digit",
               })
             }
+            reversed={true}
           />
           <YAxis />
           <Tooltip

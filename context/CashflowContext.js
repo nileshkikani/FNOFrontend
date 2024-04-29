@@ -1,6 +1,7 @@
 "use client";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
+import Cookies from "js-cookie";
 // import axios from "axios";
 import React, { createContext, useEffect, useReducer } from "react";
 import { toast } from "react-hot-toast";
@@ -11,9 +12,10 @@ const initialState = {
   data: [],
   isLoading: true,
   uniqueSymbolData: [],
-  selectedStock: "",
+  selectedStock: [],
   selectedDate: "",
   uniqueDates: [],
+  dateWiseFilter: [],
 };
 
 const reducer = (state, action) => {
@@ -34,13 +36,18 @@ const reducer = (state, action) => {
         ...state,
         selectedStock: action.payload,
       };
-    case "SET_SELECTED_DATE":
-      return { ...state, selectedDate: action.payload };
-    case "SET_UNIQUE_DATES":
-      return {
-        ...state,
-        uniqueDates: action.payload,
-      };
+    // case "SET_UNIQUE_DATES":
+    //   return {
+    //     ...state,
+    //     uniqueDates: action.payload,
+    //   };
+    // case "DATEWISE_FILTER":
+    //   return { ...state, dateWiseFilter: action.payload };
+    // case "SELECTED_DATE":
+    //   return {
+    //     ...state,
+    //     selectedDate: action.payload,
+    //   };
 
     default:
       return state;
@@ -50,29 +57,27 @@ const reducer = (state, action) => {
 export const CashflowProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { isLoading, uniqueSymbolData, selectedStock, uniqueDates, data } =
-    state;
+  const {
+    isLoading,
+    uniqueSymbolData,
+    selectedStock,
+    uniqueDates,
+    data,
+    selectedDate,
+    dateWiseFilter,
+  } = state;
 
-  const handleDropdownChange = (event) => {
-    dispatch({ type: "SET_SELECTED_STOCK", payload: event.target.value });
-  };
-
-  const selectedStockData = uniqueSymbolData.find(
-    (stockData) => stockData[0]?.symbol === selectedStock
-  );
-
-  const handleDateDropdown = (event) => {
-    dispatch({ type: "SET_SELECTED_DATE", payload: event.target.value });
-  };
-
+  // ----------API CALL------------------
   const getData = async () => {
-    // ----------API CALL------------------
+    const token = Cookies.get("access");
     await axiosInstance
-      .get(`${API_ROUTER.CASH_FLOW_TOP_TEN}`)
+      .get(API_ROUTER.CASH_FLOW_TOP_TEN, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((response) => {
         const responseData = response.data;
 
-        // ----GETTING UNIQUE DATES-------
+        // -----------GETTING UNIQUE DATES----------
         const uniqueDatesSet = new Set();
         response.data.forEach((item) => {
           const date = new Date(item?.created_at);
@@ -100,15 +105,43 @@ export const CashflowProvider = ({ children }) => {
         const uniqueSymbolData = Array.from(symbolMap.values());
         dispatch({ type: "SET_UNIQUE_SYMBOL_DATA", payload: uniqueSymbolData });
         dispatch({ type: "SET_DATA", payload: responseData });
-        dispatch({
-          type: "SET_SELECTED_STOCK",
-          payload: uniqueSymbolData[0][0]?.symbol,
-        });
+        // dispatch({
+        //   type: "SET_SELECTED_STOCK",
+        //   payload: uniqueSymbolData[0][0]?.symbol,
+        // });
       })
       .catch((err) => {
         toast.error("error getting cashflow data");
         console.log("error is this:", err);
       });
+  };
+
+  //------------DATE DROPDOWN------------
+  const handleDateDropdown = (event) => {
+    const d = event.target.value;
+    // Function to change date format from MM/DD/YYYY to DD/MM/YYYY
+    const changeDateFormat = (dateString) => {
+      const parts = dateString.split("/");
+      return parts[1] + "/" + parts[0] + "/" + parts[2];
+    };
+
+    const formattedSelectedDate = changeDateFormat(d);
+    dispatch({ type: "SELECTED_DATE", payload: formattedSelectedDate });
+
+    // console.log("new format is :===", formattedSelectedDate);
+    const dateWise = selectedStock.filter((item) => {
+      const itemDate = new Date(item?.created_at).toLocaleDateString();
+      return itemDate === formattedSelectedDate;
+    });
+    dispatch({ type: "DATEWISE_FILTER", payload: dateWise });
+  };
+
+  // ------------STOCK DROPDOWN--------------
+  const handleStockDropdown = (event) => {
+    const selectedStockData = data.filter(
+      (item) => item.symbol === event.target.value
+    );
+    dispatch({ type: "SET_SELECTED_STOCK", payload: selectedStockData });
   };
 
   useEffect(() => {
@@ -119,12 +152,13 @@ export const CashflowProvider = ({ children }) => {
     <CashflowContext.Provider
       value={{
         isLoading,
-        handleDropdownChange,
+        handleStockDropdown,
         handleDateDropdown,
         uniqueSymbolData,
         uniqueDates,
         selectedStock,
-        selectedStockData,
+        selectedDate,
+        dateWiseFilter,
         data,
       }}
     >

@@ -3,6 +3,8 @@ import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import React, { createContext, useEffect, useReducer } from "react";
 import { toast } from "react-hot-toast";
+// import axios from "axios";
+import Cookies from "js-cookie";
 
 export const FiiDiiDataContext = createContext({});
 
@@ -11,7 +13,7 @@ const initialState = {
   isLoading: true,
   selectedClient: "",
   updatedData: [],
-  filteredClientData:[],
+  filteredClientData: [],
 };
 
 const reducer = (state, action) => {
@@ -35,18 +37,23 @@ const reducer = (state, action) => {
 export const FiiDiiDataProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { selectedClient, apiData, updatedData,filteredClientData } = state;
+  const { selectedClient, apiData, updatedData, filteredClientData } = state;
 
   //------------------API CALL----------------
   const handleFetch = async () => {
     try {
-      const response = await axiosInstance.get(API_ROUTER.LIST_MARKET_DATAL);
+      const token = Cookies.get("access");
+      const response = await axiosInstance.get(API_ROUTER.LIST_MARKET_DATAL, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const fullData = response.data;
       dispatch({
         type: "SET_DATA",
         payload: fullData,
       });
-      const initialFilteredClient = fullData.filter((item) => item?.client_type === "FII");
+      const initialFilteredClient = fullData.filter(
+        (item) => item?.client_type === "FII"
+      );
       dispatch({ type: "FILTERED_CLIENT", payload: initialFilteredClient });
     } catch (err) {
       toast.error("Error getting data FII DII");
@@ -56,10 +63,11 @@ export const FiiDiiDataProvider = ({ children }) => {
 
   const checkClientType = (event) => {
     const checkClient = event.target.value;
-    const filteredClient = apiData.filter((item) => item?.client_type === checkClient);
-    dispatch({ type: "FILTERED_CLIENT", payload: filteredClient }); 
+    const filteredClient = apiData.filter(
+      (item) => item?.client_type === checkClient
+    );
+    dispatch({ type: "FILTERED_CLIENT", payload: filteredClient });
   };
-
 
   // // ------------- DIFFERENCE CALCULATIONS AS SELECTED FROM DROPDOWN-----------
   // const {
@@ -89,7 +97,7 @@ export const FiiDiiDataProvider = ({ children }) => {
   //   option_stock_put_diff: option_stock_put_long - option_stock_put_short,
   //   total_contracts_diff: total_long_contracts - total_short_contracts,
   // };
-  
+
   useEffect(() => {
     handleFetch();
   }, []);

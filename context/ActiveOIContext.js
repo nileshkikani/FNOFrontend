@@ -1,12 +1,9 @@
 "use client";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
-import React, {
-  createContext,
-  useReducer,
-  useCallback,
-  useMemo,
-} from "react";
+// import axios from "axios";
+import Cookies from "js-cookie";
+import React, { createContext, useReducer, useCallback, useMemo } from "react";
 import { toast } from "react-hot-toast";
 
 export const ActiveOiContext = createContext({});
@@ -43,12 +40,14 @@ const reducer = (state, action) => {
 export const ActiveOiProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-
   // -----------API CALL---------------------------
   const getData = useCallback(async () => {
     dispatch({ type: "SET_IS_LOADING", payload: true });
     try {
-      const response = await axiosInstance.get(API_ROUTER.ACTIVE_OI);
+      const token = Cookies.get("access");
+      const response = await axiosInstance.get(API_ROUTER.ACTIVE_OI, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const uDate = Array.from(
         new Set(response.data.map((item) => item.created_at.split("T")[0]))
       );
@@ -59,7 +58,6 @@ export const ActiveOiProvider = ({ children }) => {
         (item) => item.created_at.split("T")[0] === initiald
       );
       dispatch({ type: "FILTERED_BY_DATE", payload: initialData });
-      
 
       //-------DEEP CLONING AND REVERSING FOR CHARTS ONLY------------
       const clonedFilteredByDate = JSON.parse(JSON.stringify(initialData));
@@ -74,7 +72,6 @@ export const ActiveOiProvider = ({ children }) => {
       console.log("Error is this:", err);
     }
   }, []);
-
 
   // --------DATE DROPDOWN---------
   const dateDropDownChange = useCallback(
@@ -96,13 +93,11 @@ export const ActiveOiProvider = ({ children }) => {
     [state.data]
   );
 
-
   // -----------CHECK 5 or 15-----------
   const dropDownChange = useCallback((event) => {
     const selectedValue = event.target.value;
     dispatch({ type: "CHECK_FIVE", payload: selectedValue === "15" });
   }, []);
-
 
   // ---------NIFTY RANGE CALCULATE-----------
   const maxLiveNifty = Math.max(

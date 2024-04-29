@@ -14,14 +14,14 @@ import {
 } from "recharts";
 
 const MoneyFlowGraph = () => {
-  const { selectedStockData } = useCashflowData();
+  const { selectedStock } = useCashflowData();
   return (
     <div style={{ width: "100%", height: "400px" }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           width={500}
           height={300}
-          data={selectedStockData}
+          data={selectedStock}
           margin={{
             top: 5,
             right: 30,
@@ -56,7 +56,14 @@ const MoneyFlowGraph = () => {
             stroke="#82ca9d"
             activeDot={{ r: 8 }}
           />
-          <Brush dataKey="created_at" height={30} stroke="#8884d8" />
+          <Brush
+            dataKey="created_at"
+            height={40}
+            stroke="#0A3D62"
+            tickFormatter={(value) =>
+              new Date(value).toISOString().split("T")[0]
+            }
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>

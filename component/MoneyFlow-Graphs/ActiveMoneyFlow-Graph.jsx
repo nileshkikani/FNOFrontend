@@ -13,14 +13,7 @@ import {
 import useCashflowData from "@/hooks/useCashflowData";
 
 const ActiveMoneyFlow = () => {
-  const { data } = useCashflowData();
-
-  const netMoneyFlowValues = data.map((item) => item.net_money_flow);
-  // const minValue = Math.min(...netMoneyFlowValues);
-  // const maxValue = Math.max(...netMoneyFlowValues);
-
-  // const middle = (minValue + maxValue) / 2;
-  // const tickValues = [minValue, middle, maxValue];
+  const { selectedStock } = useCashflowData();
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
@@ -28,7 +21,7 @@ const ActiveMoneyFlow = () => {
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           layout="vertical"
-          data={data}
+          data={selectedStock}
           margin={{
             top: 20,
             right: 20,

@@ -1,23 +1,35 @@
 "use client";
 import React from "react";
 import useNiftyFutureData from "@/hooks/useNiftyFutureData";
+import useAuth from "@/hooks/useAuth"
+import { redirect } from 'next/navigation'
 
 //--------GRAPH COMPONENTS--------
 import NiftyFuturesGraph from "@/component/NiftyFutures-Graphs/NiftyFuturesGraph";
 // import NiftyFuturesClosePrice from "@/component/NiftyFutures-Graphs/NiftyFuturesClosePriceGraph"
 
 export default function Page() {
+  // const {isLoggedIn} =useAuth()
+  // if(!isLoggedIn){
+  //   // alert("login first");
+  //   redirect("/");
+  // }
+
   const {
     apiData,
-    expiry,
     isLoading,
     selectedOption,
     selectedDate,
-    uniqueDatesArray,
-    reversedFilteredData,
+    uniqueExpiryDatesArray,
+    // reversedFilteredData,
+    filterByCreatedDate,
     handleDateChange,
+    uniqueCreatedDatesArray,
     handleExpiryChange,
   } = useNiftyFutureData();
+
+  
+
 
   return (
     <>
@@ -25,35 +37,38 @@ export default function Page() {
         <div className="mx-10">
           <h1 className="table-title">NIFTY FUTURES</h1>
           <div className="expiry-created-date">
-            <div>
-              {/* ----EXPIRY DROPDOWN-------- */}
+            <div className="expirydate-div">
+              {/* --------------EXPIRY DROPDOWN-------- */}
               <h1 className="table-title">EXPIRY</h1>
               <select
                 value={selectedOption}
                 onChange={handleExpiryChange}
                 className="stock-dropdown"
               >
-                {expiry.map((item, index) => (
-                  <option key={index} value={item.expiration}>
-                    {item.expiration}
+                {uniqueExpiryDatesArray?.map((item, index) => (
+                  <option key={index} value={item}>
+                    {item}
                   </option>
                 ))}
               </select>
             </div>
-            {/* --------DATE DROPDOWN---------- */}
-            {uniqueDatesArray && (
+            <div className="expirydate-div">
+            {/* --------------DATE DROPDOWN---------- */}
+            <h1 className="table-title">DATE</h1>
+            {uniqueCreatedDatesArray && (
               <select
                 value={selectedDate}
                 className="stock-dropdown "
                 onChange={handleDateChange}
               >
-                {uniqueDatesArray.map((date, index) => (
+                {uniqueCreatedDatesArray.map((date, index) => (
                   <option key={index} value={date}>
                     {date}
                   </option>
                 ))}
               </select>
             )}
+            </div>
           </div>
           {isLoading ? (
             <div className="loading">Loading data...</div>
@@ -74,7 +89,7 @@ export default function Page() {
                   </tr>
                 </thead>
                 <tbody>
-                  {reversedFilteredData?.map((item) => (
+                  {filterByCreatedDate.reverse()?.map((item) => (
                     <tr key={item?.id}>
                       <td>{item?.expiration}</td>
                       <td>{item?.open_interest}</td>

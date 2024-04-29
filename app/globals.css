@@ -233,6 +233,10 @@ td {
   @apply bg-white border-gray-950 border px-3 py-2 rounded !important;
 }
 
+.expirydate-div{
+  @apply flex items-center !important;
+}
+
 .expiry-created-date {
   @apply flex items-center justify-between !important;
 }
@@ -287,6 +291,37 @@ td {
 
 .nav-dropdown{
   @apply p-8 !important;
+}
+
+/* ---------------------LOGIN PAGE----------------- */
+
+.login-btn{
+  @apply w-full text-gray-900 border  focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center !important;
+}
+
+.login-lables{
+  @apply block mb-2 text-sm font-medium text-gray-900 !important;
+}
+
+.login-title{
+  @apply text-xl px-10 py-6 font-bold leading-tight tracking-tight text-gray-900
+  md:text-2xl !important;
+}
+
+.login-form{
+  @apply px-10 py-6 space-y-4 md:space-y-6 !important;
+}
+
+.login-div-nested{
+  @apply w-full p-10 bg-white rounded-lg shadow-lg dark:border md:mt-0 sm:max-w-md xl:p-0 !important;
+}
+
+.login-parent{
+  @apply flex items-center max-h-full py-60 justify-center h-full bg-[#e0f2ff] !important;
+}
+
+.pass-email-field{
+  @apply bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg  block w-full p-2.5  !important;
 }
 
 /* .custom-date-input::-webkit-inner-spin-button,

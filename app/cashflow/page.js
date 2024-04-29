@@ -6,22 +6,23 @@ import useCashflowData from "@/hooks/useCashflowData";
 
 //-----GRAPH COMPONENTS----------
 import MoneyFlowGraph from "@/component/MoneyFlow-Graphs/MoneyFlow-Graph";
-import ActiveMoneyFlow from "@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph";
+// import ActiveMoneyFlow from "@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph";
 
 const Page = () => {
   const {
     isLoading,
-    handleDropdownChange,
+    handleStockDropdown,
     uniqueSymbolData,
-    selectedStock,
     handleDateDropdown,
-    selectedDate,
+    // selectedDate,
+    dateWiseFilter,
     uniqueDates,
-    selectedStockData,
-    data,
+    selectedStock
   } = useCashflowData();
 
-  // const finalData = selectedStockData.filter()
+
+  // console.log("from the cash flow page;-",selectedStock);
+  // console.log("from datewise filter:",dateWiseFilter)
 
   return (
     <>
@@ -31,35 +32,38 @@ const Page = () => {
       <div className="main-div">
         <div>
           {/* ----SELECT STOCK DROPDOWN-------- */}
-          <h1 className="table-title">STOCK</h1>
+          <h1 className="table-title">SELECT SCRIPT</h1>
           <select
-            value={selectedStock}
-            onChange={handleDropdownChange}
+            onChange={handleStockDropdown}
             className="stock-dropdown"
           >
-            <option value="">Select a stock</option>
+            <option disabled selected value>
+            select stock</option>
             {uniqueSymbolData.map((stockData, index) => (
               <option key={index} value={stockData[0]?.symbol}>
                 {stockData[0]?.symbol}
               </option>
             ))}
           </select>
-          <h1 className="table-title">DATE</h1>
-          <select
-            value={selectedDate}
+          {/* <h1 className="table-title">DATE</h1> */}
+          {/* <select
+            // value={selectedDate}
             onChange={handleDateDropdown}
             className="stock-dropdown"
           >
+            <option disabled selected value>
+            select date
+          </option>
             {uniqueDates.map((date, index) => (
               <option key={index} value={date}>
                 {new Date(date).toLocaleDateString()}
               </option>
             ))}
-          </select>
+          </select> */}
         </div>
         <div>
           {isLoading && <div className="loading">Loading data...</div>}
-          {selectedStockData && (
+          {selectedStock && (
             <div>
               <table>
                 <thead>
@@ -83,7 +87,7 @@ const Page = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {selectedStockData
+                  {selectedStock
                     .slice()
                     .reverse()
                     .map((item) => (

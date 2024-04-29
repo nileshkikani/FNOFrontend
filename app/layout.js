@@ -8,10 +8,13 @@ import { NiftyFutureProvider } from "@/context/NiftyFutureContext";
 import { CashflowProvider } from "@/context/CashflowContext";
 import { FiiDiiDataProvider } from "@/context/FiiDiiDataContext";
 import { SecurityWiseProvider } from "@/context/SecurityWiseContext";
+import { AuthProvider } from "@/context/AuthContext";
+import { MultiStrikeProvider } from "@/context/MultiStrikeContext";
 
 //--------COMPONENTS-----------
 // const Navbar = dynamic(() => import('@/component/Navbar'), { ssr: false })
 import Navbar from "@/component/Navbar";
+// import { useRouter } from 'next/navigation';
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -21,16 +24,22 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  // const router = useRouter();
   return (
     <html>
       <body>
         <Navbar />
+        {/* {middleware(router.asPath)} */}
         {
           <SecurityWiseProvider>
             <FiiDiiDataProvider>
               <ActiveOiProvider>
                 <CashflowProvider>
-                  <NiftyFutureProvider>{children}</NiftyFutureProvider>
+                  <MultiStrikeProvider>
+                    <AuthProvider>
+                      <NiftyFutureProvider>{children}</NiftyFutureProvider>
+                    </AuthProvider>
+                  </MultiStrikeProvider>
                 </CashflowProvider>
               </ActiveOiProvider>
             </FiiDiiDataProvider>

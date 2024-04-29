@@ -6,10 +6,11 @@ import React, {
   useReducer,
   useCallback,
   useMemo,
-  useEffect
+  useEffect,
 } from "react";
 import { toast } from "react-hot-toast";
 // import axios from "axios";
+import Cookies from "js-cookie";
 
 export const SecurityWiseContext = createContext({});
 
@@ -37,7 +38,7 @@ export const SecurityWiseProvider = ({ children }) => {
 
   const { uniqueDates, data } = state;
 
-  // -----------API CALL-----------------
+  // ----------------API CALL-----------------
   const getData = useCallback(async (selectedDate) => {
     dispatch({ type: "SET_IS_LOADING", payload: true });
     try {
@@ -45,7 +46,10 @@ export const SecurityWiseProvider = ({ children }) => {
       if (selectedDate) {
         apiUrl += `?date=${selectedDate}`;
       }
-      const response = await axiosInstance.get(apiUrl);
+      const token = Cookies.get("access");
+      const response = await axiosInstance.get(apiUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       selectedDate
         ? dispatch({ type: "SET_DATA", payload: response.data })
@@ -61,15 +65,15 @@ export const SecurityWiseProvider = ({ children }) => {
     }
   }, []);
 
-  // -------SELECT DATE FROM DROPDOWN------------
+  // ----------------SELECT DATE FROM DROPDOWN------------
   const setDropdownDate = (event) => {
     const d = event.target.value;
     getData(d);
   };
 
-  useEffect(()=>{
-    getData()
-  },[])
+  useEffect(() => {
+    getData();
+  }, []);
 
   const contextValue = useMemo(
     () => ({
