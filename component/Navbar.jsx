@@ -4,23 +4,51 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
-// import Cookies from "js-cookie";
-// import useAuth from "@/hooks/useAuth";
-// import axios from "axios";
+import Cookies from "js-cookie";
+import useAuth from "@/hooks/useAuth";
+import axios from "axios";
 
 // --------------ICONS-------------
 // import { FaChartLine } from "react-icons/fa";
 // import AdvanceDecline from "@/component/AdvanceDecline";
 
+// --------------LOGOUT----------------
+const logout = async () => {
+  try {
+    const getAccessCookie = Cookies.get("access");
+    const getRefreshCookie = Cookies.get("refresh");
+
+    // console.log("this is access cookie", getAccessCookie);
+    // console.log("this is refresh cookie", getRefreshCookie);
+
+    await axiosInstance.post(
+      `${API_ROUTER.LOGOUT}`,
+      {
+        refresh: getRefreshCookie,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${getAccessCookie}`,
+        },
+      }
+    );
+    Cookies.remove("access");
+    Cookies.remove("refresh");
+    window.location.reload();
+  } catch (error) {
+    console.log("error in logout api", error);
+  }
+};
+
 const DATA = [
   {
     path: "/securitywise",
-    title: "SECURITY WISE DATA",
-  },
-  {
-    path: "/stockdata",
     title: "STOCK DAILY DATA",
   },
+  // {
+  //   path: "/stockdata",
+  //   title: "STOCK DAILY DATA",
+  // },
   {
     path: "/optiondata",
     title: "OPTION LIST",
@@ -38,33 +66,13 @@ const DATA = [
 const Navbar = () => {
   const router = useRouter();
   const [data, setData] = useState({});
-  // const { logout } = useAuth();
-// const logout = async () => {
-//   try {
-//     const getAccessCookie = Cookies.get("access");
-//     const getRefreshCookie = Cookies.get("refresh");
+  const { checkIsLoggedin } = useAuth();
+  // const [logoutShow,setLogoutShow] = useState(false);
+  // const checkCookie = Cookies.get('access');
 
-//     console.log("this is access cookie", getAccessCookie);
-//     console.log("this is refresh cookie", getRefreshCookie);
-
-//     const logoutResponse = await axios.post(
-//       `http://192.168.0.179:8000/${API_ROUTER.LOGOUT}`,
-//       {
-//         refresh: getRefreshCookie
-//       },
-//       {
-//         headers: {
-//           Authorization: `Bearer ${getAccessCookie}`
-//         }
-//       }
-//     );
-//     Cookies.remove('access');
-//     Cookies.remove('refresh');
-//   } catch (error) {
-//     console.log("error in logout api", error);
-//   }
-// };
-
+  // if(isLoggedIn == false ){
+  //   setLogoutShow(true)
+  // }
 
   const getAdvanceDecline = async () => {
     try {
@@ -76,6 +84,7 @@ const Navbar = () => {
   };
 
   useEffect(() => {
+    // console.log("current state is::: form navbar use effect::",isLoggedIn)
     getAdvanceDecline();
     const interval = setInterval(() => {
       getAdvanceDecline();
@@ -91,7 +100,8 @@ const Navbar = () => {
     const selectedPath = event.target.value;
     router.push(selectedPath);
   };
-
+  const getAccessCookie = Cookies.get("access");
+  const getRefreshCookie = Cookies.get("refresh");
   // const defaultOption = { value: "", label: "select chart" };
 
   return (
@@ -181,7 +191,10 @@ const Navbar = () => {
             </span>
           </li>
           <li>
-            {/* <button onClick={logout}>logout</button> */}
+            {" "}
+            {getAccessCookie && getRefreshCookie && (
+              <button onClick={logout}>logout</button>
+            )}
           </li>
         </ul>
       </div>

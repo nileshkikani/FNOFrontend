@@ -18,5 +18,6 @@ export const API_ROUTER = {
 
   //--------------------AUTH------------------
   LOGIN: `user/login/`,
-  LOGOUT:`user/logout/`
+  LOGOUT:`user/logout/`,
+  REFRESH_TOKEN:`user/refresh-token/`
 };

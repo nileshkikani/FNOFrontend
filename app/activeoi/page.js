@@ -71,7 +71,7 @@ export default function Page() {
         Strikes above/below ATM
         <select onChange={dropDownChange}>
           <option value="5">5</option>
-          <option value="15">15</option>
+          <option value="15" selected>15</option>
         </select>
       </label>
       <label>

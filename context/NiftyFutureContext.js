@@ -110,7 +110,7 @@ export const NiftyFutureProvider = ({ children }) => {
   // -------CREATED DATE----------
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
-    console.log("from fate change function", selectedDate);
+    // console.log("from fate change function", selectedDate);
     const [day, month, year] = selectedDate.split("/");
     const formattedDate = `${year}-${month}-${day}`;
     const dateObject = new Date(formattedDate);
@@ -128,7 +128,7 @@ export const NiftyFutureProvider = ({ children }) => {
   //----------EXPIRY DROPDOWN HANDLE-----------
   const handleExpiryChange = (event) => {
     if (checkMonth >= 4) {
-      const newArr = uniqueExpiryDatesArray.slice(1);
+      const newArr = uniqueExpiryDatesArray;
       dispatch({
         type: "SET_DATA",
         payload: { uniqueCreatedDatesArray: newArr },

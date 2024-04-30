@@ -15,7 +15,7 @@ const initialState = {
   filteredByDateForRange: [],
   selectedDate: "",
   isLoading: true,
-  checkFive: false,
+  checkFive: true,
 };
 
 const reducer = (state, action) => {

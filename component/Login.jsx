@@ -1,22 +1,19 @@
 import useAuth from "@/hooks/useAuth";
 import React from "react";
 
-
-
 const Login = () => {
+  const { getData, refreshToken } = useAuth();
 
-  const {getData} = useAuth();
-
-  const handleSubmit = (e)=>{
-    e.preventDefault()
+  const handleSubmit = (e) => {
+    e.preventDefault();
     let email = e.target.email?.value;
     let password = e.target.password?.value;
-    getData({email,password})
-    setInterval(()=>{
-      getData({email,password})
-    },3300000) //--55 minutes === 33 lakh milisecond
+    getData({ email, password });
+    setInterval(() => {
+      refreshToken();
+    }, 3300000); //--55 minutes === 33 lakh milisecond
+  };
 
-  }
   return (
     <>
       <div>
@@ -25,7 +22,12 @@ const Login = () => {
             <div className="login-div-nested">
               <div>
                 <h1 className="login-title">Login</h1>
-                <form className="login-form" action="/activeoi" method="POST" onSubmit={handleSubmit}>
+                <form
+                  className="login-form"
+                  action="/activeoi"
+                  method="POST"
+                  onSubmit={handleSubmit}
+                >
                   <div>
                     <label htmlfor="email" className="login-lables ">
                       Email
@@ -52,7 +54,6 @@ const Login = () => {
                       required=""
                     />
                   </div>
-
                   <button type="submit" className="login-btn">
                     Login
                   </button>

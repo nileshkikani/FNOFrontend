@@ -55,7 +55,7 @@ export const MultiStrikeProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("full URL is now:",apiUrl);
+      // console.log("full URL is now:",apiUrl);
       selectedStrike
         ? dispatch({ type: "SET_DATA", payload: response.data })
         : dispatch({

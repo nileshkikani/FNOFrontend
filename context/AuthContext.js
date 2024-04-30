@@ -2,7 +2,7 @@
 import { API_ROUTER } from "@/services/apiRouter";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axios";
-import React, { createContext, useEffect, useReducer } from "react";
+import React, { createContext, useReducer,useEffect,useState } from "react";
 // import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -18,23 +18,28 @@ const reducer = (state, action) => {
     case "SET_DATA":
       return {
         ...state,
-        data: action.payload,
+        data: action.payload.data,
+        isLoggedIn:action.payload.isLoggedIn
       };
-    case "CHECK_IS_LOGGEDIN":
-      return {
-        ...state,
-        isLoggedIn: action.payload,
-      };
+    // case "CHECK_IS_LOGGEDIN":
+    //   return {
+    //     ...state,
+    //     isLoggedIn: action.payload,
+    //   };
     default:
       return state;
   }
 };
 
+
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [checkIsLoggedin,setCheckIsLoggedIn] = useState(false)
   const { push } = useRouter();
-  //
-  const { data, isLoggedIn } = state;
+
+  const { data,isLoggedIn } = state;
+
+  
 
   // ---------LOGIN API CALL---------
   const getData = async ({ email, password }) => {
@@ -46,50 +51,72 @@ export const AuthProvider = ({ children }) => {
 
       dispatch({
         type: "SET_DATA",
-        payload: response.data,
+        payload: {data:response.data,isLoggedIn:true},
       });
-
-      dispatch({
-        type: "CHECK_IS_LOGGEDIN",
-        payload: true,
-      });
-
-      //-------set tokens in cookies-----------
+      setCheckIsLoggedIn(true)
+      //-------SET TOKENS IN COOKIES-----------
       Cookies.set("access", response.data?.tokens?.access);
       Cookies.set("refresh", response.data?.tokens?.refresh);
 
-      push("/activeoi");//--------redirect to live chart page-----
+      push("/activeoi");
     } catch (error) {
       console.log("Error while login", error);
     }
   };
 
-  // console.log("current state is ", isLoggedIn);
+  // --------------LOGOUT API CALL---------------
+//   const logout = async () => {
+//   try {
+//     const getAccessCookie = Cookies.get("access");
+//     const getRefreshCookie = Cookies.get("refresh");
 
-  // ---------LOGOUT API CALL---------
-  // const logout = async()=>{
-  //   console.log("inside logout functionnnnn------");
-  //   try {
-  //     const getRefreshCookie = Cookies.get('access');
-  //     console.log("this is access cookie-----------0-0-0-0-0",getRefreshCookie);
-  //     const logoutResponse = await axios.get(`http://192.168.0.179:8000/${API_ROUTER.LOGOUT}`,{headers:{ Authorization: `Bearer ${getRefreshCookie}` }})
+//     console.log("this is access cookie", getAccessCookie);
+//     console.log("this is refresh cookie", getRefreshCookie);
 
-  //   } catch (error) {
-  //     console.log("error in logout api",error);
-  //   }
-  // }
+//     await axiosInstance.post(
+//       `${API_ROUTER.LOGOUT}`,
+//       {
+//         refresh: getRefreshCookie,
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${getAccessCookie}`,
+//         },
+//       }
+//     );
+//     Cookies.remove("access");
+//     Cookies.remove("refresh");
+//     window.location.reload();
+//   } catch (error) {
+//     console.log("error in logout api", error);
+//   }
+// };
 
-  // useEffect(() => {
-  //   if (localStorage.getItem("access")) {
-  //     dispatch({
-  //       type: "CHECK_IS_LOGGEDIN",
-  //       payload: true,
-  //     });
-  //   }
-  // }, []);
+  // useEffect(()=>{
+  //   console.log(isLoggedIn,"frrrfsdfsd")
+  // },[isLoggedIn])
+  
 
+  // -------GET NEW REFRESH TOKEN AND STORING IN COKIES AFTER EVERY 55 MINS------------
+  const refreshToken = async () => {
+    try {
+      const getAccessCookie = Cookies.get("access");
+      const getRefreshCookie = Cookies.get("refresh");
+      const newRefreshToken = await axiosInstance.post(
+        API_ROUTER.REFRESH_TOKEN,
+        { refresh: getRefreshCookie },
+        {headers: {Authorization: `Bearer ${getAccessCookie}`,},}
+      )
+      Cookies.set("refresh", newRefreshToken);
+    } catch (error) {
+      console.log("error getting refresh token", error);
+    }
+  };
+ 
   return (
-    <AuthContext.Provider value={{ ...state, isLoggedIn, data, getData }}>
+    <AuthContext.Provider
+      value={{ ...state, data, getData, refreshToken,checkIsLoggedin,setCheckIsLoggedIn }}
+    >
       {children}
     </AuthContext.Provider>
   );
