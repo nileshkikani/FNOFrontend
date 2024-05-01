@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
 export default function middleware(req) {
-  // console.log("inside middleware------ee-----");
   const authCookie = req.cookies.get("access")?.value;
+  // console.log("nnnnnnnnnnnnnnnn", authCookie);
 
   const protectedRoutes = [
     "/activeoi",
@@ -18,7 +18,7 @@ export default function middleware(req) {
   const { pathname } = req.nextUrl.clone();
 
   if (pathname === "/" && authCookie) {
-    return NextResponse.redirect(new URL("/activeoi", req.url)); 
+    return NextResponse.redirect(new URL("/activeoi", req.url));
   }
 
   if (protectedRoutes.includes(pathname) && !authCookie) {
@@ -29,5 +29,5 @@ export default function middleware(req) {
 }
 
 export const config = {
-  matcher: '/:path*',
-}
+  matcher: "/:path*",
+};

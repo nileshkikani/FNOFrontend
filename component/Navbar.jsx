@@ -5,40 +5,7 @@ import { useRouter } from "next/navigation";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import Cookies from "js-cookie";
-// import useAuth from "@/hooks/useAuth";
-// import axios from "axios";
 
-// --------------ICONS-------------
-// import { FaChartLine } from "react-icons/fa";
-// import AdvanceDecline from "@/component/AdvanceDecline";
-
-// --------------LOGOUT----------------
-const logout = async () => {
-  try {
-    const getAccessCookie = Cookies.get("access");
-    const getRefreshCookie = Cookies.get("refresh");
-
-    // console.log("this is access cookie", getAccessCookie);
-    // console.log("this is refresh cookie", getRefreshCookie);
-
-    await axiosInstance.post(
-      `${API_ROUTER.LOGOUT}`,
-      {
-        refresh: getRefreshCookie,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${getAccessCookie}`,
-        },
-      }
-    );
-    Cookies.remove("access");
-    Cookies.remove("refresh");
-    window.location.reload();
-  } catch (error) {
-    console.log("error in logout api", error);
-  }
-};
 
 const DATA = [
   {
@@ -66,13 +33,13 @@ const DATA = [
 const Navbar = () => {
   const router = useRouter();
   const [data, setData] = useState({});
-  // const { checkIsLoggedin } = useAuth();
-  // const [logoutShow,setLogoutShow] = useState(false);
-  // const checkCookie = Cookies.get('access');
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
 
-  // if(isLoggedIn == false ){
-  //   setLogoutShow(true)
-  // }
+  // const getAccessCookie = Cookies.get("access");
+  // const getRefreshCookie = Cookies.get("refresh");
+
+  // console.log("this is access cookie", getAccessCookie);
+  // console.log("this is refresh cookie", getRefreshCookie);
 
   const getAdvanceDecline = async () => {
     try {
@@ -83,14 +50,54 @@ const Navbar = () => {
     }
   };
 
+  // ------------LOGOUT----------
+  const logout = async () => {
+    try {
+      const getAccessCookie = Cookies.get("access"); 
+      const getRefreshCookie = Cookies.get("refresh"); 
+
+      await axiosInstance.post(
+        `${API_ROUTER.LOGOUT}`,
+        {
+          refresh: getRefreshCookie,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getAccessCookie}`,
+          },
+        }
+      );
+
+      Cookies.remove("access");
+      Cookies.remove("refresh");
+      setIsLoggedIn(false);
+      window.location.reload();
+    } catch (error) {
+      console.log("error in logout api", error);
+    }
+  };
+
   useEffect(() => {
-    // console.log("current state is::: form navbar use effect::",isLoggedIn)
+    const checkLoginStatus = () => {
+      const getAccessCookie = Cookies.get("access");
+      const getRefreshCookie = Cookies.get("refresh");
+      setIsLoggedIn(getAccessCookie && getRefreshCookie);
+    };
     getAdvanceDecline();
-    const interval = setInterval(() => {
-      getAdvanceDecline();
-    }, 60000); // 60000 milliseconds = 1 minute
-    return () => clearInterval(interval);
-  }, []);
+    checkLoginStatus();
+
+    let intervalId;
+
+    if (!isLoggedIn) {
+      intervalId = setInterval(() => {
+        checkLoginStatus();
+      }, 1000);
+    } else {
+      clearInterval(intervalId);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [isLoggedIn]);
 
   const isActive = (path) => {
     return router.pathname === path;
@@ -100,9 +107,6 @@ const Navbar = () => {
     const selectedPath = event.target.value;
     router.push(selectedPath);
   };
-  const getAccessCookie = Cookies.get("access");
-  const getRefreshCookie = Cookies.get("refresh");
-  // const defaultOption = { value: "", label: "select chart" };
 
   return (
     <>
@@ -192,9 +196,7 @@ const Navbar = () => {
           </li>
           <li>
             {" "}
-            {getAccessCookie && getRefreshCookie && (
-              <button onClick={logout}>logout</button>
-            )}
+            {isLoggedIn && <button onClick={logout}>Logout</button>}
           </li>
         </ul>
       </div>

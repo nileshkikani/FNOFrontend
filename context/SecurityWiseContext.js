@@ -9,7 +9,7 @@ import React, {
   useEffect,
 } from "react";
 import { toast } from "react-hot-toast";
-// import axios from "axios";
+import axios from "axios";
 import Cookies from "js-cookie";
 
 export const SecurityWiseContext = createContext({});
