@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React,{useEffect} from "react";
 
 //--------HOOKS---------------
 import useCashflowData from "@/hooks/useCashflowData";
@@ -11,6 +11,7 @@ import MoneyFlowGraph from "@/component/MoneyFlow-Graphs/MoneyFlow-Graph";
 const Page = () => {
   const {
     isLoading,
+    getData,
     handleStockDropdown,
     uniqueSymbolData,
     handleDateDropdown,
@@ -19,6 +20,11 @@ const Page = () => {
     uniqueDates,
     selectedStock
   } = useCashflowData();
+
+  useEffect(() => {
+    getData();
+  }, []);
+
 
 
   // console.log("from the cash flow page;-",selectedStock);

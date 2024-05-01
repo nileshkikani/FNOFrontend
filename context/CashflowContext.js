@@ -144,9 +144,6 @@ export const CashflowProvider = ({ children }) => {
     dispatch({ type: "SET_SELECTED_STOCK", payload: selectedStockData });
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
 
   return (
     <CashflowContext.Provider
@@ -154,6 +151,7 @@ export const CashflowProvider = ({ children }) => {
         isLoading,
         handleStockDropdown,
         handleDateDropdown,
+        getData,
         uniqueSymbolData,
         uniqueDates,
         selectedStock,

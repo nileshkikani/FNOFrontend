@@ -34,17 +34,16 @@ const reducer = (state, action) => {
 
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [checkIsLoggedin,setCheckIsLoggedIn] = useState(false)
+  // const [checkIsLoggedin,setCheckIsLoggedIn] = useState(false)
   const { push } = useRouter();
 
   const { data,isLoggedIn } = state;
 
   
-
   // ---------LOGIN API CALL---------
   const getData = async ({ email, password }) => {
     try {
-      const response = await axiosInstance.post(API_ROUTER.LOGIN, {
+      const response = await axiosInstance.post(`${API_ROUTER.LOGIN}`, {
         email: email,
         password: password,
       });
@@ -53,7 +52,7 @@ export const AuthProvider = ({ children }) => {
         type: "SET_DATA",
         payload: {data:response.data,isLoggedIn:true},
       });
-      setCheckIsLoggedIn(true)
+      // setCheckIsLoggedIn(true)
       //-------SET TOKENS IN COOKIES-----------
       Cookies.set("access", response.data?.tokens?.access);
       Cookies.set("refresh", response.data?.tokens?.refresh);
@@ -115,7 +114,7 @@ export const AuthProvider = ({ children }) => {
  
   return (
     <AuthContext.Provider
-      value={{ ...state, data, getData, refreshToken,checkIsLoggedin,setCheckIsLoggedIn }}
+      value={{ ...state, data, getData, refreshToken }}
     >
       {children}
     </AuthContext.Provider>

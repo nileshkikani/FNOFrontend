@@ -137,14 +137,12 @@ export const NiftyFutureProvider = ({ children }) => {
     dispatch({ type: "SET_SELECTED_OPTION", payload: event.target.value });
   };
 
-  useEffect(() => {
-      getData();
-  }, []);
 
   return (
     <NiftyFutureContext.Provider
       value={{
         apiData,
+        getData,
         isLoading,
         selectedOption,
         filterByCreatedDate,

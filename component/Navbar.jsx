@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import Cookies from "js-cookie";
-import useAuth from "@/hooks/useAuth";
-import axios from "axios";
+// import useAuth from "@/hooks/useAuth";
+// import axios from "axios";
 
 // --------------ICONS-------------
 // import { FaChartLine } from "react-icons/fa";
@@ -43,7 +43,7 @@ const logout = async () => {
 const DATA = [
   {
     path: "/securitywise",
-    title: "STOCK DAILY DATA",
+    title: "SECURITY WISE",
   },
   // {
   //   path: "/stockdata",
@@ -66,7 +66,7 @@ const DATA = [
 const Navbar = () => {
   const router = useRouter();
   const [data, setData] = useState({});
-  const { checkIsLoggedin } = useAuth();
+  // const { checkIsLoggedin } = useAuth();
   // const [logoutShow,setLogoutShow] = useState(false);
   // const checkCookie = Cookies.get('access');
 

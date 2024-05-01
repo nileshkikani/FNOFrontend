@@ -1,23 +1,20 @@
 "use client";
-import React from "react";
+import React,{useEffect} from "react";
 import useNiftyFutureData from "@/hooks/useNiftyFutureData";
-import useAuth from "@/hooks/useAuth"
-import { redirect } from 'next/navigation'
+// import useAuth from "@/hooks/useAuth"
+// import { redirect } from 'next/navigation'
 
 //--------GRAPH COMPONENTS--------
 import NiftyFuturesGraph from "@/component/NiftyFutures-Graphs/NiftyFuturesGraph";
 // import NiftyFuturesClosePrice from "@/component/NiftyFutures-Graphs/NiftyFuturesClosePriceGraph"
 
 export default function Page() {
-  // const {isLoggedIn} =useAuth()
-  // if(!isLoggedIn){
-  //   // alert("login first");
-  //   redirect("/");
-  // }
+
 
   const {
     apiData,
     isLoading,
+    getData,
     selectedOption,
     selectedDate,
     uniqueExpiryDatesArray,
@@ -28,8 +25,11 @@ export default function Page() {
     handleExpiryChange,
   } = useNiftyFutureData();
 
-  
+  useEffect(() => {
+    getData();
+}, []);
 
+  
 
   return (
     <>

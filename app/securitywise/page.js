@@ -1,10 +1,12 @@
 "use client";
-import React from "react";
+import React,{useEffect} from "react";
 import useSecurityWiseData from "@/hooks/useSecurityWiseData";
 
 export default function Page() {
-  const { setDropdownDate, data, uniqueDates } = useSecurityWiseData();
-
+  const { setDropdownDate, data, uniqueDates,getData } = useSecurityWiseData();
+  useEffect(() => {
+    getData();
+  }, [])
 
   return (
     <>
