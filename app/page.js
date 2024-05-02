@@ -1,12 +1,22 @@
 "use client"
-import Login from '@/component/Login';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+
 export default function Home() {
+  const router = useRouter();
 
+  useEffect(() => {
 
+    const isLoggedIn = false;
+
+    if (!isLoggedIn) {
+      router.push('/login'); 
+    }
+  }, []);
 
   return (
     <div>
-      <Login/>
+      {/* your home page content */}
     </div>
   );
 }

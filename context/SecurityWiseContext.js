@@ -71,7 +71,6 @@ export const SecurityWiseProvider = ({ children }) => {
     getData(d);
   };
 
-;
 
   const contextValue = useMemo(
     () => ({

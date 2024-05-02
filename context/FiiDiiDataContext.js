@@ -46,7 +46,7 @@ export const FiiDiiDataProvider = ({ children }) => {
       const response = await axiosInstance.get(API_ROUTER.LIST_MARKET_DATAL, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const fullData = response.data;
+      const fullData = response.data; 
       dispatch({
         type: "SET_DATA",
         payload: fullData,
@@ -98,9 +98,6 @@ export const FiiDiiDataProvider = ({ children }) => {
   //   total_contracts_diff: total_long_contracts - total_short_contracts,
   // };
 
-  useEffect(() => {
-    handleFetch();
-  }, []);
 
   return (
     <FiiDiiDataContext.Provider
@@ -110,6 +107,7 @@ export const FiiDiiDataProvider = ({ children }) => {
         apiData,
         // finalResult,
         updatedData,
+        handleFetch,
         filteredClientData,
       }}
     >

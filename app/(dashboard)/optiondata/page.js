@@ -3,6 +3,7 @@ import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import { useEffect, useState } from "react";
 import axios from "axios"
+import Cookies from "js-cookie";
 
 export default function Page() {
   const [apiData, setApiData] = useState([]);
@@ -11,13 +12,16 @@ export default function Page() {
 
   const getData = async (page) => {
     setIsLoading(true);
+    const token = Cookies.get("access");
     await axiosInstance
-      .get(`${API_ROUTER.OPTIONDATA_LIST}?page=${page}`)
+      .get(`${API_ROUTER.OPTIONDATA_LIST}?page=${page}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((response) => {
         setApiData(response.data.results);
         setIsLoading(false);
       })
-      .catch((err) => console.log("error calling API:", err));
+      .catch((err) => console.log());
   };
 
   useEffect(() => {

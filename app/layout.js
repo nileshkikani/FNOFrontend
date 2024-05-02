@@ -27,6 +27,7 @@ export default function RootLayout({ children }) {
   // const router = useRouter();
   return (
     <html>
+        <AuthProvider>
       <body>
         <Navbar />
         {/* {middleware(router.asPath)} */}
@@ -36,9 +37,7 @@ export default function RootLayout({ children }) {
               <ActiveOiProvider>
                 <CashflowProvider>
                   <MultiStrikeProvider>
-                    <AuthProvider>
                       <NiftyFutureProvider>{children}</NiftyFutureProvider>
-                    </AuthProvider>
                   </MultiStrikeProvider>
                 </CashflowProvider>
               </ActiveOiProvider>
@@ -46,6 +45,7 @@ export default function RootLayout({ children }) {
           </SecurityWiseProvider>
         }
       </body>
+        </AuthProvider>
     </html>
   );
 }

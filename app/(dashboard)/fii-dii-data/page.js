@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React,{useEffect} from "react";
 
 // ------------HOOKS----------
 import useFiiDiiData from "@/hooks/useFiiDiiData";
@@ -9,7 +9,12 @@ import OptionsDataGraph from "@/component/FII-DII-Graphs/OptionsData-Graph";
 import FuturesDataGraph from "@/component/FII-DII-Graphs/FuturesData-Graph";
 
 export default function Page() {
-  const { checkClientType } = useFiiDiiData();
+  const { checkClientType,handleFetch } = useFiiDiiData();
+
+  useEffect(() => {
+    handleFetch();
+  }, []);
+
   return (
     <>
       {/* <FileImport /> */}

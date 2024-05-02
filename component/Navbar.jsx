@@ -1,11 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import Cookies from "js-cookie";
-
+import { useRouter } from "next/navigation";
 
 const DATA = [
   {
@@ -33,7 +32,7 @@ const DATA = [
 const Navbar = () => {
   const router = useRouter();
   const [data, setData] = useState({});
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // const getAccessCookie = Cookies.get("access");
   // const getRefreshCookie = Cookies.get("refresh");
@@ -53,8 +52,8 @@ const Navbar = () => {
   // ------------LOGOUT----------
   const logout = async () => {
     try {
-      const getAccessCookie = Cookies.get("access"); 
-      const getRefreshCookie = Cookies.get("refresh"); 
+      const getAccessCookie = Cookies.get("access");
+      const getRefreshCookie = Cookies.get("refresh");
 
       await axiosInstance.post(
         `${API_ROUTER.LOGOUT}`,
@@ -194,10 +193,7 @@ const Navbar = () => {
               ADR: {data && data?.nifty_adr ? data?.nifty_adr : "..."}
             </span>
           </li>
-          <li>
-            {" "}
-            {isLoggedIn && <button onClick={logout}>Logout</button>}
-          </li>
+          <li> {isLoggedIn && <button onClick={logout} className="logout">Logout</button>}</li>
         </ul>
       </div>
     </>

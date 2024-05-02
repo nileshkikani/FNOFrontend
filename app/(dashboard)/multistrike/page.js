@@ -1,12 +1,18 @@
 "use client";
-import React from "react";
+import React,{useEffect} from "react";
 
 //---------CHARTS-----------
 import MultiStrikeChart from "@/component/MultiStrikeChart";
 import useMultiStrikeData from "@/hooks/useMultiStrikeData";
 
 const Page = () => {
-  const { strikes, setStrikeDate } = useMultiStrikeData();
+  const { strikes, setStrikeDate,multiStrikeAPiCall } = useMultiStrikeData();
+
+  useEffect(() => {
+    multiStrikeAPiCall();
+  }, []);
+
+
   return (
     <>
       <div>

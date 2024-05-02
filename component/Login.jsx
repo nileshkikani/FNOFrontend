@@ -1,3 +1,4 @@
+"use client";
 import useAuth from "@/hooks/useAuth";
 import React from "react";
 
@@ -11,7 +12,7 @@ const Login = () => {
     getData({ email, password });
     setInterval(() => {
       refreshToken();
-    }, 3300000); //--55 minutes === 33 lakh milisecond
+    }, 270000); // calling refresh token every 4.30 minutes-----
   };
 
   return (

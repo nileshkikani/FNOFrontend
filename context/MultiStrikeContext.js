@@ -84,12 +84,7 @@ export const MultiStrikeProvider = ({ children }) => {
     multiStrikeAPiCall(selectedStrikes);
   };
 
- 
 
-  // ------initial call--------
-  useEffect(() => {
-    multiStrikeAPiCall();
-  }, []);
 
   const contextValue = useMemo(
     () => ({
