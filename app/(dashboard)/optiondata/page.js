@@ -46,9 +46,6 @@ export default function Page() {
           <div className="loading">Loading data...</div>
         ) : (
           <div>
-            <span className="expiry">
-              Expiry date: {apiData[0]?.expiry_date}
-            </span>
             <div className="table-div">
               <table>
                 <thead>

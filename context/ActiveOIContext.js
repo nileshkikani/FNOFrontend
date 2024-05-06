@@ -5,6 +5,7 @@ import axiosInstance from "@/utils/axios";
 import Cookies from "js-cookie";
 import React, { createContext, useReducer, useCallback, useMemo } from "react";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export const ActiveOiContext = createContext({});
 
@@ -39,6 +40,7 @@ const reducer = (state, action) => {
 
 export const ActiveOiProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const router = useRouter();
 
   // -----------API CALL---------------------------
   const getData = useCallback(async () => {
@@ -48,6 +50,7 @@ export const ActiveOiProvider = ({ children }) => {
       const response = await axiosInstance.get(API_ROUTER.ACTIVE_OI, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      if(response.status===200){
       const uDate = Array.from(
         new Set(response.data.map((item) => item.created_at.split("T")[0]))
       );
@@ -67,6 +70,9 @@ export const ActiveOiProvider = ({ children }) => {
         payload: reversedFilteredByDate,
       });
       dispatch({ type: "SET_IS_LOADING", payload: false });
+    }else{
+      router.push('/login');
+    }
     } catch (err) {
       toast.error("Error getting data");
       console.log("Error is this:", err);

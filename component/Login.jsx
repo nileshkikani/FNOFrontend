@@ -12,7 +12,7 @@ const Login = () => {
     getData({ email, password });
     setInterval(() => {
       refreshToken();
-    }, 270000); // calling refresh token every 4.30 minutes-----
+    }, 3300000); // -------55 minute-----
   };
 
   return (

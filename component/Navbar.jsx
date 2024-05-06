@@ -6,18 +6,17 @@ import axiosInstance from "@/utils/axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
+import useAuth from "@/hooks/useAuth";
+
+
 const DATA = [
   {
     path: "/securitywise",
     title: "SECURITY WISE",
   },
-  // {
-  //   path: "/stockdata",
-  //   title: "STOCK DAILY DATA",
-  // },
   {
     path: "/optiondata",
-    title: "OPTION LIST",
+    title: "OPTION CHAIN",
   },
   {
     path: "/niftyfutures",
@@ -32,13 +31,9 @@ const DATA = [
 const Navbar = () => {
   const router = useRouter();
   const [data, setData] = useState({});
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const {isLoggedIn,setLoginStatus} = useAuth();
 
-  // const getAccessCookie = Cookies.get("access");
-  // const getRefreshCookie = Cookies.get("refresh");
-
-  // console.log("this is access cookie", getAccessCookie);
-  // console.log("this is refresh cookie", getRefreshCookie);
 
   const getAdvanceDecline = async () => {
     try {
@@ -66,37 +61,18 @@ const Navbar = () => {
           },
         }
       );
-
+      setLoginStatus() //---setting isLoading as false
       Cookies.remove("access");
       Cookies.remove("refresh");
-      setIsLoggedIn(false);
-      window.location.reload();
+      router.push('/login')
     } catch (error) {
       console.log("error in logout api", error);
     }
   };
 
   useEffect(() => {
-    const checkLoginStatus = () => {
-      const getAccessCookie = Cookies.get("access");
-      const getRefreshCookie = Cookies.get("refresh");
-      setIsLoggedIn(getAccessCookie && getRefreshCookie);
-    };
     getAdvanceDecline();
-    checkLoginStatus();
-
-    let intervalId;
-
-    if (!isLoggedIn) {
-      intervalId = setInterval(() => {
-        checkLoginStatus();
-      }, 1000);
-    } else {
-      clearInterval(intervalId);
-    }
-
-    return () => clearInterval(intervalId);
-  }, [isLoggedIn]);
+  }, []);
 
   const isActive = (path) => {
     return router.pathname === path;

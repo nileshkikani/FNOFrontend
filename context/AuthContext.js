@@ -1,10 +1,10 @@
 "use client";
 import { API_ROUTER } from "@/services/apiRouter";
-import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axios";
 import React, { createContext, useReducer } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 export const AuthContext = createContext({});
 
@@ -33,9 +33,9 @@ const reducer = (state, action) => {
 
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { push } = useRouter();
+  const router = useRouter();
 
-  const { data } = state;
+  const { data, isLoggedIn } = state;
 
   // ---------LOGIN API CALL---------
   const getData = async ({ email, password }) => {
@@ -44,43 +44,55 @@ export const AuthProvider = ({ children }) => {
         email: email,
         password: password,
       });
+      if (response.status === 200) {
+        dispatch({
+          type: "SET_DATA",
+          payload: { data: response.data, isLoggedIn: true },
+        });
+        Cookies.set("access", response.data?.tokens?.access);
+        Cookies.set("refresh", response.data?.tokens?.refresh);
 
-      dispatch({
-        type: "SET_DATA",
-        payload: { data: response.data, isLoggedIn: true },
-      });
-      // setCheckIsLoggedIn(true)
-      //-------SET TOKENS IN COOKIES-----------
-      Cookies.set("access", response.data?.tokens?.access);
-      Cookies.set("refresh", response.data?.tokens?.refresh);
-
-      push("/activeoi");
+        router.push("/activeoi");
+      } else {
+        router.push("/login");
+      }
     } catch (error) {
       console.log("Error while login", error);
     }
   };
 
-  // -------GET NEW REFRESH TOKEN AND STORING IN COKIES AFTER EVERY 55 MINS------------
+
+
+  // -------GET NEW REFRESH TOKEN AND STORING IN COKIES AFTER EVERY 55 MINS from handleSubmit function------------
   const refreshToken = async () => {
     try {
       const getAccessCookie = Cookies.get("access");
       const getRefreshCookie = Cookies.get("refresh");
-      const newRefreshToken = await axiosInstance.post(`${API_ROUTER.REFRESH_TOKEN}`
-        ,
+      const newRefreshToken = await axiosInstance.post(
+        `${API_ROUTER.REFRESH_TOKEN}`,
         { refresh: getRefreshCookie },
         { headers: { Authorization: `Bearer ${getAccessCookie}` } }
       );
-      Cookies.set("access",newRefreshToken.data.access);
-      // console.log("new token is===================90909========================,",newRefreshToken);
-      // console.log("new token is===================90909========9898998=========,",newRefreshToken.access);
-      
+      Cookies.set("access", newRefreshToken.data.access);
+      // console.log("new token is============================,",newRefreshToken);
+      // console.log("new token is==============,",newRefreshToken.access);
     } catch (error) {
       console.log("error getting refresh token", error);
     }
   };
 
+
+  const setLoginStatus = ()=>{
+    dispatch({
+      type: "SET_DATA",
+      payload: { isLoggedIn: false },
+    });
+  }
+
   return (
-    <AuthContext.Provider value={{ ...state, data, getData, refreshToken }}>
+    <AuthContext.Provider
+      value={{ ...state, data, getData, refreshToken, isLoggedIn,setLoginStatus }}
+    >
       {children}
     </AuthContext.Provider>
   );

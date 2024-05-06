@@ -11,6 +11,7 @@ import React, {
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 export const SecurityWiseContext = createContext({});
 
@@ -35,10 +36,11 @@ const reducer = (state, action) => {
 
 export const SecurityWiseProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const router = useRouter();
 
   const { uniqueDates, data } = state;
 
-  // ----------------API CALL-----------------
+  // -------------------------API CALL------------------------
   const getData = useCallback(async (selectedDate) => {
     dispatch({ type: "SET_IS_LOADING", payload: true });
     try {
@@ -50,6 +52,7 @@ export const SecurityWiseProvider = ({ children }) => {
       const response = await axiosInstance.get(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      if(response.status===200){
 
       selectedDate
         ? dispatch({ type: "SET_DATA", payload: response.data })
@@ -59,6 +62,9 @@ export const SecurityWiseProvider = ({ children }) => {
           });
 
       dispatch({ type: "SET_IS_LOADING", payload: false });
+    }else{
+      router.push('/login');
+    }
     } catch (err) {
       toast.error("Error getting data");
       console.log("Error is this::", err);

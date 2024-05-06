@@ -290,7 +290,7 @@ td {
 }
 
 .graph-div {
-  @apply py-8 !important;
+  @apply py-4 !important;
 }
 
 .nav-dropdown{

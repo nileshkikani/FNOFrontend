@@ -95,7 +95,7 @@ export const NiftyFutureProvider = ({ children }) => {
     }
   };
 
-  // -------------DATE FILTER--------------
+  // ----------------------DATE FILTER----------------------------
   const filterByCreatedDate = useMemo(
     () =>
       apiData.filter(
@@ -122,8 +122,6 @@ export const NiftyFutureProvider = ({ children }) => {
     });
   };
 
-  // console.log("check cheek month from state:",checkMonth);
-  // console.log("expiry:",uniqueExpiryDatesArray);
 
   //----------EXPIRY DROPDOWN HANDLE-----------
   const handleExpiryChange = (event) => {

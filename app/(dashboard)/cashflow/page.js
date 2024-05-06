@@ -1,12 +1,17 @@
 "use client";
 import React,{useEffect} from "react";
+import dynamic from "next/dynamic";
 
 //--------HOOKS---------------
 import useCashflowData from "@/hooks/useCashflowData";
 
+
 //-----GRAPH COMPONENTS----------
 import MoneyFlowGraph from "@/component/MoneyFlow-Graphs/MoneyFlow-Graph";
 // import ActiveMoneyFlow from "@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph";
+
+//  ===========LOADING ANIMATION ===========
+const ClipLoader = dynamic(() => import("react-spinners/ClipLoader"));
 
 const Page = () => {
   const {
@@ -15,7 +20,6 @@ const Page = () => {
     handleStockDropdown,
     uniqueSymbolData,
     handleDateDropdown,
-    // selectedDate,
     dateWiseFilter,
     uniqueDates,
     selectedStock
@@ -25,10 +29,6 @@ const Page = () => {
     getData();
   }, []);
 
-
-
-  // console.log("from the cash flow page;-",selectedStock);
-  // console.log("from datewise filter:",dateWiseFilter)
 
   return (
     <>
@@ -51,21 +51,6 @@ const Page = () => {
               </option>
             ))}
           </select>
-          {/* <h1 className="table-title">DATE</h1> */}
-          {/* <select
-            // value={selectedDate}
-            onChange={handleDateDropdown}
-            className="stock-dropdown"
-          >
-            <option disabled selected value>
-            select date
-          </option>
-            {uniqueDates.map((date, index) => (
-              <option key={index} value={date}>
-                {new Date(date).toLocaleDateString()}
-              </option>
-            ))}
-          </select> */}
         </div>
         <div>
           {isLoading && <div className="loading">Loading data...</div>}

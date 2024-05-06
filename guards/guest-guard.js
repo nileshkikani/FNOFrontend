@@ -2,23 +2,20 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import useAuth from "@/hooks/useAuth";
 
 const GuestGuard = ({ children }) => {
-  // const [isCookieFound, setIsCookieFound] = useState(false);
+
   const router = useRouter();
+  const {isLoggedIn} = useAuth();
 
   useEffect(() => {
     const accessCookie = Cookies.get("access");
     const refreshCookie = Cookies.get("refresh");
 
-    if (accessCookie && refreshCookie) {
-      // console.log("Access Cookie:", accessCookie);
-      // console.log("Refresh Cookie:", refreshCookie);
-      // setIsCookieFound(true);
+    if (isLoggedIn && accessCookie && refreshCookie) {
       router.push('/activeoi'); 
     } else {
-      // console.log("Access or Refresh Cookie not found");
-      // setIsCookieFound(false);
       router.push('/login'); 
     }
   }, [router]);

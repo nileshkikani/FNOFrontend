@@ -105,10 +105,6 @@ export const CashflowProvider = ({ children }) => {
         const uniqueSymbolData = Array.from(symbolMap.values());
         dispatch({ type: "SET_UNIQUE_SYMBOL_DATA", payload: uniqueSymbolData });
         dispatch({ type: "SET_DATA", payload: responseData });
-        // dispatch({
-        //   type: "SET_SELECTED_STOCK",
-        //   payload: uniqueSymbolData[0][0]?.symbol,
-        // });
       })
       .catch((err) => {
         toast.error("error getting cashflow data");
@@ -136,7 +132,7 @@ export const CashflowProvider = ({ children }) => {
     dispatch({ type: "DATEWISE_FILTER", payload: dateWise });
   };
 
-  // ------------STOCK DROPDOWN--------------
+  // ----------------------STOCK DROPDOWN----------------------
   const handleStockDropdown = (event) => {
     const selectedStockData = data.filter(
       (item) => item.symbol === event.target.value

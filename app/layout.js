@@ -12,9 +12,8 @@ import { AuthProvider } from "@/context/AuthContext";
 import { MultiStrikeProvider } from "@/context/MultiStrikeContext";
 
 //--------COMPONENTS-----------
-// const Navbar = dynamic(() => import('@/component/Navbar'), { ssr: false })
 import Navbar from "@/component/Navbar";
-// import { useRouter } from 'next/navigation';
+
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +23,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  // const router = useRouter();
+
   return (
     <html>
         <AuthProvider>
