@@ -118,7 +118,6 @@ export default function Page() {
               ))}
             </select>
           </label>
-
           <>
             <ActiveOiTable />
             <div className="graph-div">

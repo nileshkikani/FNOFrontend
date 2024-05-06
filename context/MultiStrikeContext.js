@@ -55,7 +55,7 @@ export const MultiStrikeProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // console.log("full URL is now:",apiUrl);
+      if(response.status===200){
       selectedStrike
         ? dispatch({ type: "SET_DATA", payload: response.data })
         : dispatch({
@@ -64,6 +64,9 @@ export const MultiStrikeProvider = ({ children }) => {
           });
 
       dispatch({ type: "SET_IS_LOADING", payload: false });
+      // const currentPath = window.location.pathname;
+      // localStorage.setItem('lastPath', currentPath);
+        }
     } catch (err) {
       toast.error("Error getting multistrike api");
       console.log("Error getting multistrike api, check::", err);

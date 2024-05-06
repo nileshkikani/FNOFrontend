@@ -293,6 +293,10 @@ td {
   @apply py-4 !important;
 }
 
+.fii-dii-graph-div{
+  @apply py-10 !important;
+}
+
 .nav-dropdown{
   @apply p-8 !important;
 }

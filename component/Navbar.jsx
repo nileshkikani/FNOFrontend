@@ -4,9 +4,9 @@ import Link from "next/link";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
 
 import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 
 const DATA = [
@@ -31,8 +31,9 @@ const DATA = [
 const Navbar = () => {
   const router = useRouter();
   const [data, setData] = useState({});
+const accessCookie = Cookies.get("access");
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const {isLoggedIn,setLoginStatus} = useAuth();
+  // const {isLoggedIn,setLoginStatus} = useAuth();
 
 
   const getAdvanceDecline = async () => {
@@ -61,10 +62,10 @@ const Navbar = () => {
           },
         }
       );
-      setLoginStatus() //---setting isLoading as false
       Cookies.remove("access");
       Cookies.remove("refresh");
       router.push('/login')
+      
     } catch (error) {
       console.log("error in logout api", error);
     }
@@ -169,7 +170,7 @@ const Navbar = () => {
               ADR: {data && data?.nifty_adr ? data?.nifty_adr : "..."}
             </span>
           </li>
-          <li> {isLoggedIn && <button onClick={logout} className="logout">Logout</button>}</li>
+          <li> {accessCookie && <button onClick={logout} className="logout">Logout</button>}</li>
         </ul>
       </div>
     </>

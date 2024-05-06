@@ -79,7 +79,7 @@ export const NiftyFutureProvider = ({ children }) => {
         const formattedDate = new Date(item?.created_at).toLocaleDateString();
         uniqueCreatedDateSet.add(formattedDate);
       });
-
+      if(response.status===200){
       dispatch({
         type: "SET_DATA",
         payload: {
@@ -89,6 +89,9 @@ export const NiftyFutureProvider = ({ children }) => {
           uniqueCreatedDatesArray: Array.from(uniqueCreatedDateSet).reverse(),
         },
       });
+      // const currentPath = window.location.pathname;
+      // localStorage.setItem('lastPath', currentPath);
+    }
     } catch (error) {
       toast.error("Error getting data");
       console.error("Error:", error);

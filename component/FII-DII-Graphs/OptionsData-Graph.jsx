@@ -1,5 +1,4 @@
-"use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Brush,
   XAxis,
@@ -17,22 +16,19 @@ import useFiiDiiData from "@/hooks/useFiiDiiData";
 
 const OptionDataGraph = () => {
   const { filteredClientData } = useFiiDiiData();
+  const [yAxisDomain, setYAxisDomain] = useState([0, 100]); // Initial domain for Y-axis
 
-  const sortedData = filteredClientData.sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
-  );
+  useEffect(() => {
+    // Calculate minimum and maximum values of the data
+    const callOiValues = filteredClientData.map((item) => item.dif_index_call);
+    const putOiValues = filteredClientData.map((item) => item.dif_index_put);
+    const allValues = callOiValues.concat(putOiValues);
+    const minValue = Math.min(...allValues);
+    const maxValue = Math.max(...allValues);
 
-  const chartData = sortedData.map((item) => ({
-    ...item,
-    option_index_call_difference:
-      item.option_index_call_long && item.option_index_call_short
-        ? item.option_index_call_long - item.option_index_call_short
-        : null,
-    option_index_put_difference:
-    item.option_index_put_long && item.option_index_put_short
-    ?item.option_index_put_long - item.option_index_put_short
-    :null
-  }));
+    // Set the Y-axis domain based on the minimum and maximum values
+    setYAxisDomain([minValue, maxValue]);
+  }, [filteredClientData]);
 
   return (
     <>
@@ -42,7 +38,7 @@ const OptionDataGraph = () => {
           <ComposedChart
             width={500}
             height={400}
-            data={chartData}
+            data={filteredClientData}
             margin={{
               top: 5,
               right: 30,
@@ -52,32 +48,31 @@ const OptionDataGraph = () => {
           >
             <CartesianGrid />
             <XAxis
-  dataKey="date"
-  tickFormatter={(timeStr) => {
-    const date = new Date(timeStr);
-    const monthIndex = date.getMonth();
-    const months = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    ];
-    const monthAbbreviation = months[monthIndex];
-    const dayOfMonth = date.getDate();
-    return `${dayOfMonth} ${monthAbbreviation}`;
-  }}
-/>
-
-            <YAxis />
+              dataKey="date"
+              tickFormatter={(timeStr) => {
+                const date = new Date(timeStr);
+                const monthIndex = date.getMonth();
+                const months = [
+                  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                ];
+                const monthAbbreviation = months[monthIndex];
+                const dayOfMonth = date.getDate();
+                return `${dayOfMonth} ${monthAbbreviation}`;
+              }}
+            />
+            <YAxis domain={yAxisDomain} /> {/* Set Y-axis domain */}
             <Tooltip />
             <Legend />
             <Bar
               name="call oi"
-              dataKey="option_index_call_difference"
+              dataKey="dif_index_call"
               fill="#63D168"
               activeDot={{ r: 8 }}
             />
             <Bar
               name="put oi"
-              dataKey="option_index_put_difference"
+              dataKey="dif_index_put"
               fill="#E96767"
               activeDot={{ r: 8 }}
             />

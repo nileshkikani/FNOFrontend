@@ -10,7 +10,7 @@ export const AuthContext = createContext({});
 
 const initialState = {
   data: [],
-  isLoggedIn: false,
+  // isLoggedIn: false,
 };
 
 const reducer = (state, action) => {
@@ -19,13 +19,8 @@ const reducer = (state, action) => {
       return {
         ...state,
         data: action.payload.data,
-        isLoggedIn: action.payload.isLoggedIn,
+        // isLoggedIn: action.payload.isLoggedIn,
       };
-    // case "CHECK_IS_LOGGEDIN":
-    //   return {
-    //     ...state,
-    //     isLoggedIn: action.payload,
-    //   };
     default:
       return state;
   }
@@ -35,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const router = useRouter();
 
-  const { data, isLoggedIn } = state;
+  const { data } = state;
 
   // ---------LOGIN API CALL---------
   const getData = async ({ email, password }) => {
@@ -47,7 +42,7 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 200) {
         dispatch({
           type: "SET_DATA",
-          payload: { data: response.data, isLoggedIn: true },
+          payload: { data: response.data },
         });
         Cookies.set("access", response.data?.tokens?.access);
         Cookies.set("refresh", response.data?.tokens?.refresh);
@@ -82,16 +77,16 @@ export const AuthProvider = ({ children }) => {
   };
 
 
-  const setLoginStatus = ()=>{
-    dispatch({
-      type: "SET_DATA",
-      payload: { isLoggedIn: false },
-    });
-  }
+  // const setLoginStatus = ()=>{
+  //   dispatch({
+  //     type: "SET_DATA",
+  //     payload: { isLoggedIn: false },
+  //   });
+  // }
 
   return (
     <AuthContext.Provider
-      value={{ ...state, data, getData, refreshToken, isLoggedIn,setLoginStatus }}
+      value={{ ...state, data, getData, refreshToken }}
     >
       {children}
     </AuthContext.Provider>

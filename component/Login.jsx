@@ -13,6 +13,7 @@ const Login = () => {
     setInterval(() => {
       refreshToken();
     }, 3300000); // -------55 minute-----
+    // window.location.reload();
   };
 
   return (

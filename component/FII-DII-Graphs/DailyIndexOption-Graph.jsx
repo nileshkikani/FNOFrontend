@@ -13,15 +13,17 @@ import {
 } from "recharts";
 import useFiiDiiData from "@/hooks/useFiiDiiData";
 
-const FuturesDataGraph = () => {
+const DailyIndexOption = () => {
   const { filteredClientData } = useFiiDiiData();
   const [yAxisDomain, setYAxisDomain] = useState([0, 100]); // Initial domain for Y-axis
 
   useEffect(() => {
     // Calculate minimum and maximum values of the data
-    const values = filteredClientData.map((item) => item.dif_future_index);
-    const minValue = Math.min(...values);
-    const maxValue = Math.max(...values);
+    const callOiValues = filteredClientData.map((item) => item.daily_dif_index_call);
+    const putOiValues = filteredClientData.map((item) => item.daily_dif_index_put);
+    const allValues = callOiValues.concat(putOiValues);
+    const minValue = Math.min(...allValues);
+    const maxValue = Math.max(...allValues);
 
     // Set the Y-axis domain based on the minimum and maximum values
     setYAxisDomain([minValue, maxValue]);
@@ -29,7 +31,7 @@ const FuturesDataGraph = () => {
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <h1 className="table-title">INDEX FUTURE OI</h1>
+      <h1 className="table-title">DAILY INDEX OPTION</h1>
       <ResponsiveContainer width="100%" height="110%">
         <ComposedChart
           width={500}
@@ -58,9 +60,15 @@ const FuturesDataGraph = () => {
           <Tooltip />
           <Legend />
           <Bar
-            name="future difference"
-            dataKey="dif_future_index"
-            fill="#33A3E3"
+            name="call oi"
+            dataKey="daily_dif_index_call"
+            fill="#63D168"
+            activeDot={{ r: 8 }}
+          />
+          <Bar   
+            name="put oi"
+            dataKey="daily_dif_index_put"
+            fill="#E96767"
             activeDot={{ r: 8 }}
           />
           <Brush dataKey="date" height={30} stroke="#0A3D62" />
@@ -70,4 +78,4 @@ const FuturesDataGraph = () => {
   );
 };
 
-export default FuturesDataGraph;
+export default DailyIndexOption;

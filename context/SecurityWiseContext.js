@@ -62,6 +62,8 @@ export const SecurityWiseProvider = ({ children }) => {
           });
 
       dispatch({ type: "SET_IS_LOADING", payload: false });
+      // const currentPath = window.location.pathname;
+      // localStorage.setItem('lastPath', currentPath);
     }else{
       router.push('/login');
     }

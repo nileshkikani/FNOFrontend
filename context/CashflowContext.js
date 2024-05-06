@@ -78,6 +78,7 @@ export const CashflowProvider = ({ children }) => {
         const responseData = response.data;
 
         // -----------GETTING UNIQUE DATES----------
+        if(response.status===200){
         const uniqueDatesSet = new Set();
         response.data.forEach((item) => {
           const date = new Date(item?.created_at);
@@ -105,11 +106,15 @@ export const CashflowProvider = ({ children }) => {
         const uniqueSymbolData = Array.from(symbolMap.values());
         dispatch({ type: "SET_UNIQUE_SYMBOL_DATA", payload: uniqueSymbolData });
         dispatch({ type: "SET_DATA", payload: responseData });
+      }
       })
       .catch((err) => {
         toast.error("error getting cashflow data");
         console.log("error is this:", err);
       });
+
+      // const currentPath = window.location.pathname;
+      // localStorage.setItem('lastPath', currentPath);
   };
 
   //------------DATE DROPDOWN------------

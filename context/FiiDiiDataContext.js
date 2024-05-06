@@ -47,6 +47,7 @@ export const FiiDiiDataProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       const fullData = response.data; 
+      if(response.status===200){
       dispatch({
         type: "SET_DATA",
         payload: fullData,
@@ -55,6 +56,9 @@ export const FiiDiiDataProvider = ({ children }) => {
         (item) => item?.client_type === "FII"
       );
       dispatch({ type: "FILTERED_CLIENT", payload: initialFilteredClient });
+      // const currentPath = window.location.pathname;
+      // localStorage.setItem('lastPath', currentPath);
+    }
     } catch (err) {
       toast.error("Error getting data FII DII");
       console.log("Error:", err);
