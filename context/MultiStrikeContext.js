@@ -90,7 +90,7 @@ export const MultiStrikeProvider = ({ children }) => {
     } else {
       selectedStrikes.push(d);
     }
-    console.log(d, "tttttttttttttttttttt");
+    // console.log(d, "tttttttttttttttttttt");
     multiStrikeAPiCall(selectedStrikes);
   };
 

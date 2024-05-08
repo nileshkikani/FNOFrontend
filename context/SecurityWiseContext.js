@@ -52,7 +52,7 @@ export const SecurityWiseProvider = ({ children }) => {
       const response = await axiosInstance.get(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (response.status === 200||401) {
+      if (response.status === 200) {
         const customDateComparator = (dateStr1, dateStr2) => {
           const date1 = new Date(dateStr1);
           const date2 = new Date(dateStr2);
