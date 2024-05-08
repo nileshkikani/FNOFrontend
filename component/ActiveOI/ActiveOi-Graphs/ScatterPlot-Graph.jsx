@@ -96,15 +96,6 @@ const ScatterPlotGraph = () => {
             strokeWidth={2}
             dot={false}
           />
-          {/* <Brush
-            dataKey="created_at"
-            height={30}
-            stroke="#0A3D62"
-            // reversed={true}
-            tickFormatter={(value) =>
-              new Date(value).toISOString().split("T")[0]
-            }
-          /> */}
         </LineChart>
       </ResponsiveContainer>
     </div>

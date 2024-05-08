@@ -6,12 +6,11 @@ import MultiStrikeChart from "@/component/MultiStrikeChart";
 import useMultiStrikeData from "@/hooks/useMultiStrikeData";
 
 const Page = () => {
-  const { strikes, setStrikeDate,multiStrikeAPiCall } = useMultiStrikeData();
+  const { strikes, setStrikeDate,multiStrikeAPiCall,selectedStrikes } = useMultiStrikeData();
 
   useEffect(() => {
     multiStrikeAPiCall();
   }, []);
-
 
   return (
     <>
@@ -21,10 +20,18 @@ const Page = () => {
             <input
               type="checkbox"
               id={`strike${index}`}
-              value={itm}
+              value={`${itm}`}
               onChange={setStrikeDate}
             />
-            <label htmlFor={`strike${index}`}>{itm}</label>
+            <label htmlFor={`strike${index}`}>{`${itm}`}</label>
+             <br/>
+            {/* <input
+              type="checkbox"
+              id={`strike${index}PE`}
+              value={`${itm}`}
+              onChange={setStrikeDate}
+            />
+            <label htmlFor={`strike${index}PE`}>{`${itm}PE`}</label> */}
           </div>
         ))}
       </div>

@@ -3,8 +3,9 @@ import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import React, { createContext, useEffect, useReducer } from "react";
 import { toast } from "react-hot-toast";
-// import axios from "axios";
+import axios from "axios";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 export const FiiDiiDataContext = createContext({});
 
@@ -36,6 +37,7 @@ const reducer = (state, action) => {
 
 export const FiiDiiDataProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const router = useRouter();
 
   const { selectedClient, apiData, updatedData, filteredClientData } = state;
 
@@ -43,7 +45,7 @@ export const FiiDiiDataProvider = ({ children }) => {
   const handleFetch = async () => {
     try {
       const token = Cookies.get("access");
-      const response = await axiosInstance.get(API_ROUTER.LIST_MARKET_DATAL, {
+      const response = await axiosInstance.get(`${API_ROUTER.LIST_MARKET_DATAL}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const fullData = response.data; 
@@ -58,6 +60,8 @@ export const FiiDiiDataProvider = ({ children }) => {
       dispatch({ type: "FILTERED_CLIENT", payload: initialFilteredClient });
       // const currentPath = window.location.pathname;
       // localStorage.setItem('lastPath', currentPath);
+    }else{
+      router.push("/login");
     }
     } catch (err) {
       toast.error("Error getting data FII DII");
@@ -72,36 +76,8 @@ export const FiiDiiDataProvider = ({ children }) => {
     );
     dispatch({ type: "FILTERED_CLIENT", payload: filteredClient });
   };
-
-  // // ------------- DIFFERENCE CALCULATIONS AS SELECTED FROM DROPDOWN-----------
-  // const {
-  //   future_index_long,
-  //   future_index_short,
-  //   future_stock_long,
-  //   future_stock_short,
-  //   option_index_call_long,
-  //   option_index_call_short,
-  //   option_index_put_long,
-  //   option_index_put_short,
-  //   option_stock_call_long,
-  //   option_stock_call_short,
-  //   option_stock_put_long,
-  //   option_stock_put_short,
-  //   total_long_contracts,
-  //   total_short_contracts,
-  // } = filteredClientData[0];
-
-  // //---------------STORING CALCULATION-----------
-  // const finalResult = {
-  //   future_index_diff: future_index_long - future_index_short,
-  //   future_stock_diff: future_stock_long - future_stock_short,
-  //   option_index_call_diff: option_index_call_long - option_index_call_short,
-  //   option_index_put_diff: option_index_put_long - option_index_put_short,
-  //   option_stock_call_diff: option_stock_call_long - option_stock_call_short,
-  //   option_stock_put_diff: option_stock_put_long - option_stock_put_short,
-  //   total_contracts_diff: total_long_contracts - total_short_contracts,
-  // };
-
+ 
+  
 
   return (
     <FiiDiiDataContext.Provider

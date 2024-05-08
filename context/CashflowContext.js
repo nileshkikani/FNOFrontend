@@ -2,7 +2,7 @@
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import Cookies from "js-cookie";
-// import axios from "axios";
+import { useRouter } from "next/navigation";
 import React, { createContext, useEffect, useReducer } from "react";
 import { toast } from "react-hot-toast";
 
@@ -56,6 +56,7 @@ const reducer = (state, action) => {
 
 export const CashflowProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const router = useRouter();
 
   const {
     isLoading,
@@ -106,6 +107,8 @@ export const CashflowProvider = ({ children }) => {
         const uniqueSymbolData = Array.from(symbolMap.values());
         dispatch({ type: "SET_UNIQUE_SYMBOL_DATA", payload: uniqueSymbolData });
         dispatch({ type: "SET_DATA", payload: responseData });
+      }else{
+        router.push('/login')
       }
       })
       .catch((err) => {

@@ -16,10 +16,9 @@ import useActiveOiData from "@/hooks/useActiveOiData";
 const CallVsPutGraph = () => {
   const {
     checkFive,
-    // filteredByDate,
     adjustedNiftyStart,
     adjustedNiftyEnd,
-    filteredByDateForRange
+    filteredByDateForRange,
   } = useActiveOiData();
 
   return (
@@ -47,7 +46,6 @@ const CallVsPutGraph = () => {
                 minute: "2-digit",
               })
             }
-            // reversed={true}
           />
           <YAxis yAxisId="left" />
           <YAxis
@@ -75,7 +73,7 @@ const CallVsPutGraph = () => {
                 type="monotone"
                 name="call oi"
                 dataKey="ce_oi"
-                stroke="#8FCE00"
+                stroke="#63D168"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
               />
@@ -84,7 +82,7 @@ const CallVsPutGraph = () => {
                 type="monotone"
                 name="put oi"
                 dataKey="pe_oi"
-                stroke="#CC3333"
+                stroke="#E96767"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
               />
@@ -96,7 +94,7 @@ const CallVsPutGraph = () => {
                 name="call oi "
                 type="monotone"
                 dataKey="large_ce_oi"
-                stroke="#8FCE00"
+                stroke="#63D168"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
               />
@@ -107,7 +105,7 @@ const CallVsPutGraph = () => {
                 dataKey="large_pe_oi"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
-                stroke="#CC3333"
+                stroke="#E96767"
               />
             </>
           )}
@@ -120,15 +118,6 @@ const CallVsPutGraph = () => {
             strokeWidth={2}
             dot={false}
           />
-          {/* <Brush
-            dataKey="created_at"
-            height={30}
-            stroke="#0A3D62"
-            // reversed={true}
-            tickFormatter={(value) =>
-              new Date(value).toISOString().split("T")[0]
-            }
-          /> */}
         </ComposedChart>
       </ResponsiveContainer>
     </div>

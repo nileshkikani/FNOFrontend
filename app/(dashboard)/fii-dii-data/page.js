@@ -42,7 +42,6 @@ export default function Page() {
       <div className="fii-dii-graph-div">
         <FuturesDataGraph />
       </div>
-      {/* <TotalData /> */}
     </>
   );
 }

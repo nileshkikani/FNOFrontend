@@ -51,7 +51,6 @@ const ChangeOIGraph = () => {
                   minute: "2-digit",
                 })
               }
-              // reversed={true}
             />
             <YAxis yAxisId="left" />
             <YAxis
@@ -119,7 +118,6 @@ const ChangeOIGraph = () => {
               tickFormatter={(value) =>
                 new Date(value).toISOString().split("T")[0]
               }
-              // reversed={true}
             />
           </ComposedChart>
         </ResponsiveContainer>

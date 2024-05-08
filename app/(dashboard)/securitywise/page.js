@@ -1,12 +1,13 @@
 "use client";
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import useSecurityWiseData from "@/hooks/useSecurityWiseData";
 
 export default function Page() {
-  const { setDropdownDate, data, uniqueDates,getData } = useSecurityWiseData();
+  const { setDropdownDate, data, uniqueDates, getData, showNiftyStocksOnly,stockGraph } =
+    useSecurityWiseData();
   useEffect(() => {
     getData();
-  }, [])
+  }, []);
 
   return (
     <>
@@ -16,13 +17,19 @@ export default function Page() {
           <option disabled selected value>
             select date
           </option>
-          {uniqueDates
-            .sort()
-            .reverse()
-            .map((itm,index) => (
-              <option key={index} value={itm}>{itm}</option>
-            ))}
+          {uniqueDates.map((itm, index) => (
+            <option key={index} value={itm}>
+              {itm}
+            </option>
+          ))}
         </select>
+      </label>
+      <label>
+        NIFTY STOCKS
+        <input
+          type="checkbox"
+          onChange={(event) => showNiftyStocksOnly(event.target.checked)}
+        />
       </label>
       <div
         style={{

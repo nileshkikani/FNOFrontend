@@ -56,7 +56,7 @@ const DailyIndexOption = () => {
                 .replace(/\d{4}/, "")
             }
           />
-          <YAxis domain={yAxisDomain} /> {/* Set Y-axis domain */}
+          <YAxis domain={yAxisDomain} />
           <Tooltip />
           <Legend />
           <Bar

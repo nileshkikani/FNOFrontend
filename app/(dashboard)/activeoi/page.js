@@ -1,5 +1,4 @@
 "use client";
-
 // ===========UTILITIES===============
 import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
@@ -22,7 +21,7 @@ const ActiveOiTable = dynamic(() =>
 );
 
 //  ===========LOADING ANIMATION ===========
-const ClipLoader = dynamic(() => import("react-spinners/ClipLoader"));
+const PropagateLoader = dynamic(() => import("react-spinners/PropagateLoader"));
 
 export default function Page() {
   const {
@@ -79,12 +78,10 @@ export default function Page() {
             marginTop: "50px",
           }}
         >
-          <ClipLoader
-            color="#bfbfbf"
+          <PropagateLoader
+            color="#33a3e3"
             loading={isLoading}
-            size={70}
-            aria-label="Loading Spinner"
-            data-testid="loader"
+            size={15}
           />
         </div>
       ) : (

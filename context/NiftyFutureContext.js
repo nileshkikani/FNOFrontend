@@ -5,7 +5,7 @@ import React, { createContext, useEffect, useReducer, useMemo } from "react";
 import { toast } from "react-hot-toast";
 // import axios from "axios";
 import Cookies from 'js-cookie';
-// import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 export const NiftyFutureContext = createContext({});
 
@@ -46,7 +46,7 @@ const reducer = (state, action) => {
 
 export const NiftyFutureProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  // const { isLoggedIn } = useAuth();
+  const router = useRouter();
 
   const {
     apiData,
@@ -85,12 +85,15 @@ export const NiftyFutureProvider = ({ children }) => {
         payload: {
           apiData: response.data,
           selectedOption: response.data[0]?.expiration,
+          isLoading: false,
           uniqueExpiryDatesArray: Array.from(uniqueDatesSet).reverse(),
           uniqueCreatedDatesArray: Array.from(uniqueCreatedDateSet).reverse(),
         },
       });
       // const currentPath = window.location.pathname;
       // localStorage.setItem('lastPath', currentPath);
+    }else{
+      router.push("/login")
     }
     } catch (error) {
       toast.error("Error getting data");
