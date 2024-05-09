@@ -65,7 +65,7 @@ export const NiftyFutureProvider = ({ children }) => {
 
   // ----------API CALL FUNCTION------------
 
-  const getData = async () => {
+  const getNiftyFuturesData = async () => {
     dispatch({ type: "SET_DATA", payload: { isLoading: true } });
     if (!authState) {
       return;
