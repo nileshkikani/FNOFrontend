@@ -2,7 +2,7 @@
 import React,{useEffect} from "react";
 
 //---------CHARTS-----------
-import MultiStrikeChart from "@/component/MultiStrikeChart";
+import MultiStrikeChart from "@/component/MultiStrikeChart/MultiStrikeChart";
 import useMultiStrikeData from "@/hooks/useMultiStrikeData";
 
 const Page = () => {

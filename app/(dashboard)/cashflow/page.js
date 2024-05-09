@@ -32,16 +32,22 @@ const Page = () => {
   } = useCashflowData();
   const authState = useAppSelector((state) => state.auth.authState);
 
+  const [symbl,setSelectedSymbl] = useState();
+
   useEffect(() => {
     authState && getData();
   }, [authState]);
 
+  
   const filterByStockAndDate = (event, isDateDropdown) => {
     if (isDateDropdown) {
       const d = event.target.value;
       getData(d);
+      // const filteredByDate = data.filter((itm)=>itm?.created_at.split("T") === d && itm.symbol === symbl);
+      // dispatch({ type: "SET_SELECTED_STOCK", payload: filteredByDate });
     } else {
       const symbl = event.target.value;
+      setSelectedSymbl(symbl)
       const finalData = data.filter((itm) => itm.symbol === symbl);
       dispatch({ type: "SET_SELECTED_STOCK", payload: finalData });
     }
@@ -49,8 +55,8 @@ const Page = () => {
 
   return (
     <>
-          {/* -----------------------DATE DROPDOWN------------------- */}
-          <h1 className="table-title">SELECT DATE</h1>
+      {/* -----------------------DATE DROPDOWN------------------- */}
+      <h1 className="table-title">SELECT DATE</h1>
       <select
         onChange={(e) => filterByStockAndDate(e, true)}
         value={currentSelectedDate}

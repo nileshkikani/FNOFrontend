@@ -12,7 +12,7 @@ import {
 
 import useMultiStrikeData from "@/hooks/useMultiStrikeData";
 
-const NiftyFuturesClosePrice = () => {
+const MultiStrikeChart = () => {
   const { data, selectedStrikes } = useMultiStrikeData();
 
   // const CE = [];
@@ -86,4 +86,4 @@ const NiftyFuturesClosePrice = () => {
   );
 };
 
-export default NiftyFuturesClosePrice;
+export default MultiStrikeChart;

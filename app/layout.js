@@ -12,11 +12,11 @@ import { AuthProvider } from "@/context/AuthContext";
 import { MultiStrikeProvider } from "@/context/MultiStrikeContext";
 
 //--------COMPONENTS-----------
-import Navbar from "@/component/Navbar";
 import dynamic from "next/dynamic";
+import Navbar from "@/component/Header/Navbar";
 
 const ReduxProvider = dynamic(() => import("@/store/redux-provider"), {
-  ssr: false
+  ssr: false,
 });
 
 const inter = Inter({ subsets: ["latin"] });
@@ -27,28 +27,27 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-
   return (
     <html>
       <body>
-      <ReduxProvider> 
-        <AuthProvider>
-        <Navbar />
-        {/* {middleware(router.asPath)} */}
-        {
-          <SecurityWiseProvider>
-            <FiiDiiDataProvider>
-              <ActiveOiProvider>
-                <CashflowProvider>
-                  <MultiStrikeProvider>
-                      <NiftyFutureProvider>{children}</NiftyFutureProvider>
-                  </MultiStrikeProvider>
-                </CashflowProvider>
-              </ActiveOiProvider>
-            </FiiDiiDataProvider>
-          </SecurityWiseProvider>
-        }
-        </AuthProvider>
+        <ReduxProvider>
+          <AuthProvider>
+            <Navbar />
+            {/* {middleware(router.asPath)} */}
+            {
+              <SecurityWiseProvider>
+                <FiiDiiDataProvider>
+                  <ActiveOiProvider>
+                    <CashflowProvider>
+                      <MultiStrikeProvider>
+                        <NiftyFutureProvider>{children}</NiftyFutureProvider>
+                      </MultiStrikeProvider>
+                    </CashflowProvider>
+                  </ActiveOiProvider>
+                </FiiDiiDataProvider>
+              </SecurityWiseProvider>
+            }
+          </AuthProvider>
         </ReduxProvider>
       </body>
     </html>

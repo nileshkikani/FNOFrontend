@@ -6,6 +6,8 @@ import dynamic from "next/dynamic";
 //  ===========HOOKS ===========
 import useActiveOiData from "@/hooks/useActiveOiData";
 import { useAppSelector } from "@/store";
+import useNiftyFutureData from "@/hooks/useNiftyFutureData";
+import NiftyFuturesTable from "@/component/NiftyFutures/NiftyFuturesTable";
 
 // ===========GRAPH COMPONENTS ===========
 const ChangeOIGraph = dynamic(() =>
@@ -20,6 +22,9 @@ const CallVsPutGraph = dynamic(() =>
 const ActiveOiTable = dynamic(() =>
   import("@/component/ActiveOI/ActiveOiTable")
 );
+const NiftyFuturesGraph = dynamic(() =>
+  import("@/component/NiftyFutures/NiftyFutures-Graphs/NiftyFuturesGraph")
+);
 
 //  ===========LOADING ANIMATION ===========
 const PropagateLoader = dynamic(() => import("react-spinners/PropagateLoader"));
@@ -33,6 +38,8 @@ export default function Page() {
     dropDownChange,
   } = useActiveOiData();
 
+  const { getNiftyFuturesData, selectedOption } = useNiftyFutureData();
+
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);
   const authState = useAppSelector((state) => state.auth.authState);
@@ -40,7 +47,8 @@ export default function Page() {
   const memoizedTimeLeft = useMemo(() => timeLeft, [timeLeft]);
 
   useEffect(() => {
-    authState && getData();
+    getData();
+    getNiftyFuturesData();
     const intervalId = setInterval(() => {
       setTimeLeft((prevTime) => prevTime - 1);
     }, 1000);
@@ -80,11 +88,7 @@ export default function Page() {
             marginTop: "50px",
           }}
         >
-          <PropagateLoader
-            color="#33a3e3"
-            loading={isLoading}
-            size={15}
-          />
+          <PropagateLoader color="#33a3e3" loading={isLoading} size={15} />
         </div>
       ) : (
         <>
@@ -117,6 +121,7 @@ export default function Page() {
               ))}
             </select>
           </label>
+          {/* -------------------ACTIVE OI SECTION------------------ */}
           <>
             <ActiveOiTable />
             <div className="graph-div">
@@ -128,6 +133,34 @@ export default function Page() {
             <div className="graph-div">
               <ScatterPlotGraph />
             </div>
+          </>
+          {/* -----------------------NIFTY FUTURES SECTION-------------------- */}
+          <>
+            {!selectedOption ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: "50px",
+                }}
+              >
+                <PropagateLoader
+                  color="#33a3e3"
+                  loading={!selectedOption}
+                  size={15}
+                />
+              </div>
+            ) : (
+              <>
+                <div className="main-div">
+                  <NiftyFuturesTable />
+                </div>
+                <div className="main-div">
+                  <NiftyFuturesGraph />
+                </div>
+              </>
+            )}
           </>
         </>
       )}

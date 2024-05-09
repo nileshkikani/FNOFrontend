@@ -4,7 +4,7 @@ import axiosInstance from "@/utils/axios";
 import React, { createContext, useEffect, useReducer, useMemo } from "react";
 import { toast } from "react-hot-toast";
 // import axios from "axios";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/store";
 // import useAuth from "@/hooks/useAuth";
@@ -13,7 +13,7 @@ export const NiftyFutureContext = createContext({});
 
 const initialState = {
   apiData: [],
-  isLoading: true,
+  isLoadingNiftyFutures: true,
   selectedOption: null,
   selectedDate: "",
   uniqueExpiryDatesArray: [],
@@ -28,7 +28,7 @@ const reducer = (state, action) => {
         ...state,
         ...action.payload,
         uniqueCreatedDatesArray: action.payload.uniqueCreatedDatesArray,
-        isLoading: false,
+        isLoadingNiftyFutures: false,
       };
     case "SET_SELECTED_DATE":
       return {
@@ -55,7 +55,7 @@ export const NiftyFutureProvider = ({ children }) => {
 
   const {
     apiData,
-    isLoading,
+    isLoadingNiftyFutures,
     selectedOption,
     selectedDate,
     uniqueExpiryDatesArray,
@@ -67,14 +67,13 @@ export const NiftyFutureProvider = ({ children }) => {
 
   const getData = async () => {
     dispatch({ type: "SET_DATA", payload: { isLoading: true } });
-    if(!authState){
-      return
+    if (!authState) {
+      return;
     }
     try {
-
-      const response = await axiosInstance.get(API_ROUTER.NIFTY_FUTURE_DATA,
-        { headers: { Authorization: `Bearer ${authState.access}` } } 
-      );
+      const response = await axiosInstance.get(API_ROUTER.NIFTY_FUTURE_DATA, {
+        headers: { Authorization: `Bearer ${authState.access}` },
+      });
 
       // ---------UNIQUE DATE n EXPIRY SELECTION----------
       const uniqueDatesSet = new Set();
@@ -85,22 +84,22 @@ export const NiftyFutureProvider = ({ children }) => {
         const formattedDate = new Date(item?.created_at).toLocaleDateString();
         uniqueCreatedDateSet.add(formattedDate);
       });
-      if(response.status===200){
-      dispatch({
-        type: "SET_DATA",
-        payload: {
-          apiData: response.data,
-          selectedOption: response.data[0]?.expiration,
-          isLoading: false,
-          uniqueExpiryDatesArray: Array.from(uniqueDatesSet).reverse(),
-          uniqueCreatedDatesArray: Array.from(uniqueCreatedDateSet).reverse(),
-        },
-      });
-      // const currentPath = window.location.pathname;
-      // localStorage.setItem('lastPath', currentPath);
-    }else{
-      router.push("/login")
-    }
+      if (response.status === 200) {
+        dispatch({
+          type: "SET_DATA",
+          payload: {
+            apiData: response.data,
+            selectedOption: response.data[0]?.expiration,
+            isLoadingNiftyFutures: false,
+            uniqueExpiryDatesArray: Array.from(uniqueDatesSet).reverse(),
+            uniqueCreatedDatesArray: Array.from(uniqueCreatedDateSet).reverse(),
+          },
+        });
+        // const currentPath = window.location.pathname;
+        // localStorage.setItem('lastPath', currentPath);
+      } else {
+        router.push("/login");
+      }
     } catch (error) {
       toast.error("Error getting data");
       console.error("Error:", error);
@@ -119,7 +118,7 @@ export const NiftyFutureProvider = ({ children }) => {
     [apiData, selectedOption, selectedDate]
   );
 
-  // -------CREATED DATE----------
+  // ---------------------------CREATED DATE----------------------
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
     // console.log("from fate change function", selectedDate);
@@ -134,7 +133,6 @@ export const NiftyFutureProvider = ({ children }) => {
     });
   };
 
-
   //----------EXPIRY DROPDOWN HANDLE-----------
   const handleExpiryChange = (event) => {
     if (checkMonth >= 4) {
@@ -147,13 +145,12 @@ export const NiftyFutureProvider = ({ children }) => {
     dispatch({ type: "SET_SELECTED_OPTION", payload: event.target.value });
   };
 
-
   return (
     <NiftyFutureContext.Provider
       value={{
         apiData,
-        getData,
-        isLoading,
+        getNiftyFuturesData,
+        isLoadingNiftyFutures,
         selectedOption,
         filterByCreatedDate,
         selectedDate,

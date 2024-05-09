@@ -88,7 +88,7 @@
 }
 
 select {
-  @apply px-2 py-1 rounded-sm !important;
+  @apply px-2 py-1 rounded-sm ;
 }
 
 /* th,
@@ -177,7 +177,6 @@ td {
   display: inline-block;
 }
 
-
 .dropdown-content {
   display: none;
   position: absolute;
@@ -192,8 +191,8 @@ td {
   display: block;
 }
 
-.custom-date-input-title{
-  color:white;
+.custom-date-input-title {
+  color: white;
 }
 
 /* DateInput.css */
@@ -207,129 +206,129 @@ td {
 }
 
 .btndiv {
-  @apply my-5 flex justify-center !important;
+  @apply my-5 flex justify-center ;
 }
 
 .prevbtn {
-  @apply bg-white border-gray-950 border px-3 py-2 rounded !important;
+  @apply bg-white border-gray-950 border px-3 py-2 rounded ;
 }
 
 .pageno {
-  @apply p-2 text-blue-600 font-bold !important;
+  @apply p-2 text-blue-600 font-bold ;
 }
 .activepage {
-  @apply text-black p-2 underline !important;
+  @apply text-black p-2 underline ;
 }
 
-.green{
-  @apply text-[#0A8B3D] !important;
+.green {
+  @apply text-[#0A8B3D] ;
 }
 
 .active-link {
-  @apply text-yellow-300 !important;
+  @apply text-yellow-300 ;
 }
 
 .nextbtn {
-  @apply bg-white border-gray-950 border px-3 py-2 rounded !important;
+  @apply bg-white border-gray-950 border px-3 py-2 rounded ;
 }
 
-.expirydate-div{
-  @apply flex items-center !important;
+.expirydate-div {
+  @apply flex items-center ;
 }
 
 .expiry-created-date {
-  @apply flex items-center justify-between !important;
+  @apply flex items-center justify-between ;
 }
 
 .stock-dropdown {
-  @apply px-5 py-2 !important;
+  @apply px-5 py-2 ;
 }
 
 .text-color {
-  @apply text-slate-800 !important;
+  @apply text-slate-800 ;
 }
 
 .navbar-full {
-  @apply container flex justify-around flex-wrap p-5 flex-col md:flex-row items-center !important;
+  @apply container flex justify-around flex-wrap p-5 flex-col md:flex-row items-center ;
 }
 
 .in-thousand {
-  @apply font-light text-xs italic right-1 !important;
+  @apply font-light text-xs italic right-1 ;
 }
 
 .advance {
-  @apply text-green-400 !important;
+  @apply text-green-400;
 }
 
 .decline {
-  @apply text-red-400 !important;
+  @apply text-red-400 ;
 }
 
 .nav-div {
-  @apply flex items-center justify-around bg-[#0A3D62] text-white sticky top-0 z-10 !important;
+  @apply flex items-center justify-around bg-[#0A3D62] text-white sticky top-0 z-10 ;
 }
 
 .nav-items {
-  @apply md:ml-auto flex flex-wrap items-center text-base justify-center !important;
+  @apply md:ml-auto flex flex-wrap items-center text-base justify-center ;
 }
 
-.logout{
-  @apply text-[#0A3D62] px-2 py-1 bg-white !important;
+.logout {
+  @apply text-[#0A3D62] px-2 py-1 bg-white ;
 }
 
 .timer {
-  @apply text-[#0A3D62] font-bold text-2xl !important;
+  @apply text-[#0A3D62] font-bold text-2xl ;
 }
 
 .nav-item {
-  @apply mr-5 hover:text-gray-400 flex !important;
+  @apply mr-5 hover:text-gray-400 flex ;
 }
 
 .grand-div {
-  @apply px-10 !important;
+  @apply px-10 ;
 }
 
 .graph-div {
-  @apply py-4 !important;
+  @apply py-4 ;
 }
 
-.fii-dii-graph-div{
-  @apply py-10 !important;
+.fii-dii-graph-div {
+  @apply py-10 ;
 }
 
-.nav-dropdown{
-  @apply p-8 !important;
+.nav-dropdown {
+  @apply p-8 ;
 }
 
 /* ---------------------LOGIN PAGE----------------- */
 
-.login-btn{
-  @apply w-full text-gray-900 border  focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center !important;
+.login-btn {
+  @apply w-full text-gray-900 border  focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center ;
 }
 
-.login-lables{
-  @apply block mb-2 text-sm font-medium text-gray-900 !important;
+.login-lables {
+  @apply block mb-2 text-sm font-medium text-gray-900 ;
 }
 
-.login-title{
+.login-title {
   @apply text-xl px-10 py-6 font-bold leading-tight tracking-tight text-gray-900
-  md:text-2xl !important;
+  md:text-2xl ;
 }
 
-.login-form{
-  @apply px-10 py-6 space-y-4 md:space-y-6 !important;
+.login-form {
+  @apply px-10 py-6 space-y-4 md:space-y-6 ;
 }
 
-.login-div-nested{
-  @apply w-full p-10 bg-white rounded-lg shadow-lg dark:border md:mt-0 sm:max-w-md xl:p-0 !important;
+.login-div-nested {
+  @apply w-full p-10 bg-white rounded-lg shadow-lg dark:border md:mt-0 sm:max-w-md xl:p-0 ;
 }
 
-.login-parent{
-  @apply flex items-center max-h-full py-60 justify-center h-full bg-[#e0f2ff] !important;
+.login-parent {
+  @apply flex items-center max-h-full py-60 justify-center h-full bg-[#e0f2ff] ;
 }
 
-.pass-email-field{
-  @apply bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg  block w-full p-2.5  !important;
+.pass-email-field {
+  @apply bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg  block w-full p-2.5  ;
 }
 
 /* .custom-date-input::-webkit-inner-spin-button,
