@@ -9,6 +9,7 @@ import useCashflowData from "@/hooks/useCashflowData";
 const MoneyFlowGraph = dynamic(() =>
   import("@/component/MoneyFlow-Graphs/MoneyFlow-Graph")
 );
+import { useAppSelector } from "@/store";
 // import ActiveMoneyFlow from "@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph";
 
 //  ===========LOADING ANIMATION ===========
@@ -25,11 +26,15 @@ const Page = () => {
     currentSelectedDate,
     dispatch,
     // filterByStockAndDate
+    handleDateDropdown,
+    dateWiseFilter,
+    uniqueDates,
   } = useCashflowData();
+  const authState = useAppSelector((state) => state.auth.authState);
 
   useEffect(() => {
-    getData();
-  }, []);
+    authState && getData();
+  }, [authState]);
 
   const filterByStockAndDate = (event, isDateDropdown) => {
     if (isDateDropdown) {

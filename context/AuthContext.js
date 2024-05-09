@@ -3,8 +3,10 @@ import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import React, { createContext, useReducer } from "react";
 import axios from "axios";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setAuthState } from "@/store/authSlice";
+import { useAppSelector } from "@/store";
 
 export const AuthContext = createContext({});
 
@@ -29,8 +31,9 @@ const reducer = (state, action) => {
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const router = useRouter();
-
+const storeDispatch =  useDispatch()
   const { data } = state;
+  const authState = useAppSelector((state) => state.auth.authState);
 
   // ---------LOGIN API CALL---------
   const getData = async ({ email, password }) => {
@@ -44,8 +47,7 @@ export const AuthProvider = ({ children }) => {
           type: "SET_DATA",
           payload: { data: response.data },
         });
-        Cookies.set("access", response.data?.tokens?.access);
-        Cookies.set("refresh", response.data?.tokens?.refresh);
+        storeDispatch(setAuthState({access:response.data?.tokens?.access ?response.data?.tokens?.access : "",refresh: response.data?.tokens?.refresh?response.data?.tokens?.refresh:""}))
 
         router.push("/activeoi");
       } else {
@@ -61,16 +63,13 @@ export const AuthProvider = ({ children }) => {
   // -------GET NEW REFRESH TOKEN AND STORING IN COKIES AFTER EVERY 55 MINS from handleSubmit function------------
   const refreshToken = async () => {
     try {
-      const getAccessCookie = Cookies.get("access");
-      const getRefreshCookie = Cookies.get("refresh");
+      
       const newRefreshToken = await axiosInstance.post(
         `${API_ROUTER.REFRESH_TOKEN}`,
-        { refresh: getRefreshCookie },
-        { headers: { Authorization: `Bearer ${getAccessCookie}` } }
+        { refresh: authState.refresh },
+        { headers: { Authorization: `Bearer ${authState.access}` } }
       );
-      Cookies.set("access", newRefreshToken.data.access);
-      // console.log("new token is============================,",newRefreshToken);
-      // console.log("new token is==============,",newRefreshToken.access);
+      storeDispatch(setAuthState({...authState,access:newRefreshToken.data.access ? newRefreshToken.data.access : ""}))
     } catch (error) {
       console.log("error getting refresh token", error);
     }

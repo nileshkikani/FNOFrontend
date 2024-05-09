@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
-import Cookies from "js-cookie";
-
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import { DropDown } from "./DropDown";
+import { setAuthState } from "@/store/authSlice";
+import { useAppSelector } from "@/store";
+import { useDispatch } from "react-redux";
 
 
 const DATA = [
@@ -31,10 +33,8 @@ const DATA = [
 const Navbar = () => {
   const router = useRouter();
   const [data, setData] = useState({});
-const accessCookie = Cookies.get("access");
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const {isLoggedIn,setLoginStatus} = useAuth();
-
+  const storeDispatch =  useDispatch()
+  const authState = useAppSelector((state) => state.auth.authState);
 
   const getAdvanceDecline = async () => {
     try {
@@ -48,22 +48,19 @@ const accessCookie = Cookies.get("access");
   // ------------LOGOUT----------
   const logout = async () => {
     try {
-      const getAccessCookie = Cookies.get("access");
-      const getRefreshCookie = Cookies.get("refresh");
-
       await axiosInstance.post(
         `${API_ROUTER.LOGOUT}`,
         {
-          refresh: getRefreshCookie,
+          refresh: authState.refresh,
         },
         {
           headers: {
-            Authorization: `Bearer ${getAccessCookie}`,
+            Authorization: `Bearer ${authState.access}`,
           },
         }
       );
-      Cookies.remove("access");
-      Cookies.remove("refresh");
+    
+      storeDispatch(setAuthState(""))
       router.push('/login')
       
     } catch (error) {
@@ -80,8 +77,8 @@ const accessCookie = Cookies.get("access");
   };
 
   const handleSelectChange = (event) => {
-    const selectedPath = event.target.value;
-    router.push(selectedPath);
+  // authState && authState.access && router.push(event.target.value == "Live Charts" ? "/activeoi" :event.target.value == "FII DII Data" ? "/fii-dii-data" : "/multistrike");
+  authState && authState.access && router.push(event.target.value);
   };
 
   return (
@@ -144,6 +141,47 @@ const accessCookie = Cookies.get("access");
               </option>
             </select>
           </li>
+          {/* <DropDown
+          defaultValue={"select chart"}
+          button={selected => (
+            console.log("select chart",selected),
+              selected
+          )}
+          items={[{ name: "Live Charts" },{ name: "FII DII Data" },{ name: "Multi-Strike" }]}
+          renderItem={({ item, isActive, onClick }) => {
+            return (
+              <div
+                className={`${isActive} item`}
+                onClick={() => {
+                  onClick("",item)
+                }}
+              >
+                {item.optionTitle && (
+                  <span className="options-title">{item.optionTitle}</span>
+                )}
+                {item.optionTitle !== "Quick Find Recipes" ? (
+                  item.option !== "See all Diet Options" ? (
+                    item.graphic ? (
+                      <img src={item.graphic} alt="side-dishes" />
+                    ) : (
+                      <GlutenFree />
+                    )
+                  ) : null
+                ) : null}
+                {item.name}
+                {item.option && (
+                  <span className="options-link">
+                    {item.option}
+                    <span className="img-arrow">
+                      <AngleRight />
+                    </span>
+                  </span>
+                )}
+              </div>
+            )
+          }}
+          onclick={handleSelectChange}
+        /> */}
           <li>
             <span className="advance">
               Advance:{" "}
@@ -170,7 +208,7 @@ const accessCookie = Cookies.get("access");
               ADR: {data && data?.nifty_adr ? data?.nifty_adr : "..."}
             </span>
           </li>
-          <li> {accessCookie && <button onClick={logout} className="logout">Logout</button>}</li>
+          <li> {authState && authState.access && <button onClick={logout} className="logout">Logout</button>}</li>
         </ul>
       </div>
     </>

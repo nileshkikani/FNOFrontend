@@ -9,8 +9,6 @@ import React, {
   useEffect,
 } from "react";
 import { toast } from "react-hot-toast";
-import axios from "axios";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
 export const MultiStrikeContext = createContext({});
@@ -40,25 +38,25 @@ const reducer = (state, action) => {
 export const MultiStrikeProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const router = useRouter();
+  const authState = useAppSelector((state) => state.auth.authState);
 
   const { strikes, selectedStrikes, data } = state;
 
   // ----------------API CALL-----------------
   const multiStrikeAPiCall = async (selectedStrike) => {
     dispatch({ type: "SET_IS_LOADING", payload: true });
+    if(!authState){
+      return
+    }
     try {
       let apiUrl = `http://192.168.0.179:8000/multy/`;
       if (selectedStrike && selectedStrike.length > 0) {
         const strikesString = selectedStrike.join(",");
         apiUrl += `?strikes=${strikesString}`;
       }
-      const token = Cookies.get("access");
-      const response = await axios.get(
-        apiUrl
-        //   {
-        //   headers: { Authorization: `Bearer ${token}` },
-        // }
-      );
+      const response = await axiosInstance.get(apiUrl, {
+        headers: { Authorization: `Bearer ${authState.access}` },
+      });
 
       if (response.status === 200) {
         selectedStrike

@@ -1,4 +1,4 @@
-// import { Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 // import dynamic from "next/dynamic";
 import "./globals.css";
 
@@ -13,9 +13,13 @@ import { MultiStrikeProvider } from "@/context/MultiStrikeContext";
 
 //--------COMPONENTS-----------
 import Navbar from "@/component/Navbar";
+import dynamic from "next/dynamic";
 
+const ReduxProvider = dynamic(() => import("@/store/redux-provider"), {
+  ssr: false
+});
 
-// const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Algo Trading",
@@ -26,8 +30,9 @@ export default function RootLayout({ children }) {
 
   return (
     <html>
-        <AuthProvider>
       <body>
+      <ReduxProvider> 
+        <AuthProvider>
         <Navbar />
         {/* {middleware(router.asPath)} */}
         {
@@ -43,8 +48,9 @@ export default function RootLayout({ children }) {
             </FiiDiiDataProvider>
           </SecurityWiseProvider>
         }
-      </body>
         </AuthProvider>
+        </ReduxProvider>
+      </body>
     </html>
   );
 }

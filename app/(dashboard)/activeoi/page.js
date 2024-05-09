@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 
 //  ===========HOOKS ===========
 import useActiveOiData from "@/hooks/useActiveOiData";
+import { useAppSelector } from "@/store";
 
 // ===========GRAPH COMPONENTS ===========
 const ChangeOIGraph = dynamic(() =>
@@ -34,11 +35,12 @@ export default function Page() {
 
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);
+  const authState = useAppSelector((state) => state.auth.authState);
 
   const memoizedTimeLeft = useMemo(() => timeLeft, [timeLeft]);
 
   useEffect(() => {
-    getData();
+    authState && getData();
     const intervalId = setInterval(() => {
       setTimeLeft((prevTime) => prevTime - 1);
     }, 1000);

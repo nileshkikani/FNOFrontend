@@ -6,6 +6,8 @@ import { toast } from "react-hot-toast";
 // import axios from "axios";
 import Cookies from 'js-cookie';
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/store";
+// import useAuth from "@/hooks/useAuth";
 
 export const NiftyFutureContext = createContext({});
 
@@ -47,6 +49,9 @@ const reducer = (state, action) => {
 export const NiftyFutureProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const router = useRouter();
+  const authState = useAppSelector((state) => state.auth.authState);
+
+  // const { isLoggedIn } = useAuth();
 
   const {
     apiData,
@@ -62,12 +67,13 @@ export const NiftyFutureProvider = ({ children }) => {
 
   const getData = async () => {
     dispatch({ type: "SET_DATA", payload: { isLoading: true } });
+    if(!authState){
+      return
+    }
     try {
-      const token = Cookies.get("access");
-      // console.log("NIFTY FUTURE CALL:::::,",token);
 
       const response = await axiosInstance.get(API_ROUTER.NIFTY_FUTURE_DATA,
-        { headers: { Authorization: `Bearer ${token}` } } 
+        { headers: { Authorization: `Bearer ${authState.access}` } } 
       );
 
       // ---------UNIQUE DATE n EXPIRY SELECTION----------

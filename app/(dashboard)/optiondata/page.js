@@ -3,19 +3,19 @@ import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import { useEffect, useState } from "react";
 import axios from "axios"
-import Cookies from "js-cookie";
+import { useAppSelector } from "@/store";
 
 export default function Page() {
   const [apiData, setApiData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const authState = useAppSelector((state) => state.auth.authState);
 
   const getData = async (page) => {
     setIsLoading(true);
-    const token = Cookies.get("access");
     await axiosInstance
       .get(`${API_ROUTER.OPTIONDATA_LIST}?page=${page}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${authState.access}` },
       })
       .then((response) => {
         setApiData(response.data.results);
@@ -25,8 +25,8 @@ export default function Page() {
   };
 
   useEffect(() => {
-    getData(currentPage);
-  }, [currentPage]);
+    authState && getData(currentPage);
+  }, [currentPage,authState]);
 
   const handlePrevious = () => {
     if (currentPage > 1) {

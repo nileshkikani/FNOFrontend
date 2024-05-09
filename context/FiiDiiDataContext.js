@@ -3,9 +3,9 @@ import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import React, { createContext, useEffect, useReducer } from "react";
 import { toast } from "react-hot-toast";
-import axios from "axios";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+// import axios from "axios";
+import { useAppSelector } from "@/store";
 
 export const FiiDiiDataContext = createContext({});
 
@@ -40,13 +40,16 @@ export const FiiDiiDataProvider = ({ children }) => {
   const router = useRouter();
 
   const { selectedClient, apiData, updatedData, filteredClientData } = state;
+  const authState = useAppSelector((state) => state.auth.authState);
 
   //------------------API CALL----------------
   const handleFetch = async () => {
+    if(!authState){
+      return
+    }
     try {
-      const token = Cookies.get("access");
-      const response = await axiosInstance.get(`${API_ROUTER.LIST_MARKET_DATAL}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await axiosInstance.get(API_ROUTER.LIST_MARKET_DATAL, {
+        headers: { Authorization: `Bearer ${authState.access}` },
       });
       const fullData = response.data; 
       if(response.status===200){

@@ -10,8 +10,8 @@ import React, {
 } from "react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/store";
 
 export const SecurityWiseContext = createContext({});
 
@@ -37,20 +37,22 @@ const reducer = (state, action) => {
 export const SecurityWiseProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const router = useRouter();
-
+  const authState = useAppSelector((state) => state.auth.authState);
   const { uniqueDates, data } = state;
 
   // -------------------------API CALL------------------------
   const getData = useCallback(async (selectedDate) => {
     dispatch({ type: "SET_IS_LOADING", payload: true });
+    if(!authState){
+      return
+    }
     try {
       let apiUrl = `${API_ROUTER.LIST_SECWISE_DATE}`;
       if (selectedDate) {
         apiUrl += `?date=${selectedDate}`;
       }
-      const token = Cookies.get("access");
       const response = await axiosInstance.get(apiUrl, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${authState.access}` },
       });
       if (response.status === 200) {
         const customDateComparator = (dateStr1, dateStr2) => {
@@ -78,7 +80,7 @@ export const SecurityWiseProvider = ({ children }) => {
       toast.error("Error getting data");
       console.log("Error is this::", err);
     }
-  }, []);
+  }, [authState]);
 
   // ----------------SELECT DATE FROM DROPDOWN------------
   const setDropdownDate = (event) => {

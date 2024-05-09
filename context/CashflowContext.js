@@ -1,10 +1,11 @@
 "use client";
 import { API_ROUTER } from "@/services/apiRouter";
+import { useAppSelector } from "@/store";
 import axiosInstance from "@/utils/axios";
-import Cookies from "js-cookie";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { createContext, useEffect, useReducer, useState } from "react";
+// import axios from "axios";
+import React, { createContext, useEffect, useReducer } from "react";
 import { toast } from "react-hot-toast";
 
 export const CashflowContext = createContext({});
@@ -57,6 +58,7 @@ export const CashflowProvider = ({ children }) => {
   const [alldate, setAllDate] = useState();
 
   const router = useRouter();
+  const authState = useAppSelector((state) => state.auth.authState);
 
   const {
     data,
@@ -69,16 +71,18 @@ export const CashflowProvider = ({ children }) => {
 
   // --------------------API CALL------------------
   const getData = async (dateFromDropdown) => {
+    if(!authState){
+      return
+    }
     try {
       let apiUrl = `${API_ROUTER.CASH_FLOW_TOP_TEN}`;
       if (dateFromDropdown) {
         apiUrl += `?date=${dateFromDropdown}`;
       }
-      const token = Cookies.get("access");
       const response = await axiosInstance.get(
         apiUrl
           , {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${authState.access}` },
         }
       );
 

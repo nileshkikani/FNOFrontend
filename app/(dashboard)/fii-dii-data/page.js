@@ -10,13 +10,15 @@ import DailyIndexFutures from "@/component/FII-DII-Graphs/DailyIndexFutures-Grap
 
 import OptionsDataGraph from "@/component/FII-DII-Graphs/OptionsData-Graph";
 import FuturesDataGraph from "@/component/FII-DII-Graphs/FuturesData-Graph";
+import { useAppSelector } from "@/store";
 
 
 export default function Page() {
   const { checkClientType,handleFetch } = useFiiDiiData();
+  const authState = useAppSelector((state) => state.auth.authState);
 
   useEffect(() => {
-    handleFetch();
+    authState && handleFetch();
   }, []);
 
   return (

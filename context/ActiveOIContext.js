@@ -1,11 +1,10 @@
 "use client";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
-// import axios from "axios";
-import Cookies from "js-cookie";
 import React, { createContext, useReducer, useCallback, useMemo } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/store";
 
 export const ActiveOiContext = createContext({});
 
@@ -41,14 +40,18 @@ const reducer = (state, action) => {
 export const ActiveOiProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const router = useRouter();
+  const authState = useAppSelector((state) => state.auth.authState);
 
   // -----------API CALL---------------------------
   const getData = useCallback(async () => {
+    if(!authState){
+      return
+    }
+    console.log("s4s4s4s4s4s4s4s4s===>>>")
     dispatch({ type: "SET_IS_LOADING", payload: true });
     try {
-      const token = Cookies.get("access");
       const response = await axiosInstance.get(API_ROUTER.ACTIVE_OI, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${authState.access}` },
       });
       if(response.status===200){
       const uDate = Array.from(
@@ -80,7 +83,7 @@ export const ActiveOiProvider = ({ children }) => {
       toast.error("Error getting data");
       console.log("Error is this:", err);
     }
-  }, []);
+  }, [authState]);
 
   // --------DATE DROPDOWN---------
   const dateDropDownChange = useCallback(
