@@ -13,7 +13,8 @@ import { MultiStrikeProvider } from "@/context/MultiStrikeContext";
 
 //--------COMPONENTS-----------
 import dynamic from "next/dynamic";
-import Navbar from "@/component/Header/Navbar";
+// import Navbar from "@/component/Header/Navbar";
+import Navbar from "@/component/Navbar";
 
 const ReduxProvider = dynamic(() => import("@/store/redux-provider"), {
   ssr: false,
