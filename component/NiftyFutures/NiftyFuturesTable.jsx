@@ -5,7 +5,7 @@ import useNiftyFutureData from "@/hooks/useNiftyFutureData";
 const NiftyFuturesTable = () => {
     const {
         apiData,
-        selectedOption,
+        // selectedOption,
         uniqueExpiryDatesArray,
         filterByCreatedDate,
         handleDateChange,

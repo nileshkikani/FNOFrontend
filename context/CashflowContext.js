@@ -54,7 +54,9 @@ const reducer = (state, action) => {
 
 export const CashflowProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [alldate, setAllDate] = useState();
+  const [alldate, setAllDate] = useState([]);
+  const [initialLoad, setInitialLoad] = useState(false);
+  const [initialLoadForStock, setInitialLoadForStock] = useState(false);
 
   const router = useRouter();
   const authState = useAppSelector((state) => state.auth.authState);
@@ -84,12 +86,13 @@ export const CashflowProvider = ({ children }) => {
           headers: { Authorization: `Bearer ${authState.access}` },
         }
       );
-
+      // console.log("ioioioioi",response)
       const responseData = response.data;
       // -----------GETTING UNIQUE DATES----------
       if (response.status === 200) {
         if (responseData?.dates) {
           setAllDate(responseData?.dates);
+          setInitialLoad(true);
         }
         dispatch({ type: "SET_SELECTED_DATE", payload: responseData?.dates });
         const uniqueDatesSet = new Set();
@@ -99,8 +102,8 @@ export const CashflowProvider = ({ children }) => {
           const formattedDate = date.toLocaleDateString("en-US", options);
           uniqueDatesSet.add(formattedDate);
         });
-
         dispatch({ type: "SET_SELECTED_STOCK", payload: responseData });
+        setInitialLoadForStock(true);
 
         //-------STOCK LIST------
         const symbolMap = new Map();
@@ -135,6 +138,10 @@ export const CashflowProvider = ({ children }) => {
         selectedStock,
         currentSelectedDate,
         dispatch,
+        setInitialLoad,
+        initialLoad,
+        setInitialLoadForStock,
+        initialLoadForStock
       }}
     >
       {children}

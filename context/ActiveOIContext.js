@@ -47,7 +47,7 @@ export const ActiveOiProvider = ({ children }) => {
     if(!authState){
       return
     }
-    console.log("s4s4s4s4s4s4s4s4s===>>>")
+    // console.log("s4s4s4s4s4s4s4s4s===>>>")
     dispatch({ type: "SET_IS_LOADING", payload: true });
     try {
       const response = await axiosInstance.get(API_ROUTER.ACTIVE_OI, {

@@ -9,6 +9,7 @@ import { DropDown } from "./DropDown";
 import { setAuthState } from "@/store/authSlice";
 import { useAppSelector } from "@/store";
 import { useDispatch } from "react-redux";
+import Cookie from "js-cookie";
 
 
 const DATA = [
@@ -20,10 +21,10 @@ const DATA = [
     path: "/optiondata",
     title: "OPTION CHAIN",
   },
-  {
-    path: "/niftyfutures",
-    title: "NIFTY FUTURES",
-  },
+  // {
+  //   path: "/niftyfutures",
+  //   title: "NIFTY FUTURES",
+  // },
   {
     path: "/cashflow",
     title: "MONEY FLOWS",
@@ -59,7 +60,8 @@ const Navbar = () => {
           },
         }
       );
-    
+      Cookie.remove("access");
+      Cookie.remove("refresh");
       storeDispatch(setAuthState(""))
       router.push('/login')
       

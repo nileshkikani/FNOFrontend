@@ -1,15 +1,13 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
+'use client';
+import React, { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 
 //--------HOOKS---------------
-import useCashflowData from "@/hooks/useCashflowData";
+import useCashflowData from '@/hooks/useCashflowData';
 
 //-----GRAPH COMPONENTS----------
-const MoneyFlowGraph = dynamic(() =>
-  import("@/component/MoneyFlow-Graphs/MoneyFlow-Graph")
-);
-import { useAppSelector } from "@/store";
+const MoneyFlowGraph = dynamic(() => import('@/component/MoneyFlow-Graphs/MoneyFlow-Graph'));
+import { useAppSelector } from '@/store';
 // import ActiveMoneyFlow from "@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph";
 
 //  ===========LOADING ANIMATION ===========
@@ -25,20 +23,48 @@ const Page = () => {
     selectedStock,
     currentSelectedDate,
     dispatch,
+    setInitialLoad,
+    initialLoad,
+    initialLoadForStock,
+    setInitialLoadForStock,
     // filterByStockAndDate
     handleDateDropdown,
     dateWiseFilter,
-    uniqueDates,
+    uniqueDates
   } = useCashflowData();
   const authState = useAppSelector((state) => state.auth.authState);
 
-  const [symbl,setSelectedSymbl] = useState();
+  const [symbl, setSelectedSymbl] = useState();
 
   useEffect(() => {
     authState && getData();
   }, [authState]);
 
-  
+  useEffect(() => {
+    const fetchData = () => {
+      if (initialLoad) {
+        getData(alldate[0]);
+        setInitialLoad(false);
+      }
+      // if(initialLoadForStock){
+      //   const finalData = selectedStock.filter((itm) => itm.symbol === 'HDFC');
+      //   dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
+      // }
+    };
+    fetchData();
+  }, [initialLoad]);
+
+  // useEffect(() => {
+  //   const fetchData = () => {
+  //     if(uniqueSymbolData){
+  //       setInitialLoadForStock(false);
+  //       const finalData = selectedStock.filter((itm) => itm.symbol == 'HDFC');
+  //       dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
+  //     }
+  //   };
+  //   fetchData();  
+  // }, [initialLoadForStock]);
+
   const filterByStockAndDate = (event, isDateDropdown) => {
     if (isDateDropdown) {
       const d = event.target.value;
@@ -47,9 +73,9 @@ const Page = () => {
       // dispatch({ type: "SET_SELECTED_STOCK", payload: filteredByDate });
     } else {
       const symbl = event.target.value;
-      setSelectedSymbl(symbl)
+      setSelectedSymbl(symbl);
       const finalData = data.filter((itm) => itm.symbol === symbl);
-      dispatch({ type: "SET_SELECTED_STOCK", payload: finalData });
+      dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
     }
   };
 
@@ -57,11 +83,7 @@ const Page = () => {
     <>
       {/* -----------------------DATE DROPDOWN------------------- */}
       <h1 className="table-title">SELECT DATE</h1>
-      <select
-        onChange={(e) => filterByStockAndDate(e, true)}
-        value={currentSelectedDate}
-        className="stock-dropdown"
-      >
+      <select onChange={(e) => filterByStockAndDate(e, true)} value={currentSelectedDate} className="stock-dropdown">
         <option disabled selected value>
           select date
         </option>
@@ -73,10 +95,7 @@ const Page = () => {
       </select>
       {/* -------------------STOCK DROPDOWN---------------------- */}
       <h1 className="table-title">SELECT SCRIPT</h1>
-      <select
-        onChange={(e) => filterByStockAndDate(e, false)}
-        className="stock-dropdown"
-      >
+      <select onChange={(e) => filterByStockAndDate(e, false)} className="stock-dropdown">
         <option disabled selected value>
           select stock
         </option>

@@ -6,6 +6,7 @@ import React, {
   useReducer,
   useCallback,
   useMemo,
+  useState,
   useEffect,
 } from "react";
 import { toast } from "react-hot-toast";
@@ -36,6 +37,7 @@ const reducer = (state, action) => {
 
 export const SecurityWiseProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [initialLoad, setInitialLoad] = useState(true); 
   const router = useRouter();
   const authState = useAppSelector((state) => state.auth.authState);
   const { uniqueDates, data } = state;
@@ -61,14 +63,16 @@ export const SecurityWiseProvider = ({ children }) => {
           return date1 - date2;
         };
 
-        selectedDate
-          ? dispatch({ type: "SET_DATA", payload: response.data })
-          : dispatch({
-              type: "SET_UNIQUE_DATES",
-              payload: response.data.unique_dates
-                .sort(customDateComparator)
-                .reverse(),
-            });
+        if(selectedDate){
+          dispatch({ type: "SET_DATA", payload: response.data })
+        }else{
+          dispatch({
+            type: "SET_UNIQUE_DATES",
+            payload: response.data.unique_dates
+              .sort(customDateComparator)
+              .reverse(),
+          });
+        }
 
         dispatch({ type: "SET_IS_LOADING", payload: false });
         // const currentPath = window.location.pathname;
@@ -87,6 +91,13 @@ export const SecurityWiseProvider = ({ children }) => {
     const d = event.target.value;
     getData(d);
   };
+
+  useEffect(() => {
+    if (initialLoad && uniqueDates.length > 0) {
+      getData(uniqueDates[0]);
+      setInitialLoad(false);
+    }
+  }, [getData, initialLoad, uniqueDates]);
 
 
   const NIFTY_STOCKS = [

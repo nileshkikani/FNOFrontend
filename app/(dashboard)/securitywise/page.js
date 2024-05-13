@@ -9,15 +9,16 @@ export default function Page() {
     getData();
   }, []);
 
+
   return (
     <>
       <label>
         Date
         <select onChange={setDropdownDate}>
-          <option disabled selected value>
+          {/* <option disabled selected value>
             select date
-          </option>
-          {uniqueDates.map((itm, index) => (
+          </option> */}
+          {uniqueDates?.map((itm, index) => (
             <option key={index} value={itm}>
               {itm}
             </option>

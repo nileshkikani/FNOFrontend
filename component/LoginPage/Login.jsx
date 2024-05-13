@@ -1,9 +1,11 @@
 "use client";
 import useAuth from "@/hooks/useAuth";
+import { useAppSelector } from "@/store";
 import React from "react";
 
 const Login = () => {
   const { getData, refreshToken } = useAuth();
+  const authState = useAppSelector((state) => state.auth.authState);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -11,8 +13,9 @@ const Login = () => {
     let password = e.target.password?.value;
     getData({ email, password });
     setInterval(() => {
+      // console.log("inside handle submitttt---", );
       refreshToken();
-    }, 3300000); // -------55 minute-----
+    }, 3300000); // -------55 minute(3300000)---
     // window.location.reload();
   };
 

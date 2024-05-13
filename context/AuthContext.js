@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setAuthState } from "@/store/authSlice";
 import { useAppSelector } from "@/store";
+import Cookie from "js-cookie"
 
 export const AuthContext = createContext({});
 
@@ -47,7 +48,9 @@ const storeDispatch =  useDispatch()
           type: "SET_DATA",
           payload: { data: response.data },
         });
-        storeDispatch(setAuthState({access:response.data?.tokens?.access ?response.data?.tokens?.access : "",refresh: response.data?.tokens?.refresh?response.data?.tokens?.refresh:""}))
+        storeDispatch(setAuthState({access:response.data?.tokens?.access ?response.data?.tokens?.access : "",refresh: response.data?.tokens?.refresh?response.data?.tokens?.refresh:""}));
+        Cookie.set("access",response.data.tokens?.access);
+        Cookie.set("refresh",response.data.tokens?.refresh);
 
         router.push("/activeoi");
       } else {
@@ -60,16 +63,21 @@ const storeDispatch =  useDispatch()
 
 
 
-  // -------GET NEW REFRESH TOKEN AND STORING IN COKIES AFTER EVERY 55 MINS from handleSubmit function------------
+  // -----------GET NEW REFRESH TOKEN AND STORING IN COKIES AFTER EVERY 55 MINS from handleSubmit function------------
   const refreshToken = async () => {
+    // console.log("before logout call::",authState.access);
+    const accessToken = Cookie.get("access");
+    const refreshToken = Cookie.get("refresh");
     try {
-      
       const newRefreshToken = await axiosInstance.post(
         `${API_ROUTER.REFRESH_TOKEN}`,
-        { refresh: authState.refresh },
-        { headers: { Authorization: `Bearer ${authState.access}` } }
+        { refresh: refreshToken},
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
-      storeDispatch(setAuthState({...authState,access:newRefreshToken.data.access ? newRefreshToken.data.access : ""}))
+      // console.log("newwww tokwwwn iss::",accessToken);
+      // console.log("new access token-<<<<",newRefreshToken.data.tokens.access);
+      Cookie.set("access",newRefreshToken.data.tokens.access)
+      // storeDispatch(setAuthState({...authState,access:newRefreshToken?.data?.tokens?.access ? newRefreshToken.data.tokens.access : ""}))
     } catch (error) {
       console.log("error getting refresh token", error);
     }
