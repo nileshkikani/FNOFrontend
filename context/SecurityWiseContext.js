@@ -68,7 +68,7 @@ export const SecurityWiseProvider = ({ children }) => {
         }else{
           dispatch({
             type: "SET_UNIQUE_DATES",
-            payload: response.data.unique_dates
+            payload: response.data.dates
               .sort(customDateComparator)
               .reverse(),
           });

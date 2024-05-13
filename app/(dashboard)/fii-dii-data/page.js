@@ -23,7 +23,6 @@ export default function Page() {
 
   return (
     <>
-      {/* <FileImport /> */}
       <div>
         <select onChange={checkClientType}>
           <option value="FII">FII</option>

@@ -55,7 +55,6 @@ const NiftyFuturesTable = () => {
           </div>
         </div>
         <div>
-          <h1>{apiData?.instrument_type}</h1>
           <table>
             <thead>
               <tr>

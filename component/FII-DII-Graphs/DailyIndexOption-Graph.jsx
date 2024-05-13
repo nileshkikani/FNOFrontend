@@ -15,17 +15,17 @@ import useFiiDiiData from "@/hooks/useFiiDiiData";
 
 const DailyIndexOption = () => {
   const { filteredClientData } = useFiiDiiData();
-  const [yAxisDomain, setYAxisDomain] = useState([0, 100]); // Initial domain for Y-axis
+  const [yAxisDomain, setYAxisDomain] = useState([0, 100]); 
 
   useEffect(() => {
-    // Calculate minimum and maximum values of the data
+
     const callOiValues = filteredClientData.map((item) => item.daily_dif_index_call);
     const putOiValues = filteredClientData.map((item) => item.daily_dif_index_put);
     const allValues = callOiValues.concat(putOiValues);
     const minValue = Math.min(...allValues);
     const maxValue = Math.max(...allValues);
 
-    // Set the Y-axis domain based on the minimum and maximum values
+    
     setYAxisDomain([minValue, maxValue]);
   }, [filteredClientData]);
 

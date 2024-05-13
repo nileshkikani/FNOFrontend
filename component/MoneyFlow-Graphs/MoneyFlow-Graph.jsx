@@ -19,8 +19,6 @@ const MoneyFlowGraph = () => {
     <div style={{ width: "100%", height: "400px" }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
-          width={500}
-          height={300}
           data={selectedStock}
           margin={{
             top: 5,
@@ -31,17 +29,15 @@ const MoneyFlowGraph = () => {
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="time" />
-          <YAxis yAxisId="left" />
+          <YAxis yAxisId="right" />
           <YAxis
-            yAxisId="right"
-            domain={["dataMin - 25", "dataMax + 25"]}
+            yAxisId="left"
             orientation="right"
-            hide
           />
           <Tooltip />
           <Legend />
           <Line
-            yAxisId="left"
+            yAxisId="right"
             name="net money flow"
             type="monotone"
             dataKey="net_money_flow"
@@ -49,7 +45,7 @@ const MoneyFlowGraph = () => {
             activeDot={{ r: 8 }}
           />
           <Line
-            yAxisId="right"
+            yAxisId="left"
             name="closing price"
             type="monotone"
             dataKey="close"
