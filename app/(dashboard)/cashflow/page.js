@@ -40,26 +40,26 @@ const Page = () => {
     authState && getData();
   }, [authState]);
 
-  useEffect(() => {
-    const fetchData = () => {
-      if (initialLoad) {
-        getData(alldate[0]);
-        setInitialLoad(false);
-      }
-    };
-    fetchData();
-  }, [initialLoad]);
+    useEffect(() => {
+      const fetchData = () => {
+        if (alldate) {
+          getData(alldate[0]);
+          // setInitialLoad(false);
+        }
+      };
+      fetchData();
+    }, [initialLoad]);
 
-  useEffect(() => {
-    const fetchData = () => {
-      if (uniqueSymbolData) {
-        setInitialLoadForStock(false);
-        const finalData = selectedStock.filter((itm) => itm.symbol == 'HDFCBANK');
-        dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
-      }
-    };
-    fetchData();
-  }, [initialLoadForStock]);
+    useEffect(() => {
+      const fetchData = () => {
+        if (uniqueSymbolData) {
+          // setInitialLoadForStock(false);
+          const finalData = selectedStock.filter((itm) => itm.symbol == 'HDFCBANK');
+          dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
+        }
+      };
+      fetchData();
+    }, [initialLoadForStock]);
 
   const filterByStockAndDate = (event, isDateDropdown) => {
     if (isDateDropdown) {
@@ -74,6 +74,8 @@ const Page = () => {
       dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
     }
   };
+
+  // console.log('data outside log::',selectedStock)
 
   return (
     <>
