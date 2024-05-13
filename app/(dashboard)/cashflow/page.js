@@ -46,24 +46,20 @@ const Page = () => {
         getData(alldate[0]);
         setInitialLoad(false);
       }
-      // if(initialLoadForStock){
-      //   const finalData = selectedStock.filter((itm) => itm.symbol === 'HDFC');
-      //   dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
-      // }
     };
     fetchData();
   }, [initialLoad]);
 
-  // useEffect(() => {
-  //   const fetchData = () => {
-  //     if(uniqueSymbolData){
-  //       setInitialLoadForStock(false);
-  //       const finalData = selectedStock.filter((itm) => itm.symbol == 'HDFC');
-  //       dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
-  //     }
-  //   };
-  //   fetchData();  
-  // }, [initialLoadForStock]);
+  useEffect(() => {
+    const fetchData = () => {
+      if (uniqueSymbolData) {
+        setInitialLoadForStock(false);
+        const finalData = selectedStock.filter((itm) => itm.symbol == 'HDFCBANK');
+        dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
+      }
+    };
+    fetchData();
+  }, [initialLoadForStock]);
 
   const filterByStockAndDate = (event, isDateDropdown) => {
     if (isDateDropdown) {
@@ -84,9 +80,6 @@ const Page = () => {
       {/* -----------------------DATE DROPDOWN------------------- */}
       <h1 className="table-title">SELECT DATE</h1>
       <select onChange={(e) => filterByStockAndDate(e, true)} value={currentSelectedDate} className="stock-dropdown">
-        <option disabled selected value>
-          select date
-        </option>
         {alldate?.map((stockData, index) => (
           <option key={index} value={stockData}>
             {stockData}
@@ -96,9 +89,6 @@ const Page = () => {
       {/* -------------------STOCK DROPDOWN---------------------- */}
       <h1 className="table-title">SELECT SCRIPT</h1>
       <select onChange={(e) => filterByStockAndDate(e, false)} className="stock-dropdown">
-        <option disabled selected value>
-          select stock
-        </option>
         {uniqueSymbolData.map((stockData, index) => (
           <option key={index} value={stockData[0]?.symbol}>
             {stockData[0]?.symbol}
