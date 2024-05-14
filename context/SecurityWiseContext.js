@@ -79,7 +79,8 @@ export const SecurityWiseProvider = ({ children }) => {
         // const currentPath = window.location.pathname;
         // localStorage.setItem('lastPath', currentPath);
       } else {
-        router.push("/login");
+        console.log("jjsbsjbc545454")
+        window.location.pathname != "/login" && router.push("/login");
       }
     } catch (err) {
       toast.error("Error getting data");

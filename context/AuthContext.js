@@ -1,13 +1,13 @@
-'use client';
-import { API_ROUTER } from '@/services/apiRouter';
-import axiosInstance from '@/utils/axios';
-import React, { createContext, useReducer, useEffect } from 'react';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
-import { setAuthState } from '@/store/authSlice';
-import { useAppSelector } from '@/store';
-import Cookie from 'js-cookie';
+"use client";
+import { API_ROUTER } from "@/services/apiRouter";
+import axiosInstance from "@/utils/axios";
+import React, { createContext, useReducer } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setAuth, setUserStatus } from "@/store/authSlice";
+import { useAppSelector } from "@/store";
+import Cookie from "js-cookie"
 
 export const AuthContext = createContext({});
 
@@ -46,16 +46,11 @@ export const AuthProvider = ({ children }) => {
           type: 'SET_DATA',
           payload: response.data
         });
-        storeDispatch(
-          setAuthState({
-            access: response.data?.tokens?.access ? response.data?.tokens?.access : '',
-            refresh: response.data?.tokens?.refresh ? response.data?.tokens?.refresh : ''
-          })
-        );
-        // console.log("inside login->",authState.access);
-        // console.log("inside login->",authState.refresh);
-        Cookie.set('access', response.data.tokens?.access);
-        Cookie.set('refresh', response.data.tokens?.refresh);
+        
+         storeDispatch(setAuth({access:response.data?.tokens?.access ?response.data?.tokens?.access : "",refresh: response.data?.tokens?.refresh?response.data?.tokens?.refresh:""}));
+        storeDispatch(setUserStatus(true));
+        Cookie.set("access",response.data.tokens?.access);
+        Cookie.set("refresh",response.data.tokens?.refresh);
 
         router.push('/activeoi');
       } else {
@@ -68,13 +63,12 @@ export const AuthProvider = ({ children }) => {
 
   // -----------GET NEW REFRESH TOKEN AND STORING AFTER EVERY 55 MINS from handleSubmit function------------
   const refreshToken = async () => {
-    // console.log('inside refresh token function');
-    // console.log('this is acces tokem', authState.access);
-    // console.log('this is refreshhh tokem', authState.refresh);
-    // console.log('this is authstatee===', authState);
+    // console.log("before logout call::",authState.access);
+    // console.log("hdhdhdh==>",authState)
+    console.log("newRefreshToken.data.tokens.access===>>>",authState)
 
-    const refreshToken = Cookie.get('refresh');
-    const accessToken = Cookie.get('access');
+    const accessToken = Cookie.get("access");
+    const refreshToken = Cookie.get("refresh");
     try {
       const newRefreshToken = await axiosInstance.post(
         API_ROUTER.REFRESH_TOKEN,
@@ -83,7 +77,7 @@ export const AuthProvider = ({ children }) => {
       );
       Cookie.set('access', newRefreshToken.data.tokens.access);
       storeDispatch(
-        setAuthState({
+        setAuth({
           ...authState,
           access: newRefreshToken?.data?.tokens?.access ? newRefreshToken?.data?.tokens?.access : ''
         })

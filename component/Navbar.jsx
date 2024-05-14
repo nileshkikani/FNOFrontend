@@ -10,6 +10,18 @@
 // import { useAppSelector } from "@/store";
 // import { useDispatch } from "react-redux";
 // import Cookie from "js-cookie";
+"use client";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { API_ROUTER } from "@/services/apiRouter";
+import axiosInstance from "@/utils/axios";
+import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { DropDown } from "./DropDown";
+import { setAuth } from "@/store/authSlice";
+import { useAppSelector } from "@/store";
+import { useDispatch } from "react-redux";
+import Cookie from "js-cookie";
 
 
 // const DATA = [
@@ -32,6 +44,16 @@
 //   const [data, setData] = useState({});
 //   const storeDispatch =  useDispatch()
 //   const authState = useAppSelector((state) => state.auth.authState);
+const Navbar = () => {
+  const router = useRouter();
+  const [data, setData] = useState({});
+  const { refreshToken } = useAuth();
+  const [jaja, setjaja] = useState(false);
+
+  const storeDispatch =  useDispatch()
+  const authState = useAppSelector((state) => state.auth.authState);
+  const isUser = useAppSelector((state) => state.auth.isUser);
+
 
 //   const getAdvanceDecline = async () => {
 //     try {
@@ -60,6 +82,24 @@
 //       Cookie.remove("refresh");
 //       storeDispatch(setAuthState(""))
 //       router.push('/login')
+  // ------------LOGOUT----------
+  const logout = async () => {
+    try {
+      await axiosInstance.post(
+        `${API_ROUTER.LOGOUT}`,
+        {
+          refresh: authState.refresh,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authState.access}`,
+          },
+        }
+      );
+      Cookie.remove("access");
+      Cookie.remove("refresh");
+      storeDispatch(setAuth(""))
+      router.push('/login')
       
 //     } catch (error) {
 //       console.log("error in logout api", error);
@@ -78,6 +118,29 @@
 //   // authState && authState.access && router.push(event.target.value == "Live Charts" ? "/activeoi" :event.target.value == "FII DII Data" ? "/fii-dii-data" : "/multistrike");
 //   authState && authState.access && router.push(event.target.value);
 //   };
+  useEffect(() => {
+    getAdvanceDecline();
+  }, []);
+  useEffect(() => {
+    console.log("inside handle submitttt87887777---", );
+
+    isUser && setInterval(() => {
+      console.log("inside handle submitttt---", );
+        refreshToken();
+    }, 10000); // -------55 minute(3300000)---
+  }, [isUser]);
+  const isActive = (path) => {
+    console.log("router.pathname===>>",window.location.pathname)
+    return window.location.pathname === path;
+  };
+
+  // useEffect(()=>{
+  //   authState && setjaja(true)
+  // },[authState])
+  const handleSelectChange = (event) => {
+  // authState && authState.access && router.push(event.target.value == "Live Charts" ? "/activeoi" :event.target.value == "FII DII Data" ? "/fii-dii-data" : "/multistrike");
+  authState && authState.access && router.push(event.target.value);
+  };
 
 //   return (
 //     <>

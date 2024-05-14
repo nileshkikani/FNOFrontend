@@ -6,7 +6,7 @@ import axiosInstance from "@/utils/axios";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { DropDown } from "./DropDown";
-import { setAuthState } from "@/store/authSlice";
+import { setAuth,setUserStatus } from "@/store/authSlice";
 import { useAppSelector } from "@/store";
 import { useDispatch } from "react-redux";
 import Cookie from "js-cookie";
@@ -44,21 +44,30 @@ const Navbar = () => {
 
   // ------------LOGOUT----------
   const logout = async () => {
+    const accessToken = Cookie.get("access");
+    const refreshToken = Cookie.get("refresh");
+    console.log("6s6s6s2s6s1s",authState)
+    console.log("6s6s6s2s6s1s",accessToken)
+    console.log("6s6s6s2s6s1s",refreshToken)
+
+
     try {
       await axiosInstance.post(
         `${API_ROUTER.LOGOUT}`,
         {
-          refresh: authState.refresh,
+          refresh: refreshToken,
         },
         {
           headers: {
-            Authorization: `Bearer ${authState.access}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
       Cookie.remove("access");
       Cookie.remove("refresh");
-      storeDispatch(setAuthState(""))
+      storeDispatch(setAuth(""))
+      storeDispatch(setUserStatus(false))
+
       router.push('/login')
       
     } catch (error) {
