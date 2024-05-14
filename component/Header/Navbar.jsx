@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
-import Cookies from "js-cookie";
-
+import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { useAppSelector } from "@/store";
+import { DropDown } from "./DropDown";
 import { setAuthState } from "@/store/authSlice";
+import { useAppSelector } from "@/store";
+import { useDispatch } from "react-redux";
+import Cookie from "js-cookie";
+
 
 const DATA = [
   {
@@ -27,6 +30,7 @@ const DATA = [
 const Navbar = () => {
   const router = useRouter();
   const [data, setData] = useState({});
+  const storeDispatch =  useDispatch()
   const authState = useAppSelector((state) => state.auth.authState);
 
   const getAdvanceDecline = async () => {
@@ -52,9 +56,11 @@ const Navbar = () => {
           },
         }
       );
-
-      storeDispatch(setAuthState(""));
-      router.push("/login");
+      Cookie.remove("access");
+      Cookie.remove("refresh");
+      storeDispatch(setAuthState(""))
+      router.push('/login')
+      
     } catch (error) {
       console.log("error in logout api", error);
     }
@@ -69,9 +75,9 @@ const Navbar = () => {
   };
 
   const handleSelectChange = (event) => {
-    // authState && authState.access && router.push(event.target.value == "Live Charts" ? "/activeoi" :event.target.value == "FII DII Data" ? "/fii-dii-data" : "/multistrike");
-    authState && authState.access && router.push(event.target.value);
-    };
+  // authState && authState.access && router.push(event.target.value == "Live Charts" ? "/activeoi" :event.target.value == "FII DII Data" ? "/fii-dii-data" : "/multistrike");
+  authState && authState.access && router.push(event.target.value);
+  };
 
   return (
     <>
@@ -200,14 +206,7 @@ const Navbar = () => {
               ADR: {data && data?.nifty_adr ? data?.nifty_adr : "..."}
             </span>
           </li>
-          <li>
-            {" "}
-            {authState && authState.access && (
-              <button onClick={logout} className="logout">
-                Logout
-              </button>
-            )}
-          </li>
+          <li> {authState && authState.access && <button onClick={logout} className="logout">Logout</button>}</li>
         </ul>
       </div>
     </>

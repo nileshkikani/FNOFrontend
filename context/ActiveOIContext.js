@@ -47,7 +47,6 @@ export const ActiveOiProvider = ({ children }) => {
     if(!authState){
       return
     }
-    // console.log("s4s4s4s4s4s4s4s4s===>>>")
     dispatch({ type: "SET_IS_LOADING", payload: true });
     try {
       const response = await axiosInstance.get(API_ROUTER.ACTIVE_OI, {
@@ -73,8 +72,6 @@ export const ActiveOiProvider = ({ children }) => {
         payload: reversedFilteredByDate,
       });
       dispatch({ type: "SET_IS_LOADING", payload: false });
-      // const currentPath = window.location.pathname;
-      // localStorage.setItem('lastPath', currentPath);
 
     }else{
       router.push('/login');

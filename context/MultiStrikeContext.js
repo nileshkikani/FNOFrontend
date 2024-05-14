@@ -50,7 +50,7 @@ export const MultiStrikeProvider = ({ children }) => {
       return
     }
     try {
-      let apiUrl = `http://192.168.0.179:8000/multy/`;
+      let apiUrl = API_ROUTER.MULTI_STRIKE;
       if (selectedStrike && selectedStrike.length > 0) {
         const strikesString = selectedStrike.join(",");
         apiUrl += `?strikes=${strikesString}`;
@@ -61,16 +61,13 @@ export const MultiStrikeProvider = ({ children }) => {
 
       if (response.status === 200) {
         selectedStrike
-          ? dispatch({ type: "SET_DATA", payload: response.data })
+          ? dispatch({ type: "SET_DATA", payload: response?.data })
           : dispatch({
               type: "SET_STRIKES",
-              payload: response.data.strike_prices,
+              payload: response?.data.strike_prices,
             });
-        console.log("from context:::,", response.data);
-        // console.log("hhhhhhhhhh,",typeof response.data)
         dispatch({ type: "SET_IS_LOADING", payload: false });
-        // const currentPath = window.location.pathname;
-        // localStorage.setItem('lastPath', currentPath);
+
       } else {
         router.push("/login");
       }
@@ -89,11 +86,8 @@ export const MultiStrikeProvider = ({ children }) => {
     } else {
       selectedStrikes.push(d);
     }
-    // console.log(d, "tttttttttttttttttttt");
     multiStrikeAPiCall(selectedStrikes);
   };
-
-  // console.log("selected pricve", selectedStrikes);
 
   const contextValue = useMemo(
     () => ({

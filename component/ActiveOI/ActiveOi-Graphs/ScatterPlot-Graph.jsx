@@ -42,7 +42,6 @@ const ScatterPlotGraph = () => {
                 minute: "2-digit",
               })
             }
-            // reversed={true}
           />
           <YAxis yAxisId="left" />
           <YAxis

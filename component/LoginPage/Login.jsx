@@ -1,7 +1,7 @@
-"use client";
-import useAuth from "@/hooks/useAuth";
-import { useAppSelector } from "@/store";
-import React from "react";
+'use client';
+import useAuth from '@/hooks/useAuth';
+import { useAppSelector } from '@/store';
+import React from 'react';
 
 const Login = () => {
   const { getData, refreshToken } = useAuth();
@@ -13,9 +13,8 @@ const Login = () => {
     let password = e.target.password?.value;
     getData({ email, password });
     setInterval(() => {
-      // console.log("inside handle submitttt---", );
       refreshToken();
-    }, 3300000); // -------55 minute(3300000)---
+    }, 55*60000); // -------55 minute(3300000)---
     // window.location.reload();
   };
 
@@ -27,12 +26,7 @@ const Login = () => {
             <div className="login-div-nested">
               <div>
                 <h1 className="login-title">Login</h1>
-                <form
-                  className="login-form"
-                  action="/activeoi"
-                  method="POST"
-                  onSubmit={handleSubmit}
-                >
+                <form className="login-form" action="/activeoi" method="POST" onSubmit={handleSubmit}>
                   <div>
                     <label htmlfor="email" className="login-lables ">
                       Email

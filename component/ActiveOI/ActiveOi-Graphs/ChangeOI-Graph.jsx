@@ -18,7 +18,6 @@ import useActiveOiData from "@/hooks/useActiveOiData";
 const ChangeOIGraph = () => {
   const {
     checkFive,
-    // filteredByDate,
     adjustedNiftyStart,
     adjustedNiftyEnd,
     filteredByDateForRange,

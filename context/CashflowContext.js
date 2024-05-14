@@ -63,10 +63,8 @@ export const CashflowProvider = ({ children }) => {
 
   const {
     data,
-    // isLoading,
     uniqueSymbolData,
     selectedStock,
-    // dateDropdown,
     currentSelectedDate,
   } = state;
 

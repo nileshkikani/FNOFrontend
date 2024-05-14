@@ -88,7 +88,6 @@ export const FiiDiiDataProvider = ({ children }) => {
         checkClientType,
         selectedClient,
         apiData,
-        // finalResult,
         updatedData,
         handleFetch,
         filteredClientData,

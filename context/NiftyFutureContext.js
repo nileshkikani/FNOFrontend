@@ -51,8 +51,6 @@ export const NiftyFutureProvider = ({ children }) => {
   const router = useRouter();
   const authState = useAppSelector((state) => state.auth.authState);
 
-  // const { isLoggedIn } = useAuth();
-
   const {
     apiData,
     isLoadingNiftyFutures,
@@ -95,8 +93,6 @@ export const NiftyFutureProvider = ({ children }) => {
             uniqueCreatedDatesArray: Array.from(uniqueCreatedDateSet).reverse(),
           },
         });
-        // const currentPath = window.location.pathname;
-        // localStorage.setItem('lastPath', currentPath);
       } else {
         router.push("/login");
       }
@@ -156,7 +152,6 @@ export const NiftyFutureProvider = ({ children }) => {
         selectedDate,
         uniqueExpiryDatesArray,
         uniqueCreatedDatesArray,
-        // reversedFilteredData,
         handleDateChange,
         handleExpiryChange,
       }}

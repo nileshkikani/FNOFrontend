@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  // BarChart,
   Bar,
   ComposedChart,
   XAxis,
@@ -15,15 +14,14 @@ import useFiiDiiData from "@/hooks/useFiiDiiData";
 
 const FuturesDataGraph = () => {
   const { filteredClientData } = useFiiDiiData();
-  const [yAxisDomain, setYAxisDomain] = useState([0, 100]); // Initial domain for Y-axis
+  const [yAxisDomain, setYAxisDomain] = useState([0, 100]); 
 
   useEffect(() => {
-    // Calculate minimum and maximum values of the data
+
     const values = filteredClientData.map((item) => item.dif_future_index);
     const minValue = Math.min(...values);
     const maxValue = Math.max(...values);
 
-    // Set the Y-axis domain based on the minimum and maximum values
     setYAxisDomain([minValue, maxValue]);
   }, [filteredClientData]);
 
@@ -54,7 +52,7 @@ const FuturesDataGraph = () => {
                 .replace(/\d{4}/, "")
             }
           />
-          <YAxis domain={yAxisDomain} /> {/* Set Y-axis domain */}
+          <YAxis domain={yAxisDomain} />
           <Tooltip />
           <Legend />
           <Bar
