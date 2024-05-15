@@ -1,77 +1,104 @@
-"use client";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { API_ROUTER } from "@/services/apiRouter";
-import axiosInstance from "@/utils/axios";
-import useAuth from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
-import { DropDown } from "./DropDown";
-import { setAuth,setUserStatus } from "@/store/authSlice";
-import { useAppSelector } from "@/store";
-import { useDispatch } from "react-redux";
-import Cookie from "js-cookie";
-
+'use client';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { API_ROUTER } from '@/services/apiRouter';
+import axiosInstance from '@/utils/axios';
+import useAuth from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
+import { DropDown } from './DropDown';
+import { setAuth, setUserStatus,setUserStatusInitially } from '@/store/authSlice';
+import { useAppSelector } from '@/store';
+import { useDispatch } from 'react-redux';
+import Cookie from 'js-cookie';
 
 const DATA = [
   {
-    path: "/securitywise",
-    title: "SECURITY WISE",
+    path: '/securitywise',
+    title: 'SECURITY WISE'
   },
   {
-    path: "/optiondata",
-    title: "OPTION CHAIN",
+    path: '/optiondata',
+    title: 'OPTION CHAIN'
   },
   {
-    path: "/cashflow",
-    title: "MONEY FLOWS",
-  },
+    path: '/cashflow',
+    title: 'MONEY FLOWS'
+  }
 ];
 
 const Navbar = () => {
   const router = useRouter();
   const [data, setData] = useState({});
-  const storeDispatch =  useDispatch()
+  const storeDispatch = useDispatch();
   const authState = useAppSelector((state) => state.auth.authState);
+  const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
+  const checkIsLoggedInInitially = useAppSelector((state) => state.auth.isCookie);
+  const { refreshToken } = useAuth();
 
   const getAdvanceDecline = async () => {
     try {
       const response = await axiosInstance.get(API_ROUTER.ADR);
       setData(response.data);
     } catch (error) {
-      console.error("Error fetching ADR data:", error);
+      console.error('Error fetching ADR data:', error);
     }
   };
+  useEffect(() => {
+    console.log('ooooo', checkUserIsLoggedIn);
+    if (checkIsLoggedInInitially) {
+      const clrInterval = setInterval(() => {
+        console.log('ttt');
+        // refreshToken();
+        // storeDispatch(setAuth(''));
+        Cookie.remove("access")
+        Cookie.remove("refresh")
+        storeDispatch(setUserStatus(false));
+        router.push('/login');
+      }, 30000);
+      return () => clearInterval(clrInterval);
+    }
+  }, [checkIsLoggedInInitially]);
+
+  useEffect(() => {
+    if (!checkUserIsLoggedIn) {
+      console.log("second UE");
+      storeDispatch(setUserStatusInitially(false));
+      // return ()=> storeDispatch(setUserStatus(false));
+    }
+  }, [checkUserIsLoggedIn]);
+
+  // useEffect(()=>{
+  //   return ()=> storeDispatch(setUserStatus(false));
+  // },[])
 
   // ------------LOGOUT----------
   const logout = async () => {
-    const accessToken = Cookie.get("access");
-    const refreshToken = Cookie.get("refresh");
-    console.log("6s6s6s2s6s1s",authState)
-    console.log("6s6s6s2s6s1s",accessToken)
-    console.log("6s6s6s2s6s1s",refreshToken)
-
+    // const accessToken = Cookie.get("access");
+    // const refreshToken = Cookie.get("refresh");
+    console.log('6s6s6s2s6s1s', authState);
+    // console.log("6s6s6s2s6s1s",accessToken)
+    // console.log("6s6s6s2s6s1s",refreshToken)
 
     try {
       await axiosInstance.post(
         `${API_ROUTER.LOGOUT}`,
         {
-          refresh: refreshToken,
+          refresh: authState.refresh
         },
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+            Authorization: `Bearer ${authState.access}`
+          }
         }
       );
-      Cookie.remove("access");
-      Cookie.remove("refresh");
-      storeDispatch(setAuth(""))
-      storeDispatch(setUserStatus(false))
+      Cookie.remove('access');
+      Cookie.remove('refresh');
+      storeDispatch(setAuth(''));
+      storeDispatch(setUserStatus(false));
 
-      router.push('/login')
-      
+      router.push('/login');
     } catch (error) {
-      console.log("error in logout api", error);
+      console.log('error in logout api', error);
     }
   };
 
@@ -84,8 +111,8 @@ const Navbar = () => {
   };
 
   const handleSelectChange = (event) => {
-  // authState && authState.access && router.push(event.target.value == "Live Charts" ? "/activeoi" :event.target.value == "FII DII Data" ? "/fii-dii-data" : "/multistrike");
-  authState && authState.access && router.push(event.target.value);
+    // authState && authState.access && router.push(event.target.value == "Live Charts" ? "/activeoi" :event.target.value == "FII DII Data" ? "/fii-dii-data" : "/multistrike");
+    authState && authState.access && router.push(event.target.value);
   };
 
   return (
@@ -94,40 +121,29 @@ const Navbar = () => {
         <ul className="navbar-full">
           <li>
             <span className="advance">
-              Advance:{" "}
-              {data && data?.bank_nifty_advance
-                ? data?.bank_nifty_advance
-                : "..."}
-            </span>{" "}
+              Advance: {data && data?.bank_nifty_advance ? data?.bank_nifty_advance : '...'}
+            </span>{' '}
             <br />
             <span className="decline">
-              {" "}
-              Decline:{" "}
-              {data && data?.bank_nifty_decline
-                ? data?.bank_nifty_decline
-                : "..."}
+              {' '}
+              Decline: {data && data?.bank_nifty_decline ? data?.bank_nifty_decline : '...'}
             </span>
           </li>
           <li>
             <span>
-              BANK NIFTY:{" "}
+              BANK NIFTY:{' '}
               {data && data?.live_bank_nifty
-                ? Math.trunc(data?.live_bank_nifty).toLocaleString("en-IN", {
-                    maximumFractionDigits: 0,
+                ? Math.trunc(data?.live_bank_nifty).toLocaleString('en-IN', {
+                    maximumFractionDigits: 0
                   })
-                : "..."}
-            </span>{" "}
+                : '...'}
+            </span>{' '}
             <br />
-            <span>
-              ADR: {data && data?.bank_nifty_adr ? data?.bank_nifty_adr : "..."}
-            </span>
+            <span>ADR: {data && data?.bank_nifty_adr ? data?.bank_nifty_adr : '...'}</span>
           </li>
           {DATA?.map((item, index) => (
             <li className="nav-item" key={index}>
-              <Link
-                href={item?.path}
-                className={isActive(item.path) ? "active-link" : ""}
-              >
+              <Link href={item?.path} className={isActive(item.path) ? 'active-link' : ''}>
                 {item.title}
               </Link>
             </li>
@@ -190,32 +206,29 @@ const Navbar = () => {
           onclick={handleSelectChange}
         /> */}
           <li>
-            <span className="advance">
-              Advance:{" "}
-              {data && data?.nifty_advance ? data?.nifty_advance : "..."}
-            </span>{" "}
-            <br />
-            <span className="decline">
-              {" "}
-              Decline:{" "}
-              {data && data?.nifty_advance ? data?.nifty_decline : "..."}
-            </span>
+            <span className="advance">Advance: {data && data?.nifty_advance ? data?.nifty_advance : '...'}</span> <br />
+            <span className="decline"> Decline: {data && data?.nifty_advance ? data?.nifty_decline : '...'}</span>
           </li>
           <li>
             <span>
-              NIFTY:{" "}
+              NIFTY:{' '}
               {data && data?.live_nifty
-                ? Math.trunc(data?.live_nifty).toLocaleString("en-IN", {
-                    maximumFractionDigits: 0,
+                ? Math.trunc(data?.live_nifty).toLocaleString('en-IN', {
+                    maximumFractionDigits: 0
                   })
-                : "..."}
-            </span>{" "}
+                : '...'}
+            </span>{' '}
             <br />
-            <span>
-              ADR: {data && data?.nifty_adr ? data?.nifty_adr : "..."}
-            </span>
+            <span>ADR: {data && data?.nifty_adr ? data?.nifty_adr : '...'}</span>
           </li>
-          <li> {authState && authState.access && <button onClick={logout} className="logout">Logout</button>}</li>
+          <li>
+            {' '}
+            {checkUserIsLoggedIn && authState && (
+              <button onClick={logout} className="logout">
+                Logout
+              </button>
+            )}
+          </li>
         </ul>
       </div>
     </>

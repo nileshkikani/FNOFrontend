@@ -50,6 +50,7 @@ export const NiftyFutureProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const router = useRouter();
   const authState = useAppSelector((state) => state.auth.authState);
+  const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
 
   const {
     apiData,
@@ -65,8 +66,8 @@ export const NiftyFutureProvider = ({ children }) => {
 
   const getNiftyFuturesData = async () => {
     dispatch({ type: "SET_DATA", payload: { isLoading: true } });
-    if (!authState) {
-      return;
+    if (!authState && checkUserIsLoggedIn) {
+      return router.push('/login');
     }
     try {
       const response = await axiosInstance.get(API_ROUTER.NIFTY_FUTURE_DATA, {

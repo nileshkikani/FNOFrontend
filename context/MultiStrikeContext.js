@@ -40,14 +40,15 @@ export const MultiStrikeProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const router = useRouter();
   const authState = useAppSelector((state) => state.auth.authState);
+  const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
 
   const { strikes, selectedStrikes, data } = state;
 
   // ----------------API CALL-----------------
   const multiStrikeAPiCall = async (selectedStrike) => {
     dispatch({ type: "SET_IS_LOADING", payload: true });
-    if(!authState){
-      return
+    if(!authState && checkUserIsLoggedIn){
+      return router.push('/login');
     }
     try {
       let apiUrl = API_ROUTER.MULTI_STRIKE;

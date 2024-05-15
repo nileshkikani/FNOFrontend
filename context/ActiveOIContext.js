@@ -41,11 +41,12 @@ export const ActiveOiProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const router = useRouter();
   const authState = useAppSelector((state) => state.auth.authState);
+  const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
 
   // -----------API CALL---------------------------
   const getData = useCallback(async () => {
-    if(!authState){
-      return
+    if(!authState && !checkUserIsLoggedIn){
+      return ;
     }
     dispatch({ type: "SET_IS_LOADING", payload: true });
     try {
@@ -74,6 +75,7 @@ export const ActiveOiProvider = ({ children }) => {
       dispatch({ type: "SET_IS_LOADING", payload: false });
 
     }else{
+      console.log("inside AOI")
       router.push('/login');
     }
     } catch (err) {

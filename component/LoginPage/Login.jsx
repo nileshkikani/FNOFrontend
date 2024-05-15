@@ -12,9 +12,9 @@ const Login = () => {
     let email = e.target.email?.value;
     let password = e.target.password?.value;
     getData({ email, password });
-    setInterval(() => {
-      refreshToken();
-    }, 55*60000); // -------55 minute(3300000)---
+    // setInterval(() => {
+    //   refreshToken();
+    // }, 15000); // -------55 minute(3300000)---
     // window.location.reload();
   };
 

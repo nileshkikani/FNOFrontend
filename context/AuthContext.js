@@ -5,7 +5,7 @@ import React, { createContext, useReducer } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setAuth, setUserStatus } from "@/store/authSlice";
+import { setAuth, setUserStatus,setUserStatusInitially } from "@/store/authSlice";
 import { useAppSelector } from "@/store";
 import Cookie from "js-cookie"
 
@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }) => {
   const { data } = state;
   const authState = useAppSelector((state) => state.auth.authState);
 
+
   // ---------LOGIN API CALL---------
   const getData = async ({ email, password }) => {
     try {
@@ -48,10 +49,11 @@ export const AuthProvider = ({ children }) => {
         });
         
          storeDispatch(setAuth({access:response.data?.tokens?.access ?response.data?.tokens?.access : "",refresh: response.data?.tokens?.refresh?response.data?.tokens?.refresh:""}));
-        storeDispatch(setUserStatus(true));
-        Cookie.set("access",response.data.tokens?.access);
-        Cookie.set("refresh",response.data.tokens?.refresh);
-
+         Cookie.set("access",response.data.tokens?.access);
+         Cookie.set("refresh",response.data.tokens?.refresh);
+         
+         storeDispatch(setUserStatus(true));
+         storeDispatch(setUserStatusInitially(true));
         router.push('/activeoi');
       } else {
         router.push('/login');

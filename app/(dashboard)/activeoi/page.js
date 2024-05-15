@@ -82,10 +82,10 @@ export default function Page() {
       {isLoading ? (
         <div
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: "50px",
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '80vh'
           }}
         >
           <PropagateLoader color="#33a3e3" loading={isLoading} size={15} />

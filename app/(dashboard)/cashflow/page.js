@@ -11,11 +11,11 @@ import { useAppSelector } from '@/store';
 // import ActiveMoneyFlow from "@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph";
 
 //  ===========LOADING ANIMATION ===========
-// const PropagateLoader = dynamic(() => import("react-spinners/PropagateLoader"));
+const PropagateLoader = dynamic(() => import("react-spinners/PropagateLoader"));
 
 const Page = () => {
   const {
-    // isLoading,
+    isLoading,
     getData,
     data,
     alldate,
@@ -23,14 +23,8 @@ const Page = () => {
     selectedStock,
     currentSelectedDate,
     dispatch,
-    setInitialLoad,
     initialLoad,
     initialLoadForStock,
-    setInitialLoadForStock,
-    // filterByStockAndDate
-    handleDateDropdown,
-    dateWiseFilter,
-    uniqueDates
   } = useCashflowData();
   const authState = useAppSelector((state) => state.auth.authState);
 
@@ -77,8 +71,20 @@ const Page = () => {
 
   // console.log('data outside log::',selectedStock)
 
-  return (
-    <>
+  return (<>
+  {
+    isLoading? (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '80vh'
+        }}
+      >
+        <PropagateLoader color="#33a3e3" loading={isLoading} size={15} />
+      </div>
+    ):(<>
       {/* -----------------------DATE DROPDOWN------------------- */}
       <h1 className="table-title">SELECT DATE</h1>
       <select onChange={(e) => filterByStockAndDate(e, true)} value={currentSelectedDate} className="stock-dropdown">
@@ -145,6 +151,9 @@ const Page = () => {
         )}
       </div>
       {/* <div className="graph-div"> <MoneyFlowGraph /> </div> */}
+    </>
+    )
+  }
     </>
   );
 };

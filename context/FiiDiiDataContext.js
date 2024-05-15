@@ -1,7 +1,7 @@
 "use client";
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
-import React, { createContext, useEffect, useReducer } from "react";
+import React, { createContext, useState, useReducer } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 // import axios from "axios";
@@ -11,7 +11,6 @@ export const FiiDiiDataContext = createContext({});
 
 const initialState = {
   apiData: [],
-  isLoading: true,
   selectedClient: "",
   updatedData: [],
   filteredClientData: [],
@@ -23,7 +22,6 @@ const reducer = (state, action) => {
       return {
         ...state,
         apiData: action.payload,
-        isLoading: false,
       };
     case "FILTERED_CLIENT":
       return {
@@ -37,16 +35,19 @@ const reducer = (state, action) => {
 
 export const FiiDiiDataProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   const { selectedClient, apiData, updatedData, filteredClientData } = state;
   const authState = useAppSelector((state) => state.auth.authState);
+  const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
 
   //------------------API CALL----------------
   const handleFetch = async () => {
-    if(!authState){
-      return
+    if(!authState && checkUserIsLoggedIn){
+      return router.push('/login');
     }
+    setIsLoading(true)
     try {
       const response = await axiosInstance.get(API_ROUTER.LIST_MARKET_DATAL, {
         headers: { Authorization: `Bearer ${authState.access}` },
@@ -63,6 +64,7 @@ export const FiiDiiDataProvider = ({ children }) => {
       dispatch({ type: "FILTERED_CLIENT", payload: initialFilteredClient });
       // const currentPath = window.location.pathname;
       // localStorage.setItem('lastPath', currentPath);
+      setIsLoading(false)
     }else{
       router.push("/login");
     }
@@ -86,6 +88,7 @@ export const FiiDiiDataProvider = ({ children }) => {
     <FiiDiiDataContext.Provider
       value={{
         checkClientType,
+        isLoading,
         selectedClient,
         apiData,
         updatedData,

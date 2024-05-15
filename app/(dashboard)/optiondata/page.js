@@ -1,9 +1,12 @@
-"use client";
-import { API_ROUTER } from "@/services/apiRouter";
-import axiosInstance from "@/utils/axios";
-import { useEffect, useState } from "react";
-import axios from "axios"
-import { useAppSelector } from "@/store";
+'use client';
+import { API_ROUTER } from '@/services/apiRouter';
+import axiosInstance from '@/utils/axios';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useAppSelector } from '@/store';
+import dynamic from 'next/dynamic';
+
+const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
 export default function Page() {
   const [apiData, setApiData] = useState([]);
@@ -15,7 +18,7 @@ export default function Page() {
     setIsLoading(true);
     await axiosInstance
       .get(`${API_ROUTER.OPTIONDATA_LIST}?page=${page}`, {
-        headers: { Authorization: `Bearer ${authState.access}` },
+        headers: { Authorization: `Bearer ${authState.access}` }
       })
       .then((response) => {
         setApiData(response.data.results);
@@ -26,7 +29,7 @@ export default function Page() {
 
   useEffect(() => {
     authState && getData(currentPage);
-  }, [currentPage,authState]);
+  }, [currentPage, authState]);
 
   const handlePrevious = () => {
     if (currentPage > 1) {
@@ -43,7 +46,17 @@ export default function Page() {
       <div>
         <h1 className="table-title">Option Data Page </h1>
         {isLoading ? (
-          <div className="loading">Loading data...</div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              // marginTop: '50px',
+              height: '80vh'
+            }}
+          >
+            <PropagateLoader color="#33a3e3" loading={isLoading} size={15} />
+          </div>
         ) : (
           <div>
             <div className="table-div">
@@ -88,7 +101,7 @@ export default function Page() {
         )}
         <div className="btndiv">
           {currentPage === 1 ? (
-            ""
+            ''
           ) : (
             <button className="prevbtn" onClick={handlePrevious}>
               previous

@@ -6,11 +6,13 @@ import { useAppSelector } from "@/store";
 const GuestGuard = ({ children }) => {
   const router = useRouter();
   const authState = useAppSelector((state) => state.auth.authState);
+  const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
 
   useEffect(() => {
-    if (authState && authState.access && authState.refresh) {
+    if (checkUserIsLoggedIn) {
       router.push(`${window.location.pathname}`); 
     } else {
+      console.log("inside guard")
       router.push('/login'); 
     } 
   }, [router]);

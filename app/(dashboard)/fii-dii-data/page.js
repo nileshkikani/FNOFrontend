@@ -1,20 +1,23 @@
-"use client";
-import React,{useEffect} from "react";
+'use client';
+import React, { useEffect } from 'react';
+import dynamic from 'next/dynamic';
 
 // ------------HOOKS----------
-import useFiiDiiData from "@/hooks/useFiiDiiData";
+import useFiiDiiData from '@/hooks/useFiiDiiData';
 
 //---------CHARTS-----------
-import DailyIndexOption from "@/component/FII-DII-Graphs/DailyIndexOption-Graph";
-import DailyIndexFutures from "@/component/FII-DII-Graphs/DailyIndexFutures-Graph"
+import DailyIndexOption from '@/component/FII-DII-Graphs/DailyIndexOption-Graph';
+import DailyIndexFutures from '@/component/FII-DII-Graphs/DailyIndexFutures-Graph';
 
-import OptionsDataGraph from "@/component/FII-DII-Graphs/OptionsData-Graph";
-import FuturesDataGraph from "@/component/FII-DII-Graphs/FuturesData-Graph";
-import { useAppSelector } from "@/store";
+//  ===========LOADING ANIMATION ===========
+const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
+import OptionsDataGraph from '@/component/FII-DII-Graphs/OptionsData-Graph';
+import FuturesDataGraph from '@/component/FII-DII-Graphs/FuturesData-Graph';
+import { useAppSelector } from '@/store';
 
 export default function Page() {
-  const { checkClientType,handleFetch } = useFiiDiiData();
+  const { checkClientType, handleFetch, isLoading } = useFiiDiiData();
   const authState = useAppSelector((state) => state.auth.authState);
 
   useEffect(() => {
@@ -31,18 +34,33 @@ export default function Page() {
           <option value="Client">Client</option>
         </select>
       </div>
-      <div className="fii-dii-graph-div">
-        <DailyIndexOption />
-      </div>
-      <div className="fii-dii-graph-div">
-        <DailyIndexFutures />
-      </div>
-      <div className="fii-dii-graph-div">
-        <OptionsDataGraph />
-      </div>
-      <div className="fii-dii-graph-div">
-        <FuturesDataGraph />
-      </div>
+      {isLoading ? (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '80vh'
+          }}
+        >
+          <PropagateLoader color="#33a3e3" loading={isLoading} size={15} />
+        </div>
+      ) : (
+        <>
+          <div className="fii-dii-graph-div">
+            <DailyIndexOption />
+          </div>
+          <div className="fii-dii-graph-div">
+            <DailyIndexFutures />
+          </div>
+          <div className="fii-dii-graph-div">
+            <OptionsDataGraph />
+          </div>
+          <div className="fii-dii-graph-div">
+            <FuturesDataGraph />
+          </div>
+        </>
+      )}
     </>
   );
 }
