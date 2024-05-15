@@ -81,7 +81,6 @@ export const CashflowProvider = ({ children }) => {
       const response = await axiosInstance.get(apiUrl, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
-      // console.log("ioioioioi",response)
       const responseData = response.data;
       // -----------GETTING UNIQUE DATES----------
       if (response.status === 200) {

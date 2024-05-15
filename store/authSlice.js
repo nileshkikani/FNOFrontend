@@ -6,7 +6,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   authState: "",
   isUser:false,
-  isCookie:false
+  isCookie:false,
+  logedInTine:""
 };
 
 export const authSlice = createSlice({
@@ -14,22 +15,23 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     setAuth: (state, action) => {
-      // console.log("hello==>>5555",action.payload)
-      // return;
+    
       state.authState = action.payload;
     },
     setUserStatus: (state, action) => {
-      console.log("hello==>>5555",action)
-      // return;
+     
       state.isUser = action.payload;
     },
     setUserStatusInitially: (state, action) => {
-      console.log("hello==>>5555",action)
-      // return;
+      
       state.isCookie = action.payload;
+    },
+    setUserLoginTime: (state, action) => {
+     
+      state.logedInTine = action.payload;
     },
   },
 });
 
-export const { setAuth,setUserStatus,setUserStatusInitially } = authSlice.actions;
+export const { setAuth,setUserStatus,setUserStatusInitially,setUserLoginTime } = authSlice.actions;
 export const authReducer = authSlice.reducer;

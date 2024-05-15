@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
 import useAuth from '@/hooks/useAuth';
-import { useRouter } from 'next/navigation';
+import { useRouter,usePathname } from 'next/navigation';
 import { DropDown } from './DropDown';
-import { setAuth, setUserStatus,setUserStatusInitially } from '@/store/authSlice';
+import { setAuth, setUserLoginTime, setUserStatus,setUserStatusInitially } from '@/store/authSlice';
 import { useAppSelector } from '@/store';
 import { useDispatch } from 'react-redux';
 import Cookie from 'js-cookie';
@@ -28,12 +28,13 @@ const DATA = [
 
 const Navbar = () => {
   const router = useRouter();
+  const currentPath = usePathname();
   const [data, setData] = useState({});
   const storeDispatch = useDispatch();
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
   const checkIsLoggedInInitially = useAppSelector((state) => state.auth.isCookie);
-  const { refreshToken } = useAuth();
+  const { refreshToken,checkTimer } = useAuth();
 
   const getAdvanceDecline = async () => {
     try {
@@ -44,42 +45,23 @@ const Navbar = () => {
     }
   };
   useEffect(() => {
-    console.log('ooooo', checkUserIsLoggedIn);
     if (checkIsLoggedInInitially) {
       const clrInterval = setInterval(() => {
-        console.log('ttt');
-        // refreshToken();
-        // storeDispatch(setAuth(''));
-        Cookie.remove("access")
-        Cookie.remove("refresh")
-        storeDispatch(setUserStatus(false));
-        router.push('/login');
-      }, 30000);
+        checkTimer();
+      }, 1000);
       return () => clearInterval(clrInterval);
     }
   }, [checkIsLoggedInInitially]);
 
   useEffect(() => {
     if (!checkUserIsLoggedIn) {
-      console.log("second UE");
       storeDispatch(setUserStatusInitially(false));
-      // return ()=> storeDispatch(setUserStatus(false));
     }
   }, [checkUserIsLoggedIn]);
 
-  // useEffect(()=>{
-  //   return ()=> storeDispatch(setUserStatus(false));
-  // },[])
-
   // ------------LOGOUT----------
   const logout = async () => {
-    // const accessToken = Cookie.get("access");
-    // const refreshToken = Cookie.get("refresh");
-    console.log('6s6s6s2s6s1s', authState);
-    // console.log("6s6s6s2s6s1s",accessToken)
-    // console.log("6s6s6s2s6s1s",refreshToken)
-
-    try {
+        try {
       await axiosInstance.post(
         `${API_ROUTER.LOGOUT}`,
         {
@@ -95,6 +77,8 @@ const Navbar = () => {
       Cookie.remove('refresh');
       storeDispatch(setAuth(''));
       storeDispatch(setUserStatus(false));
+      storeDispatch(setUserLoginTime(""));
+      storeDispatch(setUserStatusInitially(false));
 
       router.push('/login');
     } catch (error) {
@@ -107,12 +91,12 @@ const Navbar = () => {
   }, []);
 
   const isActive = (path) => {
-    return router.pathname === path;
+    checkUserIsLoggedIn && router.push(path);
   };
 
   const handleSelectChange = (event) => {
     // authState && authState.access && router.push(event.target.value == "Live Charts" ? "/activeoi" :event.target.value == "FII DII Data" ? "/fii-dii-data" : "/multistrike");
-    authState && authState.access && router.push(event.target.value);
+    checkUserIsLoggedIn && router.push(event.target.value);
   };
 
   return (
@@ -142,10 +126,10 @@ const Navbar = () => {
             <span>ADR: {data && data?.bank_nifty_adr ? data?.bank_nifty_adr : '...'}</span>
           </li>
           {DATA?.map((item, index) => (
-            <li className="nav-item" key={index}>
-              <Link href={item?.path} className={isActive(item.path) ? 'active-link' : ''}>
+            <li className={`nav-item ${currentPath == item.path && 'active-link'}`} key={index} onClick={()=>isActive(item.path)}>
+              {/* <Link href={item?.path} className={isActive(item.path) ? 'active-link' : ''}> */}
                 {item.title}
-              </Link>
+              {/* </Link> */}
             </li>
           ))}
           <li>

@@ -69,7 +69,6 @@ const Page = () => {
     }
   };
 
-  // console.log('data outside log::',selectedStock)
 
   return (<>
   {

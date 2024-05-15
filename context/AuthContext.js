@@ -5,7 +5,7 @@ import React, { createContext, useReducer } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setAuth, setUserStatus,setUserStatusInitially } from "@/store/authSlice";
+import { setAuth, setUserLoginTime, setUserStatus,setUserStatusInitially } from "@/store/authSlice";
 import { useAppSelector } from "@/store";
 import Cookie from "js-cookie"
 
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
   const storeDispatch = useDispatch();
   const { data } = state;
   const authState = useAppSelector((state) => state.auth.authState);
-
+  const LoginTime = useAppSelector((state) => state.auth.logedInTine);
 
   // ---------LOGIN API CALL---------
   const getData = async ({ email, password }) => {
@@ -54,6 +54,7 @@ export const AuthProvider = ({ children }) => {
          
          storeDispatch(setUserStatus(true));
          storeDispatch(setUserStatusInitially(true));
+    storeDispatch(setUserLoginTime(Date.now().toString()));
         router.push('/activeoi');
       } else {
         router.push('/login');
@@ -63,12 +64,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+
+  const checkTimer =()=>{
+    const currentTime = Date.now();
+    const elapsed = currentTime - parseInt(LoginTime, 10);
+    if (elapsed >= 60 * 1000) {
+      Cookie.remove("access")
+        Cookie.remove("refresh")
+        storeDispatch(setUserStatus(false));
+        router.push('/login');
+    storeDispatch(setUserLoginTime(""));
+    }
+    }
   // -----------GET NEW REFRESH TOKEN AND STORING AFTER EVERY 55 MINS from handleSubmit function------------
   const refreshToken = async () => {
-    // console.log("before logout call::",authState.access);
-    // console.log("hdhdhdh==>",authState)
-    console.log("newRefreshToken.data.tokens.access===>>>",authState)
-
     const accessToken = Cookie.get("access");
     const refreshToken = Cookie.get("refresh");
     try {
@@ -89,5 +98,5 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  return <AuthContext.Provider value={{ ...state, data, getData, refreshToken }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ ...state, data, getData, refreshToken,checkTimer }}>{children}</AuthContext.Provider>;
 };

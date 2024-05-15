@@ -14,8 +14,6 @@ const NiftyFuturesTable = () => {
       } = useNiftyFutureData();
 
 
-      // console.log("selected optionnn--chekc--,",selectedOption);
-      // console.log("data on tablee===",filterByCreatedDate)
   return (
     <>
       <div className="mx-10">

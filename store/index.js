@@ -21,12 +21,12 @@ const createNoopStorage = () => {
 const storage =
   typeof window !== "undefined"
     ? createWebStorage("local")
-    : (console.log("a1a1a1a1a1"),createNoopStorage());
+    : createNoopStorage();
 
 const authPersistConfig = {
   key: "auth",
   storage: storage,
-  whitelist: ["authState","isUser","isCookie"],
+  whitelist: ["authState","isUser","isCookie","logedInTine"],
 };
 
 const persistedReducer = persistReducer(authPersistConfig, authReducer);

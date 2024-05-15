@@ -118,7 +118,6 @@ export const NiftyFutureProvider = ({ children }) => {
   // ---------------------------CREATED DATE----------------------
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
-    // console.log("from fate change function", selectedDate);
     const [day, month, year] = selectedDate.split("/");
     const formattedDate = `${year}-${month}-${day}`;
     const dateObject = new Date(formattedDate);
