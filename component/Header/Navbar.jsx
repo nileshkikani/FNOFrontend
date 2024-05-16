@@ -34,7 +34,11 @@ const Navbar = () => {
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
   const checkIsLoggedInInitially = useAppSelector((state) => state.auth.isCookie);
+
+  const checkIsRemember = useAppSelector((state) => state.auth.rememberMe);
   const { refreshToken,checkTimer } = useAuth();
+  
+  // console.log("from nvbar->",checkIsRemember)
 
   const getAdvanceDecline = async () => {
     try {
@@ -58,6 +62,10 @@ const Navbar = () => {
       storeDispatch(setUserStatusInitially(false));
     }
   }, [checkUserIsLoggedIn]);
+
+  useEffect(()=>{
+    !checkIsRemember && refreshToken();
+  },[])
 
   // ------------LOGOUT----------
   const logout = async () => {

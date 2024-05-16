@@ -13,6 +13,8 @@ export default function Page() {
     getData();
   }, []);
 
+
+  console.log("data is ::",data);
   return (
     <>
       {isLoading ? (

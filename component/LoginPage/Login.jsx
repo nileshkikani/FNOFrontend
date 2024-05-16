@@ -2,16 +2,23 @@
 import useAuth from '@/hooks/useAuth';
 import { useAppSelector } from '@/store';
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { setRememberMe } from '@/store/authSlice';
 
 const Login = () => {
   const { getData, refreshToken } = useAuth();
   const authState = useAppSelector((state) => state.auth.authState);
+  const checkIsRemember = useAppSelector((state) => state.auth.rememberMe);
+  const storeDispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     let email = e.target.email?.value;
     let password = e.target.password?.value;
     getData({ email, password });
+    // if(checkIsRemember){
+    //   refreshToken();
+    // }
     // setInterval(() => {
     //   refreshToken();
     // }, 15000); // -------55 minute(3300000)---
@@ -53,6 +60,20 @@ const Login = () => {
                       required=""
                     />
                   </div>
+                  <div>
+                    <label for="RememberMe" className="login-lables">
+                      <input
+                        type="checkbox"
+                        name="RememberMe"
+                        id="RememberMe"
+                        // className="pass-email-field"
+                        required=""
+                        onChange={() => storeDispatch(setRememberMe(!checkIsRemember))}
+                      />
+                      Remember Me
+                    </label>
+                  </div>
+
                   <button type="submit" className="login-btn">
                     Login
                   </button>

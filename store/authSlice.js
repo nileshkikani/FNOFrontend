@@ -7,7 +7,8 @@ const initialState = {
   authState: "",
   isUser:false,
   isCookie:false,
-  logedInTine:""
+  logedInTime:"",
+  rememberMe:false
 };
 
 export const authSlice = createSlice({
@@ -28,10 +29,13 @@ export const authSlice = createSlice({
     },
     setUserLoginTime: (state, action) => {
      
-      state.logedInTine = action.payload;
+      state.logedInTime = action.payload;
+    },
+    setRememberMe: (state, action) => {
+      state.rememberMe = action.payload;
     },
   },
 });
 
-export const { setAuth,setUserStatus,setUserStatusInitially,setUserLoginTime } = authSlice.actions;
+export const { setAuth,setUserStatus,setUserStatusInitially,setUserLoginTime,setRememberMe } = authSlice.actions;
 export const authReducer = authSlice.reducer;
