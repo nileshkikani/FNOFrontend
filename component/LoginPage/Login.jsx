@@ -7,7 +7,6 @@ import { setRememberMe } from '@/store/authSlice';
 
 const Login = () => {
   const { getData, refreshToken } = useAuth();
-  const authState = useAppSelector((state) => state.auth.authState);
   const checkIsRemember = useAppSelector((state) => state.auth.rememberMe);
   const storeDispatch = useDispatch();
 
@@ -27,40 +26,42 @@ const Login = () => {
 
   return (
     <>
-      <div>
-        <section>
-          <div className="login-parent">
-            <div className="login-div-nested">
-              <div>
-                <h1 className="login-title">Login</h1>
-                <form className="login-form" action="/activeoi" method="POST" onSubmit={handleSubmit}>
-                  <div>
-                    <label htmlfor="email" className="login-lables ">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      className="pass-email-field  "
-                      placeholder="enter your email"
-                      required=""
-                    />
-                  </div>
-                  <div>
-                    <label for="password" className="login-lables ">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      placeholder="enter password"
-                      className="pass-email-field"
-                      required=""
-                    />
-                  </div>
-                  <div>
+      <div className="login-div-main">
+        <div className="stock-image-div">
+          <img src="/stockImage.webp" alt="stockImage" className="stock-image" />
+        </div>
+        <div className="login-parents">
+          <div className="login-nested-div">
+            <div>
+              <h1 className="login-title-text">Login</h1>
+              <form className="" action="/activeoi" method="POST" onSubmit={handleSubmit}>
+                <div>
+                  <label htmlfor="email" className="login-lable ">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    className="pass-email-input"
+                    placeholder="Enter your email"
+                    required=""
+                  />
+                </div>
+                <div>
+                  <label for="password" className="login-lable ">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Enter password"
+                    className="pass-email-input"
+                    required=""
+                  />
+                </div>
+                <div>
                     <label for="RememberMe" className="login-lables">
                       <input
                         type="checkbox"
@@ -73,15 +74,13 @@ const Login = () => {
                       Remember Me
                     </label>
                   </div>
-
-                  <button type="submit" className="login-btn">
-                    Login
-                  </button>
-                </form>
-              </div>
+                <button type="submit" className="login-button">
+                  Login
+                </button>
+              </form>
             </div>
           </div>
-        </section>
+        </div>
       </div>
     </>
   );

@@ -5,7 +5,7 @@ import React, { createContext, useReducer } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import { setAuth, setUserLoginTime, setUserStatus, setUserStatusInitially, setRememberMe } from '@/store/authSlice';
+import { setAuth, setUserStatus, setUserStatusInitially, setRememberMe } from '@/store/authSlice';
 import { useAppSelector } from '@/store';
 import Cookie from 'js-cookie';
 
@@ -33,7 +33,8 @@ export const AuthProvider = ({ children }) => {
   const storeDispatch = useDispatch();
   const { data } = state;
   const authState = useAppSelector((state) => state.auth.authState);
-  const LoginTime = useAppSelector((state) => state.auth.logedInTime);
+  const checkIsRemember = useAppSelector((state) => state.auth.rememberMe);
+
 
   // const checkIsRemember = useAppSelector((state) => state.auth.rememberMe);
 
@@ -58,10 +59,10 @@ export const AuthProvider = ({ children }) => {
         );
         Cookie.set('access', response.data.tokens?.access);
         Cookie.set('refresh', response.data.tokens?.refresh);
+        Cookie.set('time', Date.now().toString());
 
         storeDispatch(setUserStatus(true));
         storeDispatch(setUserStatusInitially(true));
-        storeDispatch(setUserLoginTime(Date.now().toString()));
         router.push('/activeoi');
       } else {
         router.push('/login');
@@ -73,33 +74,39 @@ export const AuthProvider = ({ children }) => {
 
   const checkTimer = () => {
     const currentTime = Date.now();
-    const elapsed = currentTime - parseInt(LoginTime, 10);
+    const rutvik = Cookie.get('time');
+    const elapsed = currentTime - parseInt(rutvik, 10);
     if (elapsed >= 12 * 60 * 60 * 1000) {
-      // Cookie.remove('access');
-      // Cookie.remove('refresh');
+      if(checkIsRemember) 
+        {
+           refreshToken()
+           return 
+          }
+      Cookie.remove('time');
       storeDispatch(setUserStatus(false));
       router.push('/login');
-      storeDispatch(setUserLoginTime(''));
     }
   };
   // -----------GET NEW REFRESH TOKEN AND STORING AFTER EVERY 55 MINS from handleSubmit function------------
   const refreshToken = async () => {
-    // const accessToken = Cookie.get('access');
-    // const refreshToken = Cookie.get('refresh');
+    const accessToken = Cookie.get('access');
+    const refreshToken = Cookie.get('refresh');
     try {
       console.log("refreshtoken_useEffects")
       const newRefreshToken = await axiosInstance.post(
         API_ROUTER.REFRESH_TOKEN,
-        { refresh: authState.refresh },
-        { headers: { Authorization: `Bearer ${authState.access}` } }
+        { refresh: refreshToken },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       Cookie.set('access', newRefreshToken?.data?.tokens?.access);
+      Cookie.set('time', Date.now().toString());
       storeDispatch(
         setAuth({
           ...authState,
           access: newRefreshToken?.data?.tokens?.access ? newRefreshToken?.data?.tokens?.access : ''
         })
       );
+
     } catch (error) {
       console.log('error getting refresh token', error);
     }

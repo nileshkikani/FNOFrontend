@@ -6,7 +6,7 @@ import axiosInstance from '@/utils/axios';
 import useAuth from '@/hooks/useAuth';
 import { useRouter,usePathname } from 'next/navigation';
 import { DropDown } from './DropDown';
-import { setAuth, setUserLoginTime, setUserStatus,setUserStatusInitially } from '@/store/authSlice';
+import { setAuth, setRememberMe, setUserStatus,setUserStatusInitially } from '@/store/authSlice';
 import { useAppSelector } from '@/store';
 import { useDispatch } from 'react-redux';
 import Cookie from 'js-cookie';
@@ -85,8 +85,10 @@ const Navbar = () => {
       Cookie.remove('refresh');
       storeDispatch(setAuth(''));
       storeDispatch(setUserStatus(false));
-      storeDispatch(setUserLoginTime(""));
+      Cookie.remove('time');
       storeDispatch(setUserStatusInitially(false));
+      storeDispatch(setRememberMe(false));
+
 
       router.push('/login');
     } catch (error) {

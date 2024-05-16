@@ -5,11 +5,15 @@ import { useAppSelector } from '@/store';
 
 export default function Home() {
   const router = useRouter();
-  const authState = useAppSelector((state) => state.auth.authState);
+  const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
+
 
   useEffect(() => {
-    if (!authState) {
+    if (!checkUserIsLoggedIn) {
       router.push('/login');
+    } 
+    else {
+       router.push('/activeoi'); 
     }
   }, []);
 
