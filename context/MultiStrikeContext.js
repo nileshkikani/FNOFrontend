@@ -36,15 +36,15 @@ const reducer = (state, action) => {
     case 'SET_STRIKES':
       return { ...state, strikes: action.payload };
     case 'SET_STRIKE_1':
-      return { ...state, strikePrice1: action.payload.strike1Data, strikePrice1IsChecked: action.payload.status };
+      return { ...state, strikePrice1: action.payload.strikePrice1, strikePrice1IsChecked: action.payload.status };
     case 'SET_STRIKE_2':
-      return { ...state, strikePrice2: action.payload.strike2Data, strikePrice2IsChecked: action.payload.status };
+      return { ...state, strikePrice2: action.payload.strikePrice2, strikePrice2IsChecked: action.payload.status };
     case 'SET_STRIKE_3':
-      return { ...state, strikePrice3: action.payload.strike3Data, strikePrice3IsChecked: action.payload.status };
+      return { ...state, strikePrice3: action.payload.strikePrice3, strikePrice3IsChecked: action.payload.status };
     case 'SET_STRIKE_4':
-      return { ...state, strikePrice4: action.payload.strike4Data, strikePrice4IsChecked: action.payload.status };
+      return { ...state, strikePrice4: action.payload.strikePrice4, strikePrice4IsChecked: action.payload.status };
     case 'SET_STRIKE_5':
-      return { ...state, strikePrice5: action.payload.strike5Data, strikePrice5IsChecked: action.payload.status };
+      return { ...state, strikePrice5: action.payload.strikePrice5, strikePrice5IsChecked: action.payload.status };
     // case "SET_SELECTED_STRIKES":
     //   return { ...state, selectedStrikes: action.payload };
     default:
@@ -2722,39 +2722,31 @@ export const MultiStrikeProvider = ({ children }) => {
 
   // -------storing selected strike---------
   const checkSelectedStrike = (e, identifier) => {
-    // console.log("inside checkbox function")
-    e.preventDefault();
-    const selectedCheckboxValue = e.target.value;
-    const isChecked = e.target.checked;
-    const filteredData = TEST_ARRAY.filter((itm) => itm?.strike_price === `${selectedCheckboxValue}.00`);
+      
+    const filteredData = TEST_ARRAY.filter((itm) => itm?.strike_price == `${e.target.value}`);
 
-    if (isChecked) {
-      setCheckedStrikes(prevState => [...prevState, identifier]);
-    } else {
-      setCheckedStrikes(prevState => prevState.filter(item => item !== identifier));
-    }
+    // if (e.target.checked) {
+    //   setCheckedStrikes(prevState => [...prevState, identifier]);
+    // } else {
+    //   setCheckedStrikes(prevState => prevState.filter(item => item !== identifier));
+    // }
 
     switch (identifier) {
       case 1:
         // setStrikePrice1(filteredData);
         dispatch({ type: 'SET_STRIKE_1', payload: { strikePrice1: filteredData, status: !strikePrice1IsChecked } });
-        console.log('1 status', strikePrice1IsChecked);
         break;
       case 2:
         dispatch({ type: 'SET_STRIKE_2', payload: { strikePrice2: filteredData, status: !strikePrice2IsChecked } });
-        console.log('2 status', strikePrice2IsChecked);
         break;
       case 3:
         dispatch({ type: 'SET_STRIKE_3', payload: { strikePrice3: filteredData, status: !strikePrice3IsChecked } });
-        console.log('3 status', strikePrice3IsChecked);
         break;
       case 4:
         dispatch({ type: 'SET_STRIKE_4', payload: { strikePrice4: filteredData, status: !strikePrice4IsChecked } });
-        console.log('4 status', strikePrice4IsChecked);
         break;
       case 5:
         dispatch({ type: 'SET_STRIKE_5', payload: { strikePrice5: filteredData, status: !strikePrice5IsChecked } });
-        console.log('5 status', strikePrice5IsChecked);
         break;
       default:
         break;

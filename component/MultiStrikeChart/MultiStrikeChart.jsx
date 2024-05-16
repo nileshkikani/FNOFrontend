@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Line, LineChart, XAxis, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 import useMultiStrikeData from '@/hooks/useMultiStrikeData';
@@ -8,7 +8,6 @@ const MultiStrikeChart = () => {
     useMultiStrikeData();
   //   const [strikePrice, setStrikePrice ] = useState();
 
-  console.log("fff,",strikePrice5IsChecked);
   return (
     <div style={{ width: '100%', height: '400px' }}>
       <h1 className="table-title">Multi Strike</h1>
@@ -39,6 +38,7 @@ const MultiStrikeChart = () => {
           />
           <Legend />
           {strikePrice1 && strikePrice1IsChecked &&(
+            
             <>
               <Line type="monotone" data={strikePrice1} dataKey="call_net_oi" stroke="#1e293b" yAxisId="right" />
               <Line type="monotone" data={strikePrice1} dataKey="put_net_oi" stroke="#94a3b8" yAxisId="left" />

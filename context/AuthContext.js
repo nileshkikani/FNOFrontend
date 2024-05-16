@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
   const checkTimer = () => {
     const currentTime = Date.now();
     const elapsed = currentTime - parseInt(LoginTime, 10);
-    if (elapsed >= 60 * 1000) {
+    if (elapsed >= 12 * 60 * 60 * 1000) {
       // Cookie.remove('access');
       // Cookie.remove('refresh');
       storeDispatch(setUserStatus(false));
