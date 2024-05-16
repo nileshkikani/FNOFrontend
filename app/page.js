@@ -10,6 +10,8 @@ export default function Home() {
   useEffect(() => {
     if (!authState) {
       router.push('/login');
+    } else {
+      router.push('/activeoi');
     }
   }, []);
 

@@ -1,16 +1,32 @@
 /** @type {import('tailwindcss').Config} */
 
-const plugin = require("tailwindcss/plugin");
+const plugin = require('tailwindcss/plugin');
 
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}'
+  ],
+
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        bluee00: '#006ce6',
+        blue21: '#215584',
+        black34: '#344054',
+        grayD8: '#d8dce3',
+        grayA3: '#a3aab7'
+      },
+      fontFamily: {
+        Roboto: ['Roboto']
+      }
+    }
   },
   plugins: [
     plugin(function ({ addVariant }) {
-      addVariant("children", "&>*");
-    }),
+      addVariant('children', '&>*');
+    })
     // require('@tailwindcss/custom-forms'),
-  ],
+  ]
 };

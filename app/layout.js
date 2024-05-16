@@ -1,30 +1,31 @@
-import { Inter } from "next/font/google";
+import { Inter } from 'next/font/google';
 // import dynamic from "next/dynamic";
-import "./globals.css";
+import './globals.css';
 
 //-------CONTEXTS------
-import { ActiveOiProvider } from "@/context/ActiveOIContext";
-import { NiftyFutureProvider } from "@/context/NiftyFutureContext";
-import { CashflowProvider } from "@/context/CashflowContext";
-import { FiiDiiDataProvider } from "@/context/FiiDiiDataContext";
-import { SecurityWiseProvider } from "@/context/SecurityWiseContext";
-import { AuthProvider } from "@/context/AuthContext";
-import { MultiStrikeProvider } from "@/context/MultiStrikeContext";
+import { ActiveOiProvider } from '@/context/ActiveOIContext';
+import { NiftyFutureProvider } from '@/context/NiftyFutureContext';
+import { CashflowProvider } from '@/context/CashflowContext';
+import { FiiDiiDataProvider } from '@/context/FiiDiiDataContext';
+import { SecurityWiseProvider } from '@/context/SecurityWiseContext';
+import { AuthProvider } from '@/context/AuthContext';
+import { MultiStrikeProvider } from '@/context/MultiStrikeContext';
 
 //--------COMPONENTS-----------
-import dynamic from "next/dynamic";
-import Navbar from "@/component/Header/Navbar";
+import dynamic from 'next/dynamic';
+import Navbar from '@/component/Header/Navbar';
+import Header from '@/component/Header';
 // import Navbar from "@/component/Navbar";
 
-const ReduxProvider = dynamic(() => import("@/store/redux-provider"), {
-  ssr: false,
+const ReduxProvider = dynamic(() => import('@/store/redux-provider'), {
+  ssr: false
 });
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: "Algo Trading",
-  description: "Advance tool for FnO trading",
+  title: 'Algo Trading',
+  description: 'Advance tool for FnO trading'
 };
 
 export default function RootLayout({ children }) {
@@ -33,7 +34,7 @@ export default function RootLayout({ children }) {
       <body>
         <ReduxProvider>
           <AuthProvider>
-            <Navbar />
+            <Header />
             {/* {middleware(router.asPath)} */}
             {
               <SecurityWiseProvider>
