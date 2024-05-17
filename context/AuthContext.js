@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { setAuth, setUserStatus, setUserStatusInitially, setRememberMe } from '@/store/authSlice';
 import { useAppSelector } from '@/store';
 import Cookie from 'js-cookie';
+import toast from 'react-hot-toast';
 
 export const AuthContext = createContext({});
 
@@ -68,14 +69,16 @@ export const AuthProvider = ({ children }) => {
         router.push('/login');
       }
     } catch (error) {
-      console.log('Error while login', error);
+      toast.error("Wrong email or password");
+      
+
     }
   };
 
   const checkTimer = () => {
     const currentTime = Date.now();
-    const rutvik = Cookie.get('time');
-    const elapsed = currentTime - parseInt(rutvik, 10);
+    const loginTime = Cookie.get('time');
+    const elapsed = currentTime - parseInt(loginTime, 10);
     if (elapsed >= 12 * 60 * 60 * 1000) {
       if(checkIsRemember) 
         {
@@ -87,12 +90,21 @@ export const AuthProvider = ({ children }) => {
       router.push('/login');
     }
   };
+
+  const handleResponceError =()=>{
+    Cookie.remove('access');
+      Cookie.remove('refresh');
+      storeDispatch(setUserStatus(false));
+      Cookie.remove('time');
+      storeDispatch(setUserStatusInitially(false));
+      storeDispatch(setRememberMe(false));
+      router.push('/login');
+  }
   // -----------GET NEW REFRESH TOKEN AND STORING AFTER EVERY 55 MINS from handleSubmit function------------
   const refreshToken = async () => {
     const accessToken = Cookie.get('access');
     const refreshToken = Cookie.get('refresh');
     try {
-      console.log("refreshtoken_useEffects")
       const newRefreshToken = await axiosInstance.post(
         API_ROUTER.REFRESH_TOKEN,
         { refresh: refreshToken },
@@ -108,12 +120,12 @@ export const AuthProvider = ({ children }) => {
       );
 
     } catch (error) {
-      console.log('error getting refresh token', error);
-    }
+      console.log("error") 
+       }
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, data, getData, refreshToken, checkTimer }}>
+    <AuthContext.Provider value={{ ...state, data, getData, refreshToken, checkTimer,handleResponceError }}>
       {children}
     </AuthContext.Provider>
   );

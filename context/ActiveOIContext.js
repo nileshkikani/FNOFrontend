@@ -2,9 +2,13 @@
 import { API_ROUTER } from "@/services/apiRouter";
 import axiosInstance from "@/utils/axios";
 import React, { createContext, useReducer, useCallback, useMemo } from "react";
+import Cookie from 'js-cookie';
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/store";
+import { useDispatch } from "react-redux";
+import { setRememberMe, setUserStatus, setUserStatusInitially } from "@/store/authSlice";
+import useAuth from "@/hooks/useAuth";
 
 export const ActiveOiContext = createContext({});
 
@@ -39,7 +43,11 @@ const reducer = (state, action) => {
 
 export const ActiveOiProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { handleResponceError } = useAuth();
+
   const router = useRouter();
+  const storeDispatch = useDispatch();
+
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
 
@@ -79,8 +87,7 @@ export const ActiveOiProvider = ({ children }) => {
       router.push('/login');
     }
     } catch (err) {
-      toast.error("Error getting data");
-      console.log("Error is this:", err);
+      handleResponceError();
     }
   }, [authState]);
 

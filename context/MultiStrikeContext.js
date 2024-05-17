@@ -5,6 +5,7 @@ import React, { createContext, useReducer, useCallback, useMemo, useEffect, useS
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useAppSelector } from '@/store';
+import useAuth from '@/hooks/useAuth';
 
 export const MultiStrikeContext = createContext({});
 
@@ -51,7 +52,7 @@ const reducer = (state, action) => {
 
 export const MultiStrikeProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const { handleResponceError } = useAuth();
   const router = useRouter();
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
@@ -90,8 +91,7 @@ export const MultiStrikeProvider = ({ children }) => {
         router.push('/login');
       }
     } catch (err) {
-      toast.error('Error getting multistrike api');
-      console.log('Error getting multistrike api, check::', err);
+      handleResponceError();
     }
   };
 

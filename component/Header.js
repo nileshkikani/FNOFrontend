@@ -64,7 +64,7 @@ export default function Header() {
     if (checkIsLoggedInInitially) {
       const clrInterval = setInterval(() => {
         checkTimer();
-      }, 1000);
+      }, 2000);
       return () => clearInterval(clrInterval);
     }
   }, [checkIsLoggedInInitially]);
@@ -428,11 +428,11 @@ export default function Header() {
                 const FaIcon = item?.icon;
                 return (
                   <li key={item.title}>
-                    {item.title === 'Login' && !Cookie.get('access') ? (
+                    {item.title === 'Login' && !checkUserIsLoggedIn ? (
                       <Link href={item.path} className="popover-li">
                         <FaIcon size={18} color="#344054" /> {item.title}
                       </Link>
-                    ) : item.title === 'Logout' && Cookie.get('access') ? (
+                    ) : item.title === 'Logout' && checkUserIsLoggedIn ? (
                       <button onClick={logout}>
                         <div className="popover-li">
                           <FaIcon size={18} color="#344054" /> {item.title}

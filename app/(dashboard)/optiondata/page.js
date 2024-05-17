@@ -5,11 +5,13 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAppSelector } from '@/store';
 import dynamic from 'next/dynamic';
+import useAuth from '@/hooks/useAuth';
 
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
 export default function Page() {
   const [apiData, setApiData] = useState([]);
+  const { handleResponceError } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const authState = useAppSelector((state) => state.auth.authState);
@@ -24,7 +26,7 @@ export default function Page() {
         setApiData(response.data.results);
         setIsLoading(false);
       })
-      .catch((err) => console.log());
+      .catch((err) => handleResponceError());
   };
 
   useEffect(() => {
