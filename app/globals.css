@@ -223,7 +223,11 @@ td {
 }
 
 .green {
-  @apply text-[#0A8B3D];
+  @apply text-[#0A8B3D] font-bold text-base;
+}
+
+.secwise-cols {
+  @apply text-base;
 }
 
 .active-link {
@@ -280,14 +284,13 @@ td {
   @apply bg-cyan-400;
 }
 
-/* --------multistrike chart line colors----------- */
-
-/* .color-dot-0-call{
-  @apply bg-slate-800;
+.symbol-list {
+  @apply text-blue-700 underline;
 }
-.color-dot-0-put{
+.color-dot-0-put {
   @apply bg-slate-400;
-} */
+}
+*/
 /* .color-dot-1-call{
   @apply bg-red-600;
 } */
