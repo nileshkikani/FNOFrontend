@@ -329,6 +329,26 @@ td {
   @apply py-4;
 }
 
+/* ------------FII DII RADIO BUTTONS------- */
+
+.radio-button-group {
+  @apply flex p-6 border-solid  ;
+}
+.radio-button {
+  @apply  rounded cursor-pointer px-4 py-2  border-[#ccc];
+}
+input[type="radio"] {
+  @apply hidden ;
+}
+input[type="radio"]:checked + label {
+  @apply bg-[#007bff] text-white border-[#007bff];
+}
+
+.radio-button-nested{
+  @apply border border-solid border-[#ccc] p-2 rounded;
+}
+
+
 .fii-dii-graph-div {
   @apply py-10;
 }
