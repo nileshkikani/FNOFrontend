@@ -223,7 +223,11 @@ td {
 }
 
 .green {
-  @apply text-[#0A8B3D];
+  @apply text-[#0A8B3D] font-bold text-base;
+}
+
+.secwise-cols{
+  @apply text-base;
 }
 
 .active-link {
@@ -285,40 +289,9 @@ td {
   @apply bg-cyan-400;
 }
 
-/* --------multistrike chart line colors----------- */
-
-/* .color-dot-0-call{
-  @apply bg-slate-800;
+.symbol-list{
+  @apply text-blue-700 underline;
 }
-.color-dot-0-put{
-  @apply bg-slate-400;
-} */
-/* .color-dot-1-call{
-  @apply bg-red-600;
-} */
-/* .color-dot-1-put{
-  @apply bg-red-400;
-} */
-/* .color-dot-2-call{
-  @apply bg-orange-900;
-} */
-/* .color-dot-2-put{
-  @apply bg-orange-400;
-} */
-/* .color-dot-3-call{
-  @apply bg-lime-800;
-} */
-/* .color-dot-3-put{
-  @apply bg-lime-400;
-} */
-/* .color-dot-4-call{
-  @apply bg-cyan-800;
-}
-.color-dot-4-put{
-  @apply bg-cyan-400;
-} */
-
-
 
 .advance {
   @apply text-green-400;
