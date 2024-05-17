@@ -180,6 +180,7 @@ export default function Header() {
       title: 'Security Wise',
       icon: FaShieldVirus
     },
+
     {
       path: '/activeoi',
       title: 'Live Chart',
@@ -237,9 +238,37 @@ export default function Header() {
               <img src="/barIcon.png" alt="Logo" />
             </button>
           </div>
+          <div className="bank-nifty-div">
+            <span className="heading-text">
+              <span className="advance-text">
+                Advance:
+                {data && data?.bank_nifty_advance ? data?.bank_nifty_advance : '...'}
+              </span>
+              <br />
+              <span className="decline-text">
+                <span className="heading-text">Decline:</span>
+                {data && data?.bank_nifty_decline ? data?.bank_nifty_decline : '...'}
+              </span>
+            </span>
+            <span className="heading-text">
+              <span className="heading-text">
+                Bank Nifty:
+                {data && data?.live_bank_nifty
+                  ? Math.trunc(data?.live_bank_nifty).toLocaleString('en-IN', {
+                      maximumFractionDigits: 0
+                    })
+                  : '...'}
+              </span>
+              <br />
+              <span className="heading-text">
+                ADR:
+                {data && data?.bank_nifty_adr ? data?.bank_nifty_adr : '...'}
+              </span>
+            </span>
+          </div>
           <div className="nav-parent">
             <ul className="nav-ul">
-              <div className="bank-nifty-div">
+              {/* <div className="bank-nifty-div">
                 <li className="heading-text">
                   <span className="advance-text">
                     Advance:
@@ -266,7 +295,7 @@ export default function Header() {
                     {data && data?.bank_nifty_adr ? data?.bank_nifty_adr : '...'}
                   </span>
                 </li>
-              </div>
+              </div> */}
               {checkUserIsLoggedIn ? (
                 <div className="li-btn-parent" ref={ref}>
                   <li
@@ -277,49 +306,50 @@ export default function Header() {
                     }}
                   >
                     Analyse
+                    <button
+                      onClick={() => {
+                        setAnalyseOn(!analyseOn);
+                        popoverShow ? closePopover() : openPopover();
+                      }}
+                    >
+                      {!analyseOn ? <FaAngleDown color="black" size={16} /> : <FaAngleUp color="black" size={16} />}
+                    </button>
                   </li>
-                  <button
-                    onClick={() => {
-                      setAnalyseOn(!analyseOn);
-                      popoverShow ? closePopover() : openPopover();
-                    }}
-                  >
-                    {!analyseOn ? <FaAngleDown color="black" size={16} /> : <FaAngleUp color="black" size={16} />}
-                  </button>
 
-                  <li className="nav-li">Watchlist</li>
+                  <li className="nav-li" onClick={() => navigate('/cashflow')}>
+                    Money Flow
+                  </li>
                   <li className="nav-li">Orders</li>
                 </div>
               ) : null}
-
-              <div className="nifty-div">
-                <li className="heading-text">
-                  <span className="advance-text">
-                    Advance:
-                    <span className="heading-text">{data && data?.nifty_advance ? data?.nifty_advance : '...'}</span>
-                  </span>
-                  <br />
-                  <span className="decline-text">
-                    Decline:
-                    {data && data?.nifty_advance ? data?.nifty_decline : '...'}
-                  </span>
-                </li>
-                <li className="heading-text">
-                  <span className="heading-text">
-                    NIFTY:
-                    <span className="heading-text">
-                      {data && data?.live_nifty
-                        ? Math.trunc(data?.live_nifty).toLocaleString('en-IN', {
-                            maximumFractionDigits: 0
-                          })
-                        : '...'}
-                    </span>
-                  </span>
-                  <br />
-                  <span className="heading-text">ADR: {data && data?.nifty_adr ? data?.nifty_adr : '...'}</span>
-                </li>
-              </div>
             </ul>
+          </div>
+          <div className="nifty-div">
+            <span className="heading-text">
+              <span className="advance-text">
+                Advance:
+                <span className="heading-text">{data && data?.nifty_advance ? data?.nifty_advance : '...'}</span>
+              </span>
+              <br />
+              <span className="decline-text">
+                Decline:
+                {data && data?.nifty_advance ? data?.nifty_decline : '...'}
+              </span>
+            </span>
+            <span className="heading-text">
+              <span className="heading-text">
+                NIFTY:
+                <span className="heading-text">
+                  {data && data?.live_nifty
+                    ? Math.trunc(data?.live_nifty).toLocaleString('en-IN', {
+                        maximumFractionDigits: 0
+                      })
+                    : '...'}
+                </span>
+              </span>
+              <br />
+              <span className="heading-text">ADR: {data && data?.nifty_adr ? data?.nifty_adr : '...'}</span>
+            </span>
           </div>
           <div className="nav-button">
             <div className="nav-btn-parent">

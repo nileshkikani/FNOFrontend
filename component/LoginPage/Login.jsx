@@ -33,10 +33,14 @@ const Login = () => {
         <div className="login-parents">
           <div className="login-nested-div">
             <div>
-              <h1 className="login-title-text">Login</h1>
-              <form className="" action="/activeoi" method="POST" onSubmit={handleSubmit}>
-                <div>
-                  <label htmlfor="email" className="login-lable ">
+              {/* <h1 className="login-title-text"> */}
+              {/* </h1> */}
+              <div className="login-logo-div">
+                <img src="/fnoLogo.png" alt="stockImage" className="login-logo" />
+              </div>
+              <form className="login-form" action="/activeoi" method="POST" onSubmit={handleSubmit}>
+                <div className="input-div">
+                  <label htmlfor="email" className="login-lables ">
                     Email
                   </label>
                   <input
@@ -48,8 +52,8 @@ const Login = () => {
                     required=""
                   />
                 </div>
-                <div>
-                  <label for="password" className="login-lable ">
+                <div className="input-div">
+                  <label for="password" className="login-lables ">
                     Password
                   </label>
                   <input
@@ -60,20 +64,21 @@ const Login = () => {
                     className="pass-email-input"
                     required=""
                   />
-                </div>
-                <div>
-                    <label for="RememberMe" className="login-lables">
+                  <div className="rember-me-div">
+                    <label for="RememberMe">
                       <input
                         type="checkbox"
                         name="RememberMe"
                         id="RememberMe"
+                        className="remember-me"
                         // className="pass-email-field"
                         required=""
                         onChange={() => storeDispatch(setRememberMe(!checkIsRemember))}
                       />
-                      Remember Me
+                      <span className="remember-text">Remember Me</span>
                     </label>
                   </div>
+                </div>
                 <button type="submit" className="login-button">
                   Login
                 </button>

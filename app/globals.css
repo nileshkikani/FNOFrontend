@@ -264,24 +264,19 @@ td {
   @apply inline-block w-[0.8em] h-[0.8em] mr-[5px] rounded-[50%];
 }
 
-.color-dot-0
-{
+.color-dot-0 {
   @apply bg-slate-500;
 }
-.color-dot-1
-{
+.color-dot-1 {
   @apply bg-red-400;
 }
-.color-dot-2
-{
+.color-dot-2 {
   @apply bg-orange-400;
 }
-.color-dot-3
-{
+.color-dot-3 {
   @apply bg-lime-400;
 }
-.color-dot-4
-{
+.color-dot-4 {
   @apply bg-cyan-400;
 }
 
@@ -317,8 +312,6 @@ td {
 .color-dot-4-put{
   @apply bg-cyan-400;
 } */
-
-
 
 .advance {
   @apply text-green-400;
@@ -371,7 +364,7 @@ td {
 }
 
 .login-lables {
-  @apply block mb-2 text-sm font-medium text-gray-900;
+  @apply block mb-1 text-[16px] font-normal font-Roboto tracking-wide text-black34;
 }
 
 .login-title {
@@ -380,7 +373,7 @@ td {
 }
 
 .login-form {
-  @apply px-10 py-6 space-y-4 md:space-y-6;
+  @apply px-0 py-6 space-y-2 md:space-y-2 flex w-full flex-col justify-center items-center bg-white;
 }
 
 .login-div-nested {
@@ -392,7 +385,18 @@ td {
 }
 
 .pass-email-field {
-  @apply bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg  block w-full p-2.5;
+  @apply bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg  block  p-2.5;
+}
+
+.input-div {
+  @apply w-[80%] font-Roboto tracking-wide text-black34 font-normal text-[15px];
+}
+
+.rember-me-div {
+  @apply mt-5 p-1 space-x-1 w-[80%];
+}
+.rember-me {
+  @apply pl-2;
 }
 
 /* .custom-date-input::-webkit-inner-spin-button,
@@ -425,7 +429,7 @@ td {
 }
 
 .nav-img {
-  @apply m-3 mr-0 sm:m-0 my-auto  md:order-none h-20 bg-white lg:w-[10%];
+  @apply m-3 mr-0 sm:m-0 my-auto  md:order-none h-20 bg-white lg:w-[8%];
   display: flex;
   align-items: center;
   justify-content: center;
@@ -439,15 +443,15 @@ td {
 }
 
 .nav-li {
-  @apply p-[10px] lg:p-[10px] text-[14px] lg:text-[16px] cursor-pointer font-semibold text-black34 hover:bg-gray-100 hover:text-bluee00 font-Roboto tracking-wide;
+  @apply p-[10px] text-[14px] lg:text-[16px] cursor-pointer font-semibold text-black34 hover:bg-gray-100 hover:text-bluee00 font-Roboto tracking-wide;
 }
 
 .nav-li-flex {
-  @apply p-[10px] pr-1 text-[14px] lg:text-[16px] cursor-pointer font-semibold text-black34 hover:bg-gray-100 hover:text-bluee00 font-Roboto tracking-wide;
+  @apply flex p-[10px] pr-1 text-[14px] lg:text-[16px] cursor-pointer font-semibold text-black34 hover:bg-gray-100 hover:text-bluee00 font-Roboto tracking-wide;
 }
 
 .nav-button {
-  @apply text-white bg-white flex sm:hidden md:flex justify-end mr-0 lg:mr-5 relative w-[10%];
+  @apply text-white bg-white flex sm:hidden md:flex justify-end mr-2 lg:mr-5 relative;
 }
 .nav-logo {
   @apply sm:w-20 lg:w-28 h-full object-cover lg:flex hidden;
@@ -460,7 +464,7 @@ td {
   @apply object-cover w-full h-full p-1 items-start flex;
 }
 .nav-parent {
-  @apply bg-white sm:w-[80%] w-full justify-center items-center flex lg:justify-center lg:items-center;
+  @apply bg-white sm:w-[60%] lg:w-[40%] hidden lg:flex w-full justify-center items-center  lg:justify-center lg:items-center;
 }
 .icon-dropdown {
   @apply w-4 h-4 sm:w-6 sm:h-6 hover:bg-gray-100  mt-1 sm:mt-2 hover:rounded-full;
@@ -469,7 +473,7 @@ td {
   @apply flex relative hover:bg-gray-100 p-2;
 }
 .li-btn-parent {
-  @apply hidden md:flex hover:bg-gray-100 lg:w-[30%];
+  @apply hidden md:flex hover:bg-gray-100 space-x-5;
 }
 /* .popover-container {
   @apply flex place-content-center mx-auto w-full content-center flex-wrap absolute bg-blue-300 border-0 mr-3 z-50 font-normal leading-normal text-sm max-w-xs text-left no-underline break-words rounded-lg;
@@ -508,10 +512,10 @@ td {
   @apply flex font-medium p-4 items-center gap-3 text-black34 hover:rounded-lg hover:bg-gray-100 text-[16px] hover:text-bluee00 font-Roboto transition-colors tracking-wide cursor-pointer;
 }
 .bank-nifty-div {
-  @apply sm:flex bg-white items-center justify-between hidden md:mx-2 lg:mx-10  text-black34 font-Roboto tracking-wide;
+  @apply sm:flex bg-white hidden md:mx-0 lg:mx-0 p-0  text-black34 font-Roboto tracking-wide;
 }
 .nifty-div {
-  @apply flex bg-white items-center justify-center sm:justify-between md:mx-2 lg:mx-10  text-black34 font-Roboto tracking-wide;
+  @apply flex bg-white md:mx-0 lg:mx-0 p-2  text-black34 font-Roboto tracking-wide;
 }
 .advance-text {
   @apply text-green-400 lg:text-[15px] text-[14px] sm:text-[12px] font-bold lg:ml-[2px];
@@ -535,6 +539,17 @@ td {
 }
 .stock-image {
   @apply w-full h-full object-cover bg-gray-900;
+}
+
+.main-div {
+  @apply flex flex-col;
+}
+
+.flex-div {
+  @apply flex;
+}
+.row-div {
+  /* @apply fle ; */
 }
 /* Styles for devices with a maximum width of 768px */
 @media (max-width: 768px) {
@@ -568,7 +583,7 @@ td {
 /* ---------------------Updated Login Page----------------- */
 
 .login-button {
-  @apply w-full lg:text-gray-900 border mt-10  focus:ring-4 focus:outline-none text-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center !important;
+  @apply w-[80%] lg:text-white text-[16px] border mt-10 tracking-wider font-Roboto focus:ring-4 focus:outline-none text-white font-medium rounded-lg px-5 py-2.5 text-center bg-blue21 !important;
 }
 
 .login-lable {
@@ -597,11 +612,24 @@ td {
 }
 
 .pass-email-input {
-  @apply bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg  block w-full p-2.5  !important;
+  @apply bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg  block w-full p-2.5 mb-2;
 }
 
 .heading-text {
   @apply font-normal font-Roboto lg:text-[14px] text-[14px] sm:text-[12px] p-[1px];
+}
+.remember-text {
+  @apply font-normal font-Roboto lg:text-[14px] text-[14px] sm:text-[12px] ml-[5px] tracking-wide;
+}
+.remember-me {
+  @apply mt-1;
+}
+
+.login-logo {
+  @apply sm:w-20 lg:w-48 h-full object-cover lg:flex hidden justify-center items-center;
+}
+.login-logo-div {
+  @apply lg:flex hidden justify-center items-center;
 }
 
 /*------------------------------------------- Side Menu -------------------------------------*/
