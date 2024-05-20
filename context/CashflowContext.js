@@ -1,4 +1,5 @@
 'use client';
+import useAuth from '@/hooks/useAuth';
 import { API_ROUTER } from '@/services/apiRouter';
 import { useAppSelector } from '@/store';
 import axiosInstance from '@/utils/axios';
@@ -54,6 +55,8 @@ const reducer = (state, action) => {
 
 export const CashflowProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { handleResponceError } = useAuth();
+  
   const [alldate, setAllDate] = useState([]);
   const [initialLoad, setInitialLoad] = useState(false);
   const [initialLoadForStock, setInitialLoadForStock] = useState(false);
@@ -68,7 +71,7 @@ export const CashflowProvider = ({ children }) => {
 
   // --------------------API CALL------------------
   const getData = async (dateFromDropdown) => {
-    if (!authState && checkUserIsLoggedIn) {
+    if (!authState && !checkUserIsLoggedIn) {
       return router.push('/login');
     }
     try {
@@ -118,7 +121,8 @@ export const CashflowProvider = ({ children }) => {
         router.push('/login');
       }
     } catch (err) {
-      toast.error('error getting cashflow data');
+      // toast.error('error getting cashflow data');
+      // handleResponceError()
       console.log('error is this:', err);
     }
   };

@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useAppSelector } from '@/store';
+import useAuth from '@/hooks/useAuth';
 // import Cookie from "cookie-js"
 
 export const SecurityWiseContext = createContext({});
@@ -34,6 +35,7 @@ export const SecurityWiseProvider = ({ children }) => {
   const [initialLoad, setInitialLoad] = useState(true);
   const [currentSelectedDate, setCurrentSelectedDate] = useState('');
   const router = useRouter();
+  const { handleResponceError } = useAuth();
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
   const { uniqueDates, data, isLoading } = state;
@@ -76,8 +78,7 @@ export const SecurityWiseProvider = ({ children }) => {
           router.push('/login');
         }
       } catch (err) {
-        toast.error('Error getting data');
-        console.log('Error is this::', err);
+        handleResponceError();
       }
     },
     [authState]

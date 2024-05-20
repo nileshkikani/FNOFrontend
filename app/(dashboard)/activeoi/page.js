@@ -43,16 +43,20 @@ export default function Page() {
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);
   const authState = useAppSelector((state) => state.auth.authState);
+  const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
 
   const memoizedTimeLeft = useMemo(() => timeLeft, [timeLeft]);
 
   useEffect(() => {
-    getData();
-    getNiftyFuturesData();
-    const intervalId = setInterval(() => {
-      setTimeLeft((prevTime) => prevTime - 1);
-    }, 1000);
-    return () => clearInterval(intervalId);
+    if(checkUserIsLoggedIn){
+
+      getData();
+      getNiftyFuturesData();
+      const intervalId = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+      return () => clearInterval(intervalId);
+    }
   }, [getData, setTimeLeft]);
 
   useEffect(() => {

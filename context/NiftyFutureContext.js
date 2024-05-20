@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/store";
+import useAuth from "@/hooks/useAuth";
 // import useAuth from "@/hooks/useAuth";
 
 export const NiftyFutureContext = createContext({});
@@ -49,6 +50,8 @@ const reducer = (state, action) => {
 export const NiftyFutureProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const router = useRouter();
+  const { handleResponceError } = useAuth();
+
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
 
@@ -65,6 +68,7 @@ export const NiftyFutureProvider = ({ children }) => {
   // ----------API CALL FUNCTION------------
 
   const getNiftyFuturesData = async () => {
+
     dispatch({ type: "SET_DATA", payload: { isLoading: true } });
     if (!authState && checkUserIsLoggedIn) {
       return router.push('/login');
@@ -98,8 +102,7 @@ export const NiftyFutureProvider = ({ children }) => {
         router.push("/login");
       }
     } catch (error) {
-      toast.error("Error getting data");
-      console.error("Error:", error);
+      handleResponceError();
     }
   };
 

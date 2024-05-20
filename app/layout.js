@@ -15,6 +15,7 @@ import { MultiStrikeProvider } from '@/context/MultiStrikeContext';
 import dynamic from 'next/dynamic';
 import Navbar from '@/component/Header/Navbar';
 import Header from '@/component/Header';
+import { Toaster } from 'react-hot-toast';
 // import Navbar from "@/component/Navbar";
 
 const ReduxProvider = dynamic(() => import('@/store/redux-provider'), {
@@ -34,6 +35,7 @@ export default function RootLayout({ children }) {
       <body>
         <ReduxProvider>
           <AuthProvider>
+          <Toaster/>
             <Header />
             {/* {middleware(router.asPath)} */}
             {

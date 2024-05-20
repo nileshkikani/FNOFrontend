@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 // import axios from "axios";
 import { useAppSelector } from "@/store";
+import useAuth from "@/hooks/useAuth";
 
 export const FiiDiiDataContext = createContext({});
 
@@ -36,6 +37,8 @@ const reducer = (state, action) => {
 export const FiiDiiDataProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isLoading, setIsLoading] = useState(true);
+
+  const { handleResponceError } = useAuth();
   const router = useRouter();
 
   const { selectedClient, apiData, updatedData, filteredClientData } = state;
@@ -69,8 +72,7 @@ export const FiiDiiDataProvider = ({ children }) => {
       router.push("/login");
     }
     } catch (err) {
-      toast.error("Error getting data FII DII");
-      console.log("Error:", err);
+      handleResponceError()
     }
   };
 

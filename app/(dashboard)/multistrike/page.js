@@ -8,9 +8,9 @@ import useMultiStrikeData from "@/hooks/useMultiStrikeData";
 const Page = () => {
   const { strikes, checkSelectedStrike ,multiStrikeAPiCall,checkedStrikes } = useMultiStrikeData();
 
-  // useEffect(() => {
-  //   multiStrikeAPiCall();
-  // }, []);
+  useEffect(() => {
+    multiStrikeAPiCall();
+  }, []);
   console.log("ssss",strikes)
   return (
     <>

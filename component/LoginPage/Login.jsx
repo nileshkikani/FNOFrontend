@@ -74,6 +74,7 @@ const Login = () => {
                         // className="pass-email-field"
                         required=""
                         onChange={() => storeDispatch(setRememberMe(!checkIsRemember))}
+                        checked={checkIsRemember}
                       />
                       <span className="remember-text">Remember Me</span>
                     </label>
