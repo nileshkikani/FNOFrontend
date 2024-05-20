@@ -3,7 +3,7 @@ import { API_ROUTER } from '@/services/apiRouter';
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '@/utils/axios';
 import { useAppSelector } from '@/store';
-import { XAxis, ComposedChart, Line, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { XAxis, ComposedChart, Line, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend, Bar } from 'recharts';
 
 const Page = () => {
   const [data, setData] = useState([]);
