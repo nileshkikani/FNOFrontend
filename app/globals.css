@@ -368,7 +368,7 @@ input[type="radio"]:checked + label {
 }
 
 .radio-button-nested{
-  @apply border border-solid border-[#ccc] p-2 rounded;
+  @apply border border-solid border-[#ccc] py-2 px-1 rounded;
 }
 
 
@@ -678,4 +678,15 @@ input[type="radio"]:checked + label {
 
 .mobile-menu-icon {
   @apply hover:bg-gray-100;
+}
+
+
+/*--------fii-dii page navbar----  */
+
+.fii-dii-header {
+  @apply bg-white flex overflow-hidden border-b-[1px] justify-start items-center relative gap-3 p-4;
+}
+
+.fii-dii-header-li-active {
+  @apply underline;
 }
