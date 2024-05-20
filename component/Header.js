@@ -28,6 +28,7 @@ import { API_ROUTER } from '@/services/apiRouter';
 import useAuth from '@/hooks/useAuth';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/store';
+import { useCallback } from 'react';
 import { setAuth, setRememberMe, setUserStatus, setUserStatusInitially } from '@/store/authSlice';
 
 export default function Header() {
@@ -90,7 +91,9 @@ export default function Header() {
         !profilePopoverRef.current?.contains(event.target) &&
         !profileBtnRef.current?.contains(event.target)
       ) {
-        setProfilePopoverShow(false);
+        setTimeout(() => {
+          setProfilePopoverShow(false);
+        }, 100); // Adding a delay to ensure the state updates properly
       }
     };
 
@@ -109,6 +112,14 @@ export default function Header() {
       console.error('Error fetching ADR data:', error);
     }
   };
+
+  const togglePopover = useCallback(() => {
+    setPopoverShow((prevShow) => !prevShow);
+  }, []);
+
+  const toggleProfilePopover = useCallback(() => {
+    setProfilePopoverShow((prevShow) => !prevShow);
+  }, []);
 
   const openPopover = () => {
     createPopper(btnRef.current, popoverRef.current, {
@@ -298,16 +309,18 @@ export default function Header() {
                 <div className="li-btn-parent" ref={ref}>
                   <li
                     className="nav-li-flex"
-                    onClick={() => {
+                    onClick={(e) => {
                       setAnalyseOn(!analyseOn);
-                      popoverShow ? closePopover() : openPopover();
+                      e.stopPropagation();
+                      togglePopover();
                     }}
                   >
                     Analyse
                     <button
-                      onClick={() => {
+                      onClick={(e) => {
                         setAnalyseOn(!analyseOn);
-                        popoverShow ? closePopover() : openPopover();
+                        e.stopPropagation();
+                        togglePopover();
                       }}
                     >
                       {!analyseOn ? <FaAngleDown color="black" size={16} /> : <FaAngleUp color="black" size={16} />}
@@ -354,20 +367,23 @@ export default function Header() {
               <button
                 // ref={profileBtnRef}
                 className="nav-btn-profile"
-                onClick={() => {
+                onClick={(e) => {
                   setProfileOn(!profileOn);
                   setIsMobileMenuOpen(false);
-                  profilePopoverShow ? closeProfilePopover() : openProfilePopover();
+
+                  e.stopPropagation();
+                  toggleProfilePopover();
                 }}
               >
                 <img className="img-profile" src="/profile.png" />
               </button>
               <button
                 className="icon-dropdown"
-                onClick={() => {
+                onClick={(e) => {
                   setProfileOn(!profileOn);
                   setIsMobileMenuOpen(false);
-                  profilePopoverShow ? closeProfilePopover() : openProfilePopover();
+                  e.stopPropagation();
+                  toggleProfilePopover();
                 }}
               >
                 {!profileOn ? <FaAngleDown color="black" size={24} /> : <FaAngleUp color="black" size={24} />}
