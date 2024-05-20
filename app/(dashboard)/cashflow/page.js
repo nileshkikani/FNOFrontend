@@ -8,154 +8,158 @@ import useCashflowData from '@/hooks/useCashflowData';
 //-----GRAPH COMPONENTS----------
 const MoneyFlowGraph = dynamic(() => import('@/component/MoneyFlow-Graphs/MoneyFlow-Graph'));
 import { useAppSelector } from '@/store';
-// import ActiveMoneyFlow from "@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph";
+import { API_ROUTER } from '@/services/apiRouter';
+import axiosInstance from '@/utils/axios';
+import ActiveMoneyFlow from "@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph";
+import useAuth from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
 
 //  ===========LOADING ANIMATION ===========
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
 const Page = () => {
-  const {
-    isLoading,
-    getData,
-    data,
-    alldate,
-    uniqueSymbolData,
-    selectedStock,
-    currentSelectedDate,
-    dispatch,
-    initialLoad,
-    initialLoadForStock
-  } = useCashflowData();
+  const { handleResponceError } = useAuth();
+  const router = useRouter()
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedScript, setSelectedScript] = useState("");
+  const [allDates, setAllDates] = useState("");
+  const [allScript, setAllScript] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState("");
   const authState = useAppSelector((state) => state.auth.authState);
-
-  // const [symbl, setSelectedSymbl] = useState();
-
-  useEffect(() => {
-    authState && getData();
-  }, [authState]);
-
-  useEffect(() => {
-    const fetchData = () => {
-      if (alldate) {
-        getData(alldate[0]);
-        // setInitialLoad(false);
+ 
+  const getData = async () => {    
+    try {
+      setLoading(true);
+      let apiUrl = `${API_ROUTER.CASH_FLOW_TOP_TEN}`;
+      
+      const response = await axiosInstance.get(selectedDate && selectedScript ? apiUrl += `?date=${selectedDate}&symbol=${selectedScript}`: apiUrl, {
+        headers: { Authorization: `Bearer ${authState.access}` }
+      });
+      if (response.status == 200) {
+        if(!allDates && !selectedDate && !selectedScript){
+          setAllDates(response?.data?.dates)
+          setAllScript(response?.data?.symbols)
+          setSelectedDate(response?.data?.dates[0])
+          setSelectedScript(response?.data?.symbols?.find(item => item === "HDFCBANK"))
+          setLoading(false)
+          return
+        }
+        setData(response?.data)
+        setLoading(false)    
       }
-    };
-    fetchData();
-  }, [initialLoad]);
-
-  useEffect(() => {
-    const fetchData = () => {
-      if (uniqueSymbolData) {
-        // setInitialLoadForStock(false);
-        console.log("kkkk",selectedStock);
-        const finalData = selectedStock?.filter((itm) => itm.symbol == 'HDFCBANK');
-        dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
+      else{
+        router.push('/login');
       }
-    };
-    fetchData();
-  }, [initialLoadForStock]);
-
-  const filterByStockAndDate = (event, isDateDropdown) => {
-    if (isDateDropdown) {
-      const d = event.target.value;
-      getData(d);
-      // const filteredByDate = data.filter((itm)=>itm?.created_at.split("T") === d && itm.symbol === symbl);
-      // dispatch({ type: "SET_SELECTED_STOCK", payload: filteredByDate });
-    } else {
-      const symbl = event.target.value;
-      // setSelectedSymbl(symbl);
-      const finalData = data.filter((itm) => itm.symbol === symbl);
-      dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
+    } catch (err) {
+      handleResponceError()
+      console.log('error is this:', err);
     }
   };
 
-  console.log("op",selectedStock.dates);
+  useEffect(() => {
+    authState && getData();
+  }, []);
 
-  return (
-    <>
-      {isLoading ? (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '80vh'
-          }}
-        >
-          <PropagateLoader color="#33a3e3" loading={isLoading} size={15} />
-        </div>
-      ) : (
-        <>
-          {/* -----------------------DATE DROPDOWN------------------- */}
-          <h1 className="table-title">SELECT DATE</h1>
-          <select
-            onChange={(e) => filterByStockAndDate(e, true)}
-            value={currentSelectedDate}
-            className="stock-dropdown"
-          >
-            {alldate?.map((stockData, index) => (
-              <option key={index} value={stockData}>
-                {stockData}
-              </option>
-            ))}
-          </select>
-          {/* -------------------STOCK DROPDOWN---------------------- */}
-          <h1 className="table-title">SELECT SCRIPT</h1>
-          <select onChange={(e) => filterByStockAndDate(e, false)} className="stock-dropdown">
-            {uniqueSymbolData?.map((stockData, index) => (
-              <option key={index} value={stockData[0]?.symbol}>
-                {stockData[0]?.symbol}
-              </option>
-            ))}
-          </select>
+  useEffect(() => {
+     getData();
+  }, [selectedScript,selectedDate]);
+  
+  const filterByStockAndDate = (event, isDateDropdown) => {
+    isDateDropdown ? setSelectedDate(event.target.value) :setSelectedScript(event.target.value)      
+  };
+
+  return (<>
+      <div className="graph-div"> <ActiveMoneyFlow data={data}/> </div>
+  
+  {/* -----------------------DATE DROPDOWN------------------- */}
+  <h1 className="table-title">SELECT DATE</h1>
+      <select onChange={(e) => filterByStockAndDate(e, true)} value={selectedDate ?selectedDate :"" } className="stock-dropdown">
+        {allDates && allDates?.map((stockData, index) => (
+          <option key={index} value={stockData}>
+            {stockData}
+          </option>
+        ))}
+      </select>
+      <button
+      className="refresh-button"
+      onClick={()=>getData()}
+    >
+      Refresh
+    </button>
+      {/* -------------------STOCK DROPDOWN---------------------- */}
+      <h1 className="table-title">SELECT SCRIPT</h1>
+      <select value={selectedScript}  onChange={(e) => filterByStockAndDate(e, false)} className="stock-dropdown">
+        {allScript && allScript?.map((stockData, index) => (
+          <option key={index} value={stockData}>
+            {stockData}
+          </option>
+        ))}
+      </select>
+  {
+    loading? (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '80vh'
+        }}
+      >
+        <PropagateLoader color="#33a3e3" loading={loading} size={15} />
+      </div>
+    ):(<>
+      <div>
+        {data && (
           <div>
-            {selectedStock && (
-              <div>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Time</th>
-                      <th>Close</th>
-                      <th>Open</th>
-                      <th>High</th>
-                      <th>Low</th>
-                      <th>Average</th>
-                      <th>
-                        Volume<span className="in-thousand">in thousand</span>
-                      </th>
-                      <th>
-                        Money Flow
-                        <span className="in-thousand">in thousand</span>
-                      </th>
-                      <th>
-                        Net Money Flow
-                        <span className="in-thousand">in thousand</span>
-                      </th>
+            <table>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Close</th>
+                  <th>Open</th>
+                  <th>High</th>
+                  <th>Low</th>
+                  <th>Average</th>
+                  <th>
+                    Volume<span className="in-thousand">in thousand</span>
+                  </th>
+                  <th>
+                    Money Flow
+                    <span className="in-thousand">in thousand</span>
+                  </th>
+                  <th>
+                    Net Money Flow
+                    <span className="in-thousand">in thousand</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data
+                  .slice()
+                  .reverse()
+                  .map((item) => (
+                    <tr key={item?.id}>
+                      <td>{item?.time}</td>
+                      <td>{item?.close}</td>
+                      <td>{item?.open}</td>
+                      <td>{item?.high}</td>
+                      <td>{item?.low}</td>
+                      <td>{item?.average}</td>
+                      <td>{item?.volume}</td>
+                      <td>{item?.money_flow}</td>
+                      <td>{item?.net_money_flow}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {selectedStock?.dates?.map((item) => (
-                        <tr key={item?.id}>
-                          <td>{item?.time}</td>
-                          <td>{item?.close}</td>
-                          <td>{item?.open}</td>
-                          <td>{item?.high}</td>
-                          <td>{item?.low}</td>
-                          <td>{item?.average}</td>
-                          <td>{item?.volume}</td>
-                          <td>{item?.money_flow}</td>
-                          <td>{item?.net_money_flow}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                  ))}
+              </tbody>
+            </table>
           </div>
-          {/* <div className="graph-div"> <MoneyFlowGraph /> </div> */}
-        </>
-       )} 
+        )}
+      </div>
+      <div className="graph-div"> <MoneyFlowGraph data={data}/> </div>
+    </>
+    )
+  }
     </>
   );
 };
