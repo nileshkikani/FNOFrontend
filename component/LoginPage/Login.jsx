@@ -38,6 +38,9 @@ const Login = () => {
               <div className="login-logo-div">
                 <img src="/fnoLogo.png" alt="stockImage" className="login-logo" />
               </div>
+              <div className="login-logo-div-transparent">
+                <img src="/fnoLogoTransparent.png" alt="stockImage" className="login-logo-transparent" />
+              </div>
               <form className="login-form" action="/activeoi" method="POST" onSubmit={handleSubmit}>
                 <div className="input-div">
                   <label htmlfor="email" className="login-lables ">

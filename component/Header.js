@@ -243,9 +243,11 @@ export default function Header() {
         <nav className="nav-container" onChange={handleSelectChange}>
           <div className="nav-img">
             <img className="nav-logo" src="/fnoLogo.png" alt="Logo" />
-            <button className="nav-bar-logo" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-              <img src="/barIcon.png" alt="Logo" />
-            </button>
+            {checkUserIsLoggedIn && (
+              <button className="nav-bar-logo" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                <img src="/barIcon.png" alt="Logo" />
+              </button>
+            )}
           </div>
           <div className="bank-nifty-div">
             <span className="heading-text">
@@ -386,14 +388,14 @@ export default function Header() {
                   toggleProfilePopover();
                 }}
               >
-                {!profileOn ? <FaAngleDown color="black" size={24} /> : <FaAngleUp color="black" size={24} />}
+                {!profilePopoverShow ? <FaAngleDown color="black" size={24} /> : <FaAngleUp color="black" size={24} />}
               </button>
             </div>
           </div>
         </nav>
       </div>
 
-      {isMobileMenuOpen && (
+      {checkUserIsLoggedIn && isMobileMenuOpen && (
         <div className="mobile-menu">
           <div className="mobile-menu-header">
             <img
