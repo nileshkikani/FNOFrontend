@@ -81,27 +81,25 @@ export default function Header() {
   }, [isRefresh, pathname]);
 
   useEffect(() => {
-    profilePopoverRef && closeProfilePopover();
-    const handleOutSideClick = (event) => {
-      console.log('event', event);
-      if (!popoverRef.current?.contains(event.target) && !ref.current?.contains(event.target)) {
-        setTimeout(() => {
-          closePopover();
-        }, 100);
+    const handleOutsideClick = (event) => {
+      if (popoverShow && !popoverRef.current?.contains(event.target) && !btnRef.current?.contains(event.target)) {
+        setPopoverShow(false);
       }
-      if (!profilePopoverRef.current?.contains(event.target) && !ref.current?.contains(event.target)) {
-        setTimeout(() => {
-          closeProfilePopover();
-        }, 100);
+      if (
+        profilePopoverShow &&
+        !profilePopoverRef.current?.contains(event.target) &&
+        !profileBtnRef.current?.contains(event.target)
+      ) {
+        setProfilePopoverShow(false);
       }
     };
 
-    window.addEventListener('mousedown', handleOutSideClick);
+    window.addEventListener('mousedown', handleOutsideClick);
 
     return () => {
-      window.removeEventListener('mousedown', handleOutSideClick);
+      window.removeEventListener('mousedown', handleOutsideClick);
     };
-  }, [ref]);
+  }, [popoverShow, profilePopoverShow]);
 
   const getAdvanceDecline = async () => {
     try {
@@ -316,7 +314,7 @@ export default function Header() {
                     </button>
                   </li>
 
-                  <li className="nav-li" onClick={() => navigate('/cashflow')}>
+                  <li className="nav-li" onClick={() => router.push('/cashflow')}>
                     Money Flow
                   </li>
                   <li className="nav-li">Orders</li>
@@ -354,7 +352,7 @@ export default function Header() {
           <div className="nav-button">
             <div className="nav-btn-parent">
               <button
-                ref={profileBtnRef}
+                // ref={profileBtnRef}
                 className="nav-btn-profile"
                 onClick={() => {
                   setProfileOn(!profileOn);
