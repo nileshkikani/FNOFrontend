@@ -358,22 +358,21 @@ td {
 /* ------------FII DII RADIO BUTTONS------- */
 
 .radio-button-group {
-  @apply flex p-6 border-solid  ;
+  @apply flex p-6 border-solid;
 }
 .radio-button {
-  @apply  rounded cursor-pointer px-4 py-2  border-[#ccc];
+  @apply rounded cursor-pointer px-4 py-2  border-[#ccc];
 }
-input[type="radio"] {
-  @apply hidden ;
+input[type='radio'] {
+  @apply hidden;
 }
-input[type="radio"]:checked + label {
+input[type='radio']:checked + label {
   @apply bg-[#007bff] text-white border-[#007bff];
 }
 
-.radio-button-nested{
-  @apply border border-solid border-[#ccc] py-2 px-1 rounded;
+.radio-button-nested {
+  @apply border border-solid border-[#ccc] p-2 rounded;
 }
-
 
 .fii-dii-graph-div {
   @apply py-10;
@@ -390,7 +389,7 @@ input[type="radio"]:checked + label {
 }
 
 .login-lables {
-  @apply block mb-1 text-[16px] font-normal font-Roboto tracking-wide text-black34;
+  @apply block mb-1 text-[16px] font-normal font-Roboto tracking-wide text-white lg:text-black34;
 }
 
 .login-title {
@@ -399,7 +398,7 @@ input[type="radio"]:checked + label {
 }
 
 .login-form {
-  @apply px-0 py-6 space-y-2 md:space-y-2 flex w-full flex-col justify-center items-center bg-white;
+  @apply px-0 py-6 space-y-2 md:space-y-2 flex w-full flex-col justify-center items-center bg-transparent lg:bg-white;
 }
 
 .login-div-nested {
@@ -415,7 +414,7 @@ input[type="radio"]:checked + label {
 }
 
 .input-div {
-  @apply w-[80%] font-Roboto tracking-wide text-black34 font-normal text-[15px];
+  @apply w-[100%] lg:w-[80%] font-Roboto tracking-wide text-black34 font-normal text-[15px];
 }
 
 .rember-me-div {
@@ -448,6 +447,10 @@ input[type="radio"]:checked + label {
 
 .header-container {
   @apply bg-white flex overflow-hidden border-b-[1px] justify-center items-center relative;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .nav-container {
@@ -482,6 +485,9 @@ input[type="radio"]:checked + label {
 .nav-logo {
   @apply sm:w-20 lg:w-28 h-full object-cover lg:flex hidden;
 }
+.nav-logo-transparent {
+  @apply sm:w-20 lg:w-28 h-full object-cover flex lg:hidden bg-white;
+}
 
 .nav-btn-profile {
   @apply bg-gray-200 rounded-full text-black w-8 h-8 sm:w-10 sm:h-10;
@@ -499,7 +505,7 @@ input[type="radio"]:checked + label {
   @apply flex relative hover:bg-gray-100 p-2;
 }
 .li-btn-parent {
-  @apply hidden md:flex hover:bg-gray-100 space-x-5;
+  @apply hidden md:flex space-x-5 hover:rounded-2xl;
 }
 /* .popover-container {
   @apply flex place-content-center mx-auto w-full content-center flex-wrap absolute bg-blue-300 border-0 mr-3 z-50 font-normal leading-normal text-sm max-w-xs text-left no-underline break-words rounded-lg;
@@ -638,14 +644,14 @@ input[type="radio"]:checked + label {
 }
 
 .pass-email-input {
-  @apply bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg  block w-full p-2.5 mb-2;
+  @apply bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg  block w-full p-2.5 mb-1;
 }
 
 .heading-text {
   @apply font-normal font-Roboto lg:text-[14px] text-[14px] sm:text-[12px] p-[1px];
 }
 .remember-text {
-  @apply font-normal font-Roboto lg:text-[14px] text-[14px] sm:text-[12px] ml-[5px] tracking-wide;
+  @apply font-normal font-Roboto lg:text-[14px] text-[14px] sm:text-[12px] ml-[5px] tracking-wide text-white lg:text-black34;
 }
 .remember-me {
   @apply mt-1;
@@ -656,6 +662,12 @@ input[type="radio"]:checked + label {
 }
 .login-logo-div {
   @apply lg:flex hidden justify-center items-center;
+}
+.login-logo-div-transparent {
+  @apply lg:hidden flex justify-center items-center;
+}
+.login-logo-transparent {
+  @apply w-48 h-full object-cover lg:hidden flex justify-center items-center;
 }
 
 /*------------------------------------------- Side Menu -------------------------------------*/

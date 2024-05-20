@@ -41,6 +41,7 @@ export const SecurityWiseProvider = ({ children }) => {
   const { uniqueDates, data, isLoading } = state;
 
   // -------------------------API CALL------------------------
+
   const getData = useCallback(
     async (selectedDate) => {
       dispatch({ type: 'SET_IS_LOADING', payload: true });
@@ -93,6 +94,7 @@ export const SecurityWiseProvider = ({ children }) => {
 
   useEffect(() => {
     if (initialLoad && uniqueDates.length > 0) {
+      setCurrentSelectedDate(uniqueDates[0]);
       getData(uniqueDates[0]);
       setInitialLoad(false);
     }

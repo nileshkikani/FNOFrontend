@@ -7,3 +7,6 @@
 .date-picker-modal {
   @apply bg-blue21 font-Roboto tracking-wider text-white p-1;
 }
+.table-heading-text {
+  @apply font-Roboto tracking-wide font-semibold text-blue21 p-1 text-[18px];
+}
