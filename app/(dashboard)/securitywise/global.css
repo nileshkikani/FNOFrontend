@@ -5,8 +5,53 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 .date-picker-modal {
-  @apply bg-blue21 font-Roboto tracking-wider text-white p-1;
+  @apply bg-blue21 font-Roboto tracking-wider text-white px-2 py-1 rounded-md;
 }
 .table-heading-text {
-  @apply font-Roboto tracking-wide font-semibold text-blue21 p-1 text-[18px];
+  @apply font-Roboto tracking-wide font-semibold text-blue21 mt-5 mb-3 text-[18px];
+}
+.column-div {
+  @apply flex bg-white flex-col space-y-2 my-2 justify-end items-center;
+}
+.column-green-text {
+  @apply text-[#0A8B3D] font-semibold font-Roboto tracking-wide text-[16px];
+}
+.column-red-text {
+  @apply text-red-600 font-semibold font-Roboto tracking-wide text-[16px];
+}
+.triangle-red-div {
+  @apply w-0 h-0
+  border-l-[5px] border-l-transparent
+  border-t-[10px] border-t-red-500
+  border-r-[5px] border-r-transparent;
+}
+.triangle-green-div {
+  @apply w-0 h-0
+  border-l-[5px] border-l-transparent
+  border-b-[10px] border-b-green0A
+  border-r-[5px] border-r-transparent;
+}
+.row-div {
+  @apply flex space-x-1 justify-end items-center mb-5;
+}
+.checkbox-label {
+  @apply font-Roboto tracking-wide font-semibold text-blue21 p-1 text-[16px];
+}
+.checkbox-text {
+  @apply font-Roboto tracking-wide font-semibold text-blue21 px-1 text-[16px];
+}
+.checkbox-div {
+  @apply flex justify-end items-end;
+}
+.main-label-div {
+  @apply flex gap-2 w-full my-5;
+}
+.half-width {
+  @apply w-1/2 flex px-5;
+}
+.half-last-width {
+  @apply w-1/2 flex justify-end px-5;
+}
+.div-main {
+  @apply h-[100vh] overflow-hidden sticky top-60;
 }

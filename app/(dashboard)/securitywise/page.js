@@ -30,6 +30,19 @@ export default function Page() {
     setIsFilterData(true);
   };
 
+  const loadingAnimation = (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '80vh'
+      }}
+    >
+      <PropagateLoader color="#33a3e3" loading={true} size={15} />
+    </div>
+  );
+
   const column = [
     {
       name: <span className="table-heading-text">Symbol</span>,
@@ -85,7 +98,20 @@ export default function Page() {
     {
       name: <span className="table-heading-text">{'Last Price'}</span>,
       selector: (row) => +row.last_price,
-      format: (row) => <span className="secwise-cols">{(+row.last_price).toLocaleString('en-IN')}</span>,
+      format: (row) => {
+        const value = ((row?.last_price - row?.prev_close) / row?.prev_close) * 100;
+        return (
+          <div className="column-div">
+            <span className="secwise-cols">{(+row.last_price).toLocaleString('en-IN')}</span>
+            <div className="row-div">
+              <div className={value > 0 ? 'triangle-green-div' : 'triangle-red-div'} />
+              <span className={value < 0 ? 'column-red-text' : 'column-green-text'}>{`${Math.abs(value).toFixed(
+                2
+              )}%`}</span>
+            </div>
+          </div>
+        );
+      },
       sortable: true
     },
     {
@@ -99,38 +125,41 @@ export default function Page() {
     }
   ];
 
-  const loadingAnimation = (
+  return (
     <div
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '80vh'
+        minHeight: '100vh',
+        overflow: 'hidden'
       }}
+      className="div-main"
     >
-      <PropagateLoader color="#33a3e3" loading={true} size={15} />
-    </div>
-  );
-
-  return (
-    <>
       <div style={{ display: isLoading ? 'block' : 'none' }}>{loadingAnimation}</div>
       <div style={{ display: !isLoading && !isFilterData && !securityData ? 'block' : 'none' }}>{loadingAnimation}</div>
       <div style={{ display: !isLoading && isFilterData && securityData ? 'block' : 'none' }}>
-        <label>
-          Date
-          <select onChange={setDropdownDate} value={currentSelectedDate}>
-            {uniqueDates?.map((itm, index) => (
-              <option key={index} value={itm}>
-                {itm}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          NIFTY STOCKS
-          <input type="checkbox" onChange={(event) => showNiftyStocksOnly(event.target.checked)} />
-        </label>
+        <div className="main-label-div">
+          <div className="half-width">
+            <label>
+              {/* Date */}
+              <select className="date-picker-modal" onChange={setDropdownDate} value={currentSelectedDate}>
+                {uniqueDates?.map((itm, index) => (
+                  <option key={index} value={itm}>
+                    {itm}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className="half-last-width">
+            <label>
+              <input
+                type="checkbox"
+                className='className="checkbox-label"'
+                onChange={(event) => showNiftyStocksOnly(event.target.checked)}
+              />
+              <span className="checkbox-text">NIFTY STOCKS</span>
+            </label>
+          </div>
+        </div>
         <div className="scrolling-table">
           <DataTable
             columns={column}
@@ -140,9 +169,10 @@ export default function Page() {
                 <PropagateLoader />
               </div>
             }
+            fixedHeader={{ top: true }}
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -226,11 +226,11 @@ td {
 }
 
 .green {
-  @apply text-[#0A8B3D] font-bold text-base;
+  @apply text-[#0A8B3D] font-Roboto tracking-wide font-semibold text-base justify-end;
 }
 
 .secwise-cols {
-  @apply text-base;
+  @apply font-Roboto tracking-wide text-base;
 }
 
 .active-link {

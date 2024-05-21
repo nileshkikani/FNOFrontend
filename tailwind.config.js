@@ -16,7 +16,8 @@ module.exports = {
         blue21: '#215584',
         black34: '#344054',
         grayD8: '#d8dce3',
-        grayA3: '#a3aab7'
+        grayA3: '#a3aab7',
+        green0A: '#0A8B3D'
       },
       fontFamily: {
         Roboto: ['Roboto']
