@@ -22,6 +22,7 @@ const Page = () => {
   const router = useRouter()
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedScript, setSelectedScript] = useState("");
+  const [allData, setAllData] = useState("");
   const [allDates, setAllDates] = useState("");
   const [allScript, setAllScript] = useState("");
   const [loading, setLoading] = useState(true);
@@ -56,13 +57,35 @@ const Page = () => {
       console.log('error is this:', err);
     }
   };
-
+  const getAllStocks = async () => {    
+    try {
+      setLoading(true);
+      let apiUrl = `${API_ROUTER.CASH_FLOW_ALL}`;
+      
+      const response = await axiosInstance.get(apiUrl += `?date=${selectedDate}`, {
+        headers: { Authorization: `Bearer ${authState.access}` }
+      });
+      if (response.status == 200) {
+        console.log("hellorutvik==>",response)  
+        setAllData(response?.data)  
+      }
+      else{
+        router.push('/login');
+      }
+    } catch (err) {
+      handleResponceError()
+      console.log('error is this:', err);
+    }
+  };
   useEffect(() => {
     authState && getData();
   }, []);
 
   useEffect(() => {
-     getData();
+    if(selectedScript){
+      getData();
+      getAllStocks();
+    }
   }, [selectedScript,selectedDate]);
   
   const filterByStockAndDate = (event, isDateDropdown) => {
@@ -70,7 +93,7 @@ const Page = () => {
   };
 
   return (<>
-      <div className="graph-div"> <ActiveMoneyFlow data={data}/> </div>
+      <div className="graph-div"> <ActiveMoneyFlow data={allData}/> </div>
   
   {/* -----------------------DATE DROPDOWN------------------- */}
   <h1 className="table-title">SELECT DATE</h1>

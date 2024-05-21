@@ -15,6 +15,7 @@ export const API_ROUTER = {
   OPTIONDATA_LIST: `optiondata-list/`,
   NIFTY_FUTURE_DATA: `nifty/list_nifty_future/`,
   CASH_FLOW_TOP_TEN: `moneyflow/cash/`,
+  CASH_FLOW_ALL:`moneyflow/cash-chart/`,
   ADR: `nifty/adr/`,
   MULTI_STRIKE: `multistrike-list/`
 };
