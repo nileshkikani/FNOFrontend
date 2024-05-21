@@ -8,7 +8,7 @@ const Page = () => {
   const router = useRouter();
 
   useEffect(()=>{
-    router.push("/fii-dii-data/fno")
+    router.push("/fii-dii-data/fno");
    },[])
 
 
