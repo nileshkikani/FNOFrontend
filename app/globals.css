@@ -92,6 +92,9 @@
 select {
   @apply px-2 py-1 rounded-sm;
 }
+.refresh-button{
+  @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded
+}
 
 /* th,
 td {
@@ -690,4 +693,15 @@ input[type='radio']:checked + label {
 
 .mobile-menu-icon {
   @apply hover:bg-gray-100;
+}
+
+
+/*--------fii-dii page navbar----  */
+
+.fii-dii-header {
+  @apply bg-white flex overflow-hidden border-b-[1px] justify-start items-center relative gap-3 p-4;
+}
+
+.fii-dii-header-li-active {
+  @apply underline;
 }

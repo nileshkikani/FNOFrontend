@@ -8,71 +8,96 @@ import useCashflowData from '@/hooks/useCashflowData';
 //-----GRAPH COMPONENTS----------
 const MoneyFlowGraph = dynamic(() => import('@/component/MoneyFlow-Graphs/MoneyFlow-Graph'));
 import { useAppSelector } from '@/store';
-// import ActiveMoneyFlow from "@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph";
+import { API_ROUTER } from '@/services/apiRouter';
+import axiosInstance from '@/utils/axios';
+import ActiveMoneyFlow from "@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph";
+import useAuth from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
 
 //  ===========LOADING ANIMATION ===========
-const PropagateLoader = dynamic(() => import("react-spinners/PropagateLoader"));
+const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
 const Page = () => {
-  const {
-    isLoading,
-    getData,
-    data,
-    alldate,
-    uniqueSymbolData,
-    selectedStock,
-    currentSelectedDate,
-    dispatch,
-    initialLoad,
-    initialLoadForStock,
-  } = useCashflowData();
+  const { handleResponceError } = useAuth();
+  const router = useRouter()
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedScript, setSelectedScript] = useState("");
+  const [allDates, setAllDates] = useState("");
+  const [allScript, setAllScript] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState("");
   const authState = useAppSelector((state) => state.auth.authState);
-
-  const [symbl, setSelectedSymbl] = useState();
-
-  useEffect(() => {
-    authState && getData();
-  }, [authState]);
-
-    useEffect(() => {
-      const fetchData = () => {
-        if (alldate) {
-          getData(alldate[0]);
-          // setInitialLoad(false);
+ 
+  const getData = async () => {    
+    try {
+      setLoading(true);
+      let apiUrl = `${API_ROUTER.CASH_FLOW_TOP_TEN}`;
+      
+      const response = await axiosInstance.get(selectedDate && selectedScript ? apiUrl += `?date=${selectedDate}&symbol=${selectedScript}`: apiUrl, {
+        headers: { Authorization: `Bearer ${authState.access}` }
+      });
+      if (response.status == 200) {
+        if(!allDates && !selectedDate && !selectedScript){
+          setAllDates(response?.data?.dates)
+          setAllScript(response?.data?.symbols)
+          setSelectedDate(response?.data?.dates[0])
+          setSelectedScript(response?.data?.symbols?.find(item => item === "HDFCBANK"))
+          setLoading(false)
+          return
         }
-      };
-      fetchData();
-    }, [initialLoad]);
-
-    useEffect(() => {
-      const fetchData = () => {
-        if (uniqueSymbolData) {
-          // setInitialLoadForStock(false);
-          const finalData = selectedStock.filter((itm) => itm.symbol == 'HDFCBANK');
-          dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
-        }
-      };
-      fetchData();
-    }, [initialLoadForStock]);
-
-  const filterByStockAndDate = (event, isDateDropdown) => {
-    if (isDateDropdown) {
-      const d = event.target.value;
-      getData(d);
-      // const filteredByDate = data.filter((itm)=>itm?.created_at.split("T") === d && itm.symbol === symbl);
-      // dispatch({ type: "SET_SELECTED_STOCK", payload: filteredByDate });
-    } else {
-      const symbl = event.target.value;
-      setSelectedSymbl(symbl);
-      const finalData = data.filter((itm) => itm.symbol === symbl);
-      dispatch({ type: 'SET_SELECTED_STOCK', payload: finalData });
+        setData(response?.data)
+        setLoading(false)    
+      }
+      else{
+        router.push('/login');
+      }
+    } catch (err) {
+      handleResponceError()
+      console.log('error is this:', err);
     }
   };
 
+  useEffect(() => {
+    authState && getData();
+  }, []);
+
+  useEffect(() => {
+     getData();
+  }, [selectedScript,selectedDate]);
+  
+  const filterByStockAndDate = (event, isDateDropdown) => {
+    isDateDropdown ? setSelectedDate(event.target.value) :setSelectedScript(event.target.value)      
+  };
 
   return (<>
+      <div className="graph-div"> <ActiveMoneyFlow data={data}/> </div>
+  
+  {/* -----------------------DATE DROPDOWN------------------- */}
+  <h1 className="table-title">SELECT DATE</h1>
+      <select onChange={(e) => filterByStockAndDate(e, true)} value={selectedDate ?selectedDate :"" } className="stock-dropdown">
+        {allDates && allDates?.map((stockData, index) => (
+          <option key={index} value={stockData}>
+            {stockData}
+          </option>
+        ))}
+      </select>
+      <button
+      className="refresh-button"
+      onClick={()=>getData()}
+    >
+      Refresh
+    </button>
+      {/* -------------------STOCK DROPDOWN---------------------- */}
+      <h1 className="table-title">SELECT SCRIPT</h1>
+      <select value={selectedScript}  onChange={(e) => filterByStockAndDate(e, false)} className="stock-dropdown">
+        {allScript && allScript?.map((stockData, index) => (
+          <option key={index} value={stockData}>
+            {stockData}
+          </option>
+        ))}
+      </select>
   {
-    isLoading? (
+    loading? (
       <div
         style={{
           display: 'flex',
@@ -81,29 +106,11 @@ const Page = () => {
           height: '80vh'
         }}
       >
-        <PropagateLoader color="#33a3e3" loading={isLoading} size={15} />
+        <PropagateLoader color="#33a3e3" loading={loading} size={15} />
       </div>
     ):(<>
-      {/* -----------------------DATE DROPDOWN------------------- */}
-      <h1 className="table-title">SELECT DATE</h1>
-      <select onChange={(e) => filterByStockAndDate(e, true)} value={currentSelectedDate} className="stock-dropdown">
-        {alldate?.map((stockData, index) => (
-          <option key={index} value={stockData}>
-            {stockData}
-          </option>
-        ))}
-      </select>
-      {/* -------------------STOCK DROPDOWN---------------------- */}
-      <h1 className="table-title">SELECT SCRIPT</h1>
-      <select onChange={(e) => filterByStockAndDate(e, false)} className="stock-dropdown">
-        {uniqueSymbolData.map((stockData, index) => (
-          <option key={index} value={stockData[0]?.symbol}>
-            {stockData[0]?.symbol}
-          </option>
-        ))}
-      </select>
       <div>
-        {selectedStock && (
+        {data && (
           <div>
             <table>
               <thead>
@@ -128,7 +135,7 @@ const Page = () => {
                 </tr>
               </thead>
               <tbody>
-                {selectedStock
+                {data
                   .slice()
                   .reverse()
                   .map((item) => (
@@ -149,7 +156,7 @@ const Page = () => {
           </div>
         )}
       </div>
-      {/* <div className="graph-div"> <MoneyFlowGraph /> </div> */}
+      <div className="graph-div"> <MoneyFlowGraph data={data}/> </div>
     </>
     )
   }

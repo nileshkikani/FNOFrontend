@@ -164,9 +164,9 @@ export const SecurityWiseProvider = ({ children }) => {
   };
 
   // -------------------EACH STOCK GRAPH--------------
-  const stockGraph = (params) => {
-    console.log(params);
-  };
+  // const stockGraph = (params) => {
+  //   console.log(params);
+  // };
 
   const contextValue = useMemo(
     () => ({
@@ -176,7 +176,7 @@ export const SecurityWiseProvider = ({ children }) => {
       setDropdownDate,
       uniqueDates,
       showNiftyStocksOnly,
-      stockGraph,
+      // stockGraph,
       isLoading,
       currentSelectedDate
     }),
@@ -187,7 +187,7 @@ export const SecurityWiseProvider = ({ children }) => {
       setDropdownDate,
       uniqueDates,
       showNiftyStocksOnly,
-      stockGraph,
+      // stockGraph,
       isLoading,
       currentSelectedDate
     ]

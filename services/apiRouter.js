@@ -3,6 +3,7 @@ export const API_ROUTER = {
   LIST_MARKET_DATAL: `fnoapi/list_market_data/`,
   LIST_SECWISE_DATE: `fnoapi/list_secwise_data/`,
   LIST_STOCK_DATA: `fnoapi/live_Stock_Data/`,
+  DAILY_FII_DII_DATA:`fnoapi/fii-dii-cash-activity-data/`,
 
   //--------------------AUTH------------------
   LOGIN: `user/login/`,
