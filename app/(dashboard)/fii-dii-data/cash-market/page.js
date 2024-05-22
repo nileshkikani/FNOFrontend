@@ -5,6 +5,7 @@ import axiosInstance from '@/utils/axios';
 import { useAppSelector } from '@/store';
 import DataTable from 'react-data-table-component';
 import { XAxis, ComposedChart, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend, Bar } from 'recharts';
+import '../global.css';
 
 const Page = () => {
   const [data, setData] = useState([]);
@@ -29,36 +30,53 @@ const Page = () => {
     {
       name: <span className="table-heading-text">{'FII Cash Buy'}</span>,
       selector: (row) => +row.fii_buy,
+      format: (row) => <span className="">₹{(+row.fii_buy).toLocaleString('en-IN')}</span>,
 
       sortable: true
     },
     {
       name: <span className="table-heading-text">{'FII Cash Sell'}</span>,
       selector: (row) => +row.fii_sell,
+      format: (row) => <span className="">₹{(+row.fii_sell).toLocaleString('en-IN')}</span>,
 
       sortable: true
     },
     {
       name: <span className="table-heading-text">{'FII Cash Net'}</span>,
       selector: (row) => +row.fii_net,
+      format: (row) => (
+        <span className={+row.fii_net < 0 ? 'red-text' : 'green-text'}>
+          {+row.fii_net >= 0 ? '+₹' : '-₹'}
+          {Math.abs(+row.fii_net).toLocaleString('en-IN')}
+        </span>
+      ),
       sortable: true
     },
     {
       name: <span className="table-heading-text">{'DII Cash Buy'}</span>,
       selector: (row) => +row.dii_buy,
+      format: (row) => <span className="">₹{(+row.dii_buy).toLocaleString('en-IN')}</span>,
       sortable: true
     },
     {
       name: <span className="table-heading-text">{'DII Cash Sell'}</span>,
       selector: (row) => +row.dii_sell,
+      format: (row) => <span className="">₹{(+row.dii_sell).toLocaleString('en-IN')}</span>,
       sortable: true
     },
     {
       name: <span className="table-heading-text">{'DII Cash Net'}</span>,
       selector: (row) => +row.dii_net,
+      format: (row) => (
+        <span className={+row.dii_net < 0 ? 'red-text' : 'green-text'}>
+          {+row.dii_net >= 0 ? '+₹' : '-₹'}
+          {Math.abs(+row.dii_net).toLocaleString('en-IN')}
+        </span>
+      ),
       sortable: true
     }
   ];
+
 
   const getDailyFiiDiiData = async () => {
     try {
@@ -77,10 +95,10 @@ const Page = () => {
   }, []);
   console.log('uuu', data);
   return (
-    <>
+    <div className="div-parent">
       {/* ---------chart----------- */}
-      <div style={{ width: '100%', height: '400px' }}>
-        <h1 className="table-title">Call vs Put OI</h1>
+      <div style={{ width: '100%', height: '500px' }} className="chart-div">
+        <h1 className="table-title">Cash Market Activity - Long Term View</h1>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             width={500}
@@ -92,6 +110,7 @@ const Page = () => {
               left: 20,
               bottom: 5
             }}
+            style={{ backgroundColor: 'white' }}
           >
             <CartesianGrid stroke="#E5E5E5" />
             <XAxis
@@ -145,10 +164,28 @@ const Page = () => {
       </div>
 
       {/* -------------data table-------- */}
-      <div className="scrolling-table">
-        <DataTable columns={column} data={data} />
+      <div className="table-div">
+        <h1 className="table-title">Cash Market Daily Summary</h1>
+        <div className="data-table">
+          <DataTable
+            columns={column}
+            data={data}
+            pagination={true}
+            paginationPerPage={10}
+            paginationRowsPerPageOptions={[5, 10]}
+            customStyles={{
+              rows: {
+                style: {
+                  '&:nth-child(even)': {
+                    backgroundColor: '#f9f9f9'
+                  }
+                }
+              }
+            }}
+          />
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

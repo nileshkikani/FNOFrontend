@@ -58,7 +58,9 @@ export default function Header() {
 
   useEffect(() => {
     // Check authentication status when component mounts
-    getAdvanceDecline();
+    setInterval(() => {
+      getAdvanceDecline();
+    }, 1000*60);
   }, []);
 
   useEffect(() => {
