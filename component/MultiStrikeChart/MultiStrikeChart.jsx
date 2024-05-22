@@ -1,157 +1,108 @@
-import React, { useEffect } from 'react';
-import { Line, LineChart, XAxis, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-
+import React, { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import useMultiStrikeData from '@/hooks/useMultiStrikeData';
+
+const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const MultiStrikeChart = () => {
   const {
-    data,
     strikePrice1,
-    strikePrice2,
-    strikePrice3,
-    strikePrice4,
-    strikePrice5,
-    strikePrice1IsChecked,
-    strikePrice2IsChecked,
-    strikePrice3IsChecked,
-    strikePrice4IsChecked,
-    strikePrice5IsChecked
+    strikePrice2 ,
+    strikePrice3 ,
+    strikePrice4 ,
+    strikePrice5 ,
   } = useMultiStrikeData();
-  //   const [strikePrice, setStrikePrice ] = useState();
-  // const uniqueTimeStamps = [...new Set(data.map(item => item.created_at))];
+
+  const [options, setOptions] = useState({});
+  const [series, setSeries] = useState([]);
+
+  useEffect(() => {
+    const extractTimes = (items) =>
+      items && items.length
+        ? items.map((item) => item.created_at).filter(Boolean)
+        : [];
+
+    const allCreatedAts = [
+      ...extractTimes(strikePrice1),
+      ...extractTimes(strikePrice2),
+      ...extractTimes(strikePrice3),
+      ...extractTimes(strikePrice4),
+      ...extractTimes(strikePrice5),
+    ];
+
+    const uniqueCreatedAts = [...new Set(allCreatedAts)];
+
+    const formattedTimes = uniqueCreatedAts.map((datetime) => {
+      if (datetime) {
+        const timePart = datetime.split('T')[1];
+        if (timePart) {
+          const [hours, minutes] = timePart.split(':');
+          if (hours !== undefined && minutes !== undefined) {
+            return `${hours}:${minutes}`;
+          }
+        }
+      }
+      console.error('Invalid datetime format:', datetime);
+      return 'Invalid Time';
+    });
+
+    const getData = (items, key) => (items ? items.map((item) => item[key] || 0) : []);
+
+    const shouldAddSeries = (strikePrice) => strikePrice && strikePrice.length >= 1;
+
+    const createSeries = (strikePrice, prefix) => {
+      const call_net_oi = getData(strikePrice, 'call_net_oi');
+      const put_net_oi = getData(strikePrice, 'put_net_oi');
+      return [
+        { name: `${prefix}_call_net_oi`, data: call_net_oi },
+        { name: `${prefix}_put_net_oi`, data: put_net_oi },
+      ];
+    };
+
+    let finalSeries = [];
+    if (shouldAddSeries(strikePrice1)) {
+      finalSeries.push(...createSeries(strikePrice1, 'strikePrice1'));
+    }
+    if (shouldAddSeries(strikePrice2)) {
+      finalSeries.push(...createSeries(strikePrice2, 'strikePrice2'));
+    }
+    if (shouldAddSeries(strikePrice3)) {
+      finalSeries.push(...createSeries(strikePrice3, 'strikePrice3'));
+    }
+    if (shouldAddSeries(strikePrice4)) {
+      finalSeries.push(...createSeries(strikePrice4, 'strikePrice4'));
+    }
+    if (shouldAddSeries(strikePrice5)) {
+      finalSeries.push(...createSeries(strikePrice5, 'strikePrice5'));
+    }
+
+    setOptions({
+      chart: {
+        // height: 350,
+        type: 'line',
+        zoom: { enabled: false },
+      },
+      dataLabels: { enabled: false },
+      stroke: {
+        width: [5, 7, 5],
+        curve: 'straight',
+        dashArray: [0, 8, 5],
+      },
+      title: { text: 'multistrike Statistics', align: 'left' },
+      markers: {
+        size: 0,
+        hover: { sizeOffset: 6 },
+      },
+      xaxis: { categories: formattedTimes },
+      grid: { borderColor: '#f1f1f1' },
+    });
+
+    setSeries(finalSeries);
+  }, [strikePrice1, strikePrice2, strikePrice3, strikePrice4, strikePrice5]);
 
   return (
-    <div style={{ width: '100%', height: '400px' }}>
-      <h1 className="table-title">Multi Strike</h1>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid stroke="#E5E5E5" />
-          {strikePrice1 && strikePrice1IsChecked && (
-            <>
-              <XAxis
-                data={strikePrice1}
-                dataKey="created_at"
-                tickFormatter={(timeStr) =>
-                  new Date(timeStr).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })
-                }
-              />
-            </>
-          )}
-          {strikePrice2 && strikePrice2IsChecked && (
-            <>
-              <XAxis
-                data={strikePrice2}
-                dataKey="created_at"
-                tickFormatter={(timeStr) =>
-                  new Date(timeStr).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })
-                }
-              />
-            </>
-          )}
-          {strikePrice3 && strikePrice3IsChecked && (
-            <>
-              <XAxis
-                data={strikePrice3}
-                dataKey="created_at"
-                tickFormatter={(timeStr) =>
-                  new Date(timeStr).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })
-                }
-              />
-            </>
-          )}
-          {strikePrice4 && strikePrice4IsChecked && (
-            <>
-              <XAxis
-                data={strikePrice4}
-                dataKey="created_at"
-                tickFormatter={(timeStr) =>
-                  new Date(timeStr).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })
-                }
-              />
-            </>
-          )}
-          {strikePrice5 && strikePrice5IsChecked && (
-            <>
-              <XAxis
-                data={strikePrice5}
-                dataKey="created_at"
-                tickFormatter={(timeStr) =>
-                  new Date(timeStr).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })
-                }
-              />
-            </>
-          )}
-          {/* <XAxis
-          data={data}
-            dataKey="created_at"
-            tickFormatter={(timeStr) =>
-              new Date(timeStr).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit'
-              })
-            }
-          /> */}
-          <YAxis yAxisId="left" />
-          <YAxis yAxisId="right" orientation="right" />
-          <Tooltip
-            labelFormatter={(timeStr) =>
-              new Date(timeStr).toLocaleTimeString([], {
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })
-            }
-          />
-          <Legend />
-          {strikePrice1 && strikePrice1IsChecked && (
-            <>
-              <Line data={strikePrice1} dataKey="call_net_oi" stroke="#1e293b" yAxisId="right" />
-              <Line data={strikePrice1} dataKey="put_net_oi" stroke="#94a3b8" yAxisId="left" />
-            </>
-          )}
-          {strikePrice2 && strikePrice2IsChecked && (
-            <>
-              <Line data={strikePrice2} dataKey="call_net_oi" stroke="#dc2626" yAxisId="right" />
-              <Line data={strikePrice2} dataKey="put_net_oi" stroke="#f87171" yAxisId="left" />
-            </>
-          )}
-          {strikePrice3 && strikePrice3IsChecked && (
-            <>
-              <Line data={strikePrice3} dataKey="call_net_oi" stroke="#7c2d12" yAxisId="right" />
-              <Line data={strikePrice3} dataKey="put_net_oi" stroke="#fb923c" yAxisId="left" />
-            </>
-          )}
-          {strikePrice4 && strikePrice4IsChecked && (
-            <>
-              <Line data={strikePrice4} dataKey="call_net_oi" stroke="#3f6212" yAxisId="right" />
-              <Line data={strikePrice4} dataKey="put_net_oi" stroke="#a3e635" yAxisId="left" />
-            </>
-          )}
-          {strikePrice5 && strikePrice5IsChecked && (
-            <>
-              <Line data={strikePrice5} dataKey="call_net_oi" stroke="#155e75" yAxisId="right" />
-              <Line data={strikePrice5} dataKey="put_net_oi" stroke="#22d3ee" yAxisId="left" />
-            </>
-          )}
-        </LineChart>
-      </ResponsiveContainer>
+    <div id="chart">
+      {options.title && series && <ApexCharts options={options} series={series} height={350} />}
     </div>
   );
 };

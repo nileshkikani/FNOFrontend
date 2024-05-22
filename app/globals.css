@@ -92,9 +92,7 @@
 select {
   @apply px-2 py-1 rounded-sm;
 }
-.refresh-button{
-  @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded
-}
+
 
 /* th,
 td {
@@ -267,57 +265,9 @@ td {
 
 /* ------------multistrike charts color dots-------- */
 
-.color-dot {
-  @apply inline-block w-[0.8em] h-[0.8em] mr-[5px] rounded-[50%];
-}
-
-.color-dot-0 {
-  @apply bg-slate-500;
-}
-.color-dot-1 {
-  @apply bg-red-400;
-}
-.color-dot-2 {
-  @apply bg-orange-400;
-}
-.color-dot-3 {
-  @apply bg-lime-400;
-}
-.color-dot-4 {
-  @apply bg-cyan-400;
-}
-
 .symbol-list {
   @apply text-blue-700 underline;
 }
-.color-dot-0-put {
-  @apply bg-slate-400;
-}
-
-/* .color-dot-1-call{
-  @apply bg-red-600;
-} */
-/* .color-dot-1-put{
-  @apply bg-red-400;
-} */
-/* .color-dot-2-call{
-  @apply bg-orange-900;
-} */
-/* .color-dot-2-put{
-  @apply bg-orange-400;
-} */
-/* .color-dot-3-call{
-  @apply bg-lime-800;
-} */
-/* .color-dot-3-put{
-  @apply bg-lime-400;
-} */
-/* .color-dot-4-call{
-  @apply bg-cyan-800;
-}
-.color-dot-4-put{
-  @apply bg-cyan-400;
-} */
 
 .advance {
   @apply text-green-400;
@@ -352,7 +302,37 @@ td {
 }
 
 .graph-div {
-  @apply py-4;
+  /* @apply py-4; */
+  width: 50%;
+}
+.graph-cash-bottom{
+  width: 100%;
+}
+
+.color-dot {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 50%;
+  margin-left: 3px; 
+}
+
+.color-dot-0 { @apply bg-slate-400; }
+.color-dot-1 { @apply bg-red-400; }
+.color-dot-2 {  @apply bg-lime-400; }
+.color-dot-3 {  @apply bg-cyan-800; }
+.color-dot-4 { @apply bg-orange-900; }
+
+.checkbox-container {
+  margin-bottom: 10px; 
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.checkbox-container label {
+  margin-right: 10px;
 }
 
 /* ------------FII DII RADIO BUTTONS------- */
@@ -380,6 +360,9 @@ input[type='radio']:checked + label {
 
 .nav-dropdown {
   @apply p-8;
+}
+.graph-container{
+  display: flex;
 }
 
 /* ---------------------LOGIN PAGE----------------- */
@@ -714,3 +697,65 @@ input[type='radio']:checked + label {
 .fii-dii-header-deactive{
   @apply text-[#808284]
 }
+
+
+/*-----------------------------------------*/
+.table-title1 {
+  @apply text-xl font-semibold mt-4 mb-2;
+}
+
+.loading-container {
+  @apply flex justify-center items-center h-80;
+}
+
+.table-container1 {
+  @apply overflow-x-auto;
+}
+
+.table1 {
+  @apply min-w-full divide-y divide-gray-200;
+}
+
+.table-header {
+  @apply bg-gray-50;
+}
+
+.table-header-cell {
+  @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+}
+
+.table-cell {
+  @apply px-6 py-4 whitespace-nowrap;
+}
+
+.in-thousand1 {
+  @apply text-xs;
+}
+
+.flex-container {
+  @apply flex items-center space-x-10 mt-10 mb-10; /* Increase gap between flex items by 5 times */
+}
+
+.dropdown-container {
+  @apply flex items-center space-x-2; /* Reduce gap between dropdowns and refresh button */
+}
+
+.stock-dropdown3 {
+  @apply block w-auto rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+}
+
+.refresh-button2 {
+  @apply py-2 px-4 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300;
+}
+#chart {
+  max-width: auto;
+  margin: 35px auto;
+}
+.text-green-500 {
+  color: green;
+}
+
+.text-red-500 {
+  color: red;
+}
+

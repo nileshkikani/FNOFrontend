@@ -54,7 +54,6 @@ const Page = () => {
       }
     } catch (err) {
       handleResponceError()
-      console.log('error is this:', err);
     }
   };
   const getAllStocks = async () => {    
@@ -66,15 +65,14 @@ const Page = () => {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       if (response.status == 200) {
-        console.log("hellorutvik==>",response)  
         setAllData(response?.data)  
+        setLoading(false)
       }
       else{
         router.push('/login');
       }
     } catch (err) {
       handleResponceError()
-      console.log('error is this:', err);
     }
   };
   useEffect(() => {
@@ -88,101 +86,131 @@ const Page = () => {
     }
   }, [selectedScript,selectedDate]);
   
+  const refreshData = ()=>{
+    getData();
+      getAllStocks();
+  }
   const filterByStockAndDate = (event, isDateDropdown) => {
     isDateDropdown ? setSelectedDate(event.target.value) :setSelectedScript(event.target.value)      
   };
 
   return (<>
-      <div className="graph-div"> <ActiveMoneyFlow data={allData}/> </div>
-  
-  {/* -----------------------DATE DROPDOWN------------------- */}
-  <h1 className="table-title">SELECT DATE</h1>
-      <select onChange={(e) => filterByStockAndDate(e, true)} value={selectedDate ?selectedDate :"" } className="stock-dropdown">
-        {allDates && allDates?.map((stockData, index) => (
-          <option key={index} value={stockData}>
-            {stockData}
-          </option>
-        ))}
-      </select>
-      <button
-      className="refresh-button"
-      onClick={()=>getData()}
-    >
-      Refresh
-    </button>
-      {/* -------------------STOCK DROPDOWN---------------------- */}
-      <h1 className="table-title">SELECT SCRIPT</h1>
-      <select value={selectedScript}  onChange={(e) => filterByStockAndDate(e, false)} className="stock-dropdown">
-        {allScript && allScript?.map((stockData, index) => (
-          <option key={index} value={stockData}>
-            {stockData}
-          </option>
-        ))}
-      </select>
-  {
-    loading? (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '80vh'
-        }}
-      >
+<div>
+{loading ? (
+      <div className="loading-container">
+        <PropagateLoader color="#33a3e3" loading={loading} size={15} />
+      </div>):
+(<div className="graph-container">
+    <div className="graph-div">
+      {allData?.stock_data && <ActiveMoneyFlow title={"Stock"} data={allData?.stock_data} />}
+    </div>
+    <div className="graph-div">
+      {allData?.fno_data && <ActiveMoneyFlow title={"FNO"} data={allData?.fno_data} />}
+    </div>
+    </div>)}
+    <div className="flex-container">
+      
+      <div className="dropdown-container">
+        <h1 className="table-title1">SELECT DATE</h1>
+        <select
+          onChange={(e) => filterByStockAndDate(e, true)}
+          value={selectedDate ? selectedDate : ''}
+          className="stock-dropdown3"
+        >
+          {allDates &&
+            allDates.map((stockData, index) => (
+              <option key={index} value={stockData}>
+                {stockData}
+              </option>
+            ))}
+        </select>
+      </div>
+
+      
+      <div className="dropdown-container">
+        <h1 className="table-title1">SELECT SCRIPT</h1>
+        <select
+          value={selectedScript}
+          onChange={(e) => filterByStockAndDate(e, false)}
+          className="stock-dropdown3"
+        >
+          {allScript &&
+            allScript.map((stockData, index) => (
+              <option key={index} value={stockData}>
+                {stockData}
+              </option>
+            ))}
+        </select>
+      </div>
+
+      
+      <button className="refresh-button2" onClick={() => refreshData()}>
+        Refresh
+      </button>
+    </div>
+
+    {loading ? (
+      <div className="loading-container">
         <PropagateLoader color="#33a3e3" loading={loading} size={15} />
       </div>
-    ):(<>
-      <div>
-        {data && (
-          <div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Time</th>
-                  <th>Close</th>
-                  <th>Open</th>
-                  <th>High</th>
-                  <th>Low</th>
-                  <th>Average</th>
-                  <th>
-                    Volume<span className="in-thousand">in thousand</span>
-                  </th>
-                  <th>
-                    Money Flow
-                    <span className="in-thousand">in thousand</span>
-                  </th>
-                  <th>
-                    Net Money Flow
-                    <span className="in-thousand">in thousand</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {data
-                  .slice()
-                  .reverse()
-                  .map((item) => (
-                    <tr key={item?.id}>
-                      <td>{item?.time}</td>
-                      <td>{item?.close}</td>
-                      <td>{item?.open}</td>
-                      <td>{item?.high}</td>
-                      <td>{item?.low}</td>
-                      <td>{item?.average}</td>
-                      <td>{item?.volume}</td>
-                      <td>{item?.money_flow}</td>
-                      <td>{item?.net_money_flow}</td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-      <div className="graph-div"> <MoneyFlowGraph data={data}/> </div>
-    </>
-    )
-  }
+    ) : (
+      <>
+        <div>
+          {data && (
+            <div className="table-container1">
+              <table className="table1">
+                <thead className="table-header">
+                  <tr>
+                    <th className="table-header-cell">Time</th>
+                    <th className="table-header-cell">Close</th>
+                    <th className="table-header-cell">Open</th>
+                    <th className="table-header-cell">High</th>
+                    <th className="table-header-cell">Low</th>
+                    <th className="table-header-cell">Average</th>
+                    <th className="table-header-cell">
+                      Volume<span className="in-thousand1">in thousand</span>
+                    </th>
+                    <th className="table-header-cell">
+                      Money Flow<span className="in-thousand1">in thousand</span>
+                    </th>
+                    <th className="table-header-cell">
+                      Net Money Flow<span className="in-thousand1">in thousand</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {data
+                    .slice()
+                    .reverse()
+                    .map((item, index, array) => {
+                      let moneyFlowClass = '';
+                      if (index < array.length - 1) {
+                        const prevMoneyFlow = array[index + 1].money_flow;
+                        moneyFlowClass = item.money_flow > prevMoneyFlow ? 'text-green-500' : 'text-red-500';
+                      }
+                      return (<tr key={item?.id}>
+                        <td className="table-cell">{item?.time}</td>
+                        <td className="table-cell">{item?.close}</td>
+                        <td className="table-cell">{item?.open}</td>
+                        <td className="table-cell">{item?.high}</td>
+                        <td className="table-cell">{item?.low}</td>
+                        <td className="table-cell">{item?.average}</td>
+                        <td className="table-cell">{item?.volume}</td>
+                        <td className={`table-cell ${moneyFlowClass ? moneyFlowClass : "text-green-500"}`}>{item?.money_flow}</td>
+                        <td className="table-cell">{item?.net_money_flow}</td>
+                      </tr>
+                    )})}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+        <div className="graph-cash-bottom">
+          <MoneyFlowGraph data={data} />
+        </div>
+      </>
+    )}
+  </div>
     </>
   );
 };
