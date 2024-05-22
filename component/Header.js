@@ -197,7 +197,7 @@ export default function Header() {
     },
 
     {
-      path: '/fii-dii-data',
+      path: '/fii-dii-data/fno',
       title: 'FII DII Data',
       icon: FaDatabase
     },

@@ -1,4 +1,4 @@
-// import GuestGuard from "@/guards/guest-guard";
+"use client"
 import CommonNav from "@/layouts/CommonNav";
 export default function Layout({ children }) {
   return (
