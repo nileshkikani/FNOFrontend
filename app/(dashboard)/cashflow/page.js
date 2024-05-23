@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+// import "./global.css"
 
 //--------HOOKS---------------
 import useCashflowData from '@/hooks/useCashflowData';

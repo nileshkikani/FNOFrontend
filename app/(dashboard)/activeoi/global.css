@@ -1,0 +1,11 @@
+.red-oi-table{
+    @apply text-red-500;
+}
+
+.green-oi-table{
+    @apply text-green-500 ;
+}
+
+.active-oi-table{
+    @apply py-10;
+}

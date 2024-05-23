@@ -59,7 +59,7 @@ export default function Page() {
         </Link>
       ),
       format: (row) => <span className="secwise-cols">{+row.symbol}</span>,
-      sortable: true
+      // sortable: true
     },
     {
       name: <span className="table-heading-text">{'Delivered Qty'}</span>,

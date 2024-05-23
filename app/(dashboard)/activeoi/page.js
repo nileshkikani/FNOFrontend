@@ -2,12 +2,17 @@
 // ===========UTILITIES===============
 import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
+import axiosInstance from "@/utils/axios";
+import { API_ROUTER } from "@/services/apiRouter";
+import "./global.css"
 
 //  ===========HOOKS ===========
 import useActiveOiData from "@/hooks/useActiveOiData";
 import { useAppSelector } from "@/store";
 import useNiftyFutureData from "@/hooks/useNiftyFutureData";
 import NiftyFuturesTable from "@/component/NiftyFutures/NiftyFuturesTable";
+import CoiDiffGraph from "@/component/ActiveOI/ActiveOi-Graphs/CoiDiff-Graph";
+import IntradayDiffGraph from "@/component/ActiveOI/ActiveOi-Graphs/IntradayDiff-Graph";
 
 // ===========GRAPH COMPONENTS ===========
 const ChangeOIGraph = dynamic(() =>
@@ -38,10 +43,11 @@ export default function Page() {
     dropDownChange,
   } = useActiveOiData();
 
-  const { getNiftyFuturesData, selectedOption } = useNiftyFutureData();
+  // const { getNiftyFuturesData, selectedOption } = useNiftyFutureData();
 
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);
+  const [niftyFuturesDate,setNiftyFuturesDates] = useState();
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
 
@@ -51,7 +57,7 @@ export default function Page() {
     if(checkUserIsLoggedIn){
 
       getData();
-      getNiftyFuturesData();
+      // getNiftyFuturesData();
       const intervalId = setInterval(() => {
         setTimeLeft((prevTime) => prevTime - 1);
       }, 1000);
@@ -80,6 +86,34 @@ export default function Page() {
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
+
+  console.log("opopop",niftyFuturesDate);
+
+  useEffect(()=>{
+    const getNiftyFuturesData = async () => {
+    console.log("insidefuncc")
+      if (!authState && checkUserIsLoggedIn) {
+        return router.push('/login');
+      }
+      try {
+        let apiUrl = `${API_ROUTER.NIFTY_FUTURE_DATA}`;
+        const response = await axiosInstance.get( apiUrl, {
+          headers: { Authorization: `Bearer ${authState.access}` }
+        });
+        console.log("ytytyt",response);
+        if (response.status === 200) {
+          setNiftyFuturesDates(response.data)
+
+        } else {
+          router.push("/login");
+        }
+      } catch (error) {
+        // handleResponceError();
+        console.log("qwqw");
+      }
+    };
+    getNiftyFuturesData();
+  },[])
 
   return (
     <div>
@@ -125,9 +159,16 @@ export default function Page() {
               ))}
             </select>
           </label>
+          {/* ----------COI DIFFERENCE------------------- */}
+          
+            <CoiDiffGraph />
+            <IntradayDiffGraph/>
+         
           {/* -------------------ACTIVE OI SECTION------------------ */}
           <>
+          <div className="active-oi-table">
             <ActiveOiTable />
+          </div>
             <div className="graph-div">
               <ChangeOIGraph />
             </div>
@@ -140,7 +181,7 @@ export default function Page() {
           </>
           {/* -----------------------NIFTY FUTURES SECTION-------------------- */}
           <>
-            {!selectedOption ? (
+            {/* {!selectedOption ? (
               <div
                 style={{
                   display: "flex",
@@ -156,7 +197,7 @@ export default function Page() {
                 />
               </div>
             ) : (
-              <>
+              <> */}
                 <div className="main-div">
                   <NiftyFuturesTable />
                 </div>
@@ -164,8 +205,8 @@ export default function Page() {
                   <NiftyFuturesGraph />
                 </div>
               </>
-            )}
-          </>
+            {/* )} */}
+          {/* </> */}
         </>
       )}
     </div>
