@@ -148,7 +148,9 @@ th {
   overflow-x: auto;
 }
 
-
+.top-text-activeoi {
+  @apply mt-[20px] mb-[20px]; /* Adjust the margin as needed */
+}
 
 td {
   text-align: center;

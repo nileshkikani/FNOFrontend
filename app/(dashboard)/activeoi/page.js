@@ -157,9 +157,9 @@ useEffect(()=>{
       ) : (
         <>
           {marketClosed ? (
-            <h1 className="timer">MARKET CLOSED</h1>
+            <h1 className="top-text-activeoi timer">MARKET CLOSED</h1>
           ) : (
-            <h1>
+            <h1 className="top-text-activeoi">
               Next Refresh In:
               <span className="timer">
                 {`${minutes}:${seconds < 10 ? "0" : ""}${seconds}`}
