@@ -128,13 +128,13 @@ export default function Page() {
           {/* -------------------ACTIVE OI SECTION------------------ */}
           <>
             <ActiveOiTable />
-            <div className="graph-div">
+            <div className="grand-div">
               <ChangeOIGraph />
             </div>
-            <div className="graph-div">
+            <div className="grand-div">
               <CallVsPutGraph />
             </div>
-            <div className="graph-div">
+            <div className="grand-div">
               <ScatterPlotGraph />
             </div>
           </>
@@ -160,7 +160,7 @@ export default function Page() {
                 <div className="main-div">
                   <NiftyFuturesTable />
                 </div>
-                <div className="main-div">
+                <div className="grand-div">
                   <NiftyFuturesGraph />
                 </div>
               </>

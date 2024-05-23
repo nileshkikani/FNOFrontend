@@ -77,7 +77,6 @@ export const NiftyFutureProvider = ({ children }) => {
       const response = await axiosInstance.get(API_ROUTER.NIFTY_FUTURE_DATA, {
         headers: { Authorization: `Bearer ${authState.access}` },
       });
-
       // ---------UNIQUE DATE n EXPIRY SELECTION----------
       const uniqueDatesSet = new Set();
       const uniqueCreatedDateSet = new Set();
@@ -102,7 +101,7 @@ export const NiftyFutureProvider = ({ children }) => {
         router.push("/login");
       }
     } catch (error) {
-      handleResponceError();
+      // handleResponceError();
     }
   };
 

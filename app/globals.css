@@ -298,9 +298,8 @@ td {
 }
 
 .grand-div {
-  @apply px-10;
+  @apply mt-[20px] mb-[20px] px-10;
 }
-
 .graph-div-cashFlow {
   /* @apply py-4; */
   width: 50%;
@@ -559,7 +558,11 @@ input[type='radio']:checked + label {
 .main-div {
   @apply flex flex-col;
 }
-
+.link {
+  color: blue;
+  cursor: pointer;
+  font-size: 16px;
+}
 .flex-div {
   @apply flex;
 }
