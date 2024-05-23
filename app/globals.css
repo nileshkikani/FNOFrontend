@@ -301,7 +301,7 @@ td {
   @apply px-10;
 }
 
-.graph-div {
+.graph-div-cashFlow {
   /* @apply py-4; */
   width: 50%;
 }
