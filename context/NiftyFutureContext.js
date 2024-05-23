@@ -74,11 +74,18 @@ export const NiftyFutureProvider = ({ children }) => {
       return router.push('/login');
     }
     try {
-      // let apiUrl = `${API_ROUTER.NIFTY_FUTURE_DATA}`;
-      
-      // const response = await axiosInstance.get( apiUrl += `?date=${selectedDate}`, {
-      //   headers: { Authorization: `Bearer ${authState.access}` }
-      // });
+      const response = await axiosInstance.get(API_ROUTER.NIFTY_FUTURE_DATA, {
+        headers: { Authorization: `Bearer ${authState.access}` },
+      });
+      // ---------UNIQUE DATE n EXPIRY SELECTION----------
+      const uniqueDatesSet = new Set();
+      const uniqueCreatedDateSet = new Set();
+
+      response.data.forEach((item) => {
+        uniqueDatesSet.add(item?.expiration);
+        const formattedDate = new Date(item?.created_at).toLocaleDateString();
+        uniqueCreatedDateSet.add(formattedDate);
+      });
       if (response.status === 200) {
         dispatch({
           type: "SET_DATA",
@@ -113,6 +120,8 @@ export const NiftyFutureProvider = ({ children }) => {
   // ---------------------------CREATED DATE----------------------
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
+    console.log("jhasvjhasvfhd",event.target.value)
+    return
     const [day, month, year] = selectedDate.split("/");
     const formattedDate = `${year}-${month}-${day}`;
     const dateObject = new Date(formattedDate);

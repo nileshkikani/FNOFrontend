@@ -1,19 +1,8 @@
 import React from "react";
 // -----------------------HOOKS------------------
-import useNiftyFutureData from "@/hooks/useNiftyFutureData";
 
-const NiftyFuturesTable = () => {
-    const {
-        apiData,
-        // selectedOption,
-        uniqueExpiryDatesArray,
-        filterByCreatedDate,
-        handleDateChange,
-        uniqueCreatedDatesArray,
-        handleExpiryChange,
-      } = useNiftyFutureData();
-
-
+const NiftyFuturesTable = ({selectedNiftyFuturesExpDates,setSelectedNiftyFuturesExpDates ,niftyFuturesExpDates,niftyFuturesFilterData,niftyFuturesDate,setSelectedNiftyFutureDates,selectedNiftyFutureDates}) => {
+  
   return (
     <>
       <div className="mx-10">
@@ -21,13 +10,13 @@ const NiftyFuturesTable = () => {
         <div className="expiry-created-date">
           <div className="expirydate-div">
             {/* --------------EXPIRY DROPDOWN-------- */}
-            <h1 className="table-title">EXPIRY</h1>
+            <h1 className="table-title-beta">EXPIRY :</h1>
             <select
-              // value={selectedOption}
-              onChange={handleExpiryChange}
+              value={selectedNiftyFuturesExpDates}
+              onChange={(e)=>setSelectedNiftyFuturesExpDates(e.target.value)}
               className="stock-dropdown"
             >
-              {uniqueExpiryDatesArray?.map((item, index) => (
+              {niftyFuturesExpDates && niftyFuturesExpDates?.map((item, index) => (
                 <option key={index} value={item}>
                   {item}
                 </option>
@@ -36,14 +25,14 @@ const NiftyFuturesTable = () => {
           </div>
           <div className="expirydate-div">
             {/* --------------DATE DROPDOWN---------- */}
-            <h1 className="table-title">DATE</h1>
-            {uniqueCreatedDatesArray && (
+            <h1 className="table-title-beta">DATE :</h1>
+            {niftyFuturesDate && (
               <select
-                // value={selectedDate}
+              value={selectedNiftyFutureDates}
                 className="stock-dropdown"
-                onChange={handleDateChange}
+                onChange={(e)=>setSelectedNiftyFutureDates(e.target.value)}
               >
-                {uniqueCreatedDatesArray.map((date, index) => (
+                {niftyFuturesDate?.map((date, index) => (
                   <option key={index} value={date}>
                     {date}
                   </option>
@@ -52,29 +41,29 @@ const NiftyFuturesTable = () => {
             )}
           </div>
         </div>
-        <div>
-          <table>
-            <thead>
+        <div className="table-container1">
+          <table className="table1">
+            <thead className="table-header">
               <tr>
-                <th>Expiry</th>
-                <th>OI</th>
-                <th>Change in OI</th>
-                <th>
+                <th className="table-header-cell">Expiry</th>
+                <th className="table-header-cell">OI</th>
+                <th className="table-header-cell">Change in OI</th>
+                <th className="table-header-cell">
                   Percentage <br></br> Change in OI
                 </th>
-                <th>VWAP</th>
-                <th>Created At</th>
+                <th className="table-header-cell">VWAP</th>
+                <th className="table-header-cell">Created At</th>
               </tr>
             </thead>
-            <tbody>
-              {filterByCreatedDate?.map((item) => (
+            <tbody className="bg-white divide-y divide-gray-200">
+              {niftyFuturesFilterData && niftyFuturesFilterData?.map((item) => (
                 <tr key={item?.id}>
-                  <td>{item?.expiration}</td>
-                  <td>{item?.open_interest}</td>
-                  <td>{item?.change_in_open_interest}</td>
-                  <td>{item?.percentage_change_in_open_interest}</td>
-                  <td>{item?.vwap}</td>
-                  <td>
+                  <td className="table-cell">{item?.expiration}</td>
+                  <td className="table-cell">{item?.open_interest}</td>
+                  <td className="table-cell">{item?.change_in_open_interest}</td>
+                  <td className="table-cell">{item?.percentage_change_in_open_interest}</td>
+                  <td className="table-cell">{item?.vwap}</td>
+                  <td className="table-cell">
                     {new Date(item?.created_at).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",

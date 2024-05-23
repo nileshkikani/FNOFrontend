@@ -5,6 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import DataTable from 'react-data-table-component';
 import '../securitywise/global.css';
+import { useRouter } from 'next/navigation';
 
 //  ===========LOADING ANIMATION ===========
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
@@ -12,7 +13,7 @@ const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 export default function Page() {
   const { setDropdownDate, data, uniqueDates, getData, showNiftyStocksOnly, isLoading, currentSelectedDate } =
     useSecurityWiseData();
-
+const route= useRouter();
   const [isFilterData, setIsFilterData] = useState(false);
   const [securityData, setSecurityData] = useState([]);
 
@@ -29,6 +30,10 @@ export default function Page() {
     setSecurityData(dataset);
     setIsFilterData(true);
   };
+
+const routerRedirect = (aPath)=>{
+  route.push(`/securitywise/${aPath}/`)
+}
 
   const loadingAnimation = (
     <div
@@ -48,15 +53,12 @@ export default function Page() {
       name: <span className="table-heading-text">Symbol</span>,
       selector: (row) => row.symbol,
       cell: (row) => (
-        <Link
-          href={{
-            pathname: '/securitywise/selectedsecurity/',
-            query: { symbol: row?.symbol }
-          }}
-          className="symbol-list secwise-cols"
-        >
+        <span
+        onClick={() => routerRedirect(row?.symbol)}
+        className="link"
+      >
           {row?.symbol}
-        </Link>
+          </span>
       ),
       format: (row) => <span className="secwise-cols">{+row.symbol}</span>,
       // sortable: true

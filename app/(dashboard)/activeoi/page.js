@@ -44,13 +44,18 @@ export default function Page() {
   } = useActiveOiData();
 
   // const { getNiftyFuturesData, selectedOption } = useNiftyFutureData();
+  const [selectedNiftyFutureDates, setSelectedNiftyFutureDates] = useState("");
 
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);
-  const [niftyFuturesDate,setNiftyFuturesDates] = useState();
+  const [niftyFuturesDate,setNiftyFuturesDates] = useState("");
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
-
+  const [niftyFuturesData,setNiftyFuturesData] = useState("");
+  const [niftyFuturesExpDates,setNiftyFuturesExpDates] = useState("");
+  const [selectedNiftyFuturesExpDates,setSelectedNiftyFuturesExpDates] = useState("");
+  const [niftyFuturesFilterData,setNiftyFuturesFilterData] = useState("");
+ 
   const memoizedTimeLeft = useMemo(() => timeLeft, [timeLeft]);
 
   useEffect(() => {
@@ -86,23 +91,44 @@ export default function Page() {
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
+useEffect(()=>{
 
-  console.log("opopop",niftyFuturesDate);
+  selectedNiftyFuturesExpDates && getFilteredNiftyValue(selectedNiftyFuturesExpDates,niftyFuturesData)
+},[selectedNiftyFuturesExpDates])
+  const getFilteredNiftyValue =(aDate,aValue)=>{
+    setNiftyFuturesFilterData(aValue?.filter((aItem)=>aItem.expiration == aDate)
+  )}
 
+  
   useEffect(()=>{
     const getNiftyFuturesData = async () => {
-    console.log("insidefuncc")
       if (!authState && checkUserIsLoggedIn) {
         return router.push('/login');
       }
       try {
         let apiUrl = `${API_ROUTER.NIFTY_FUTURE_DATA}`;
-        const response = await axiosInstance.get( apiUrl, {
+        const response = await axiosInstance.get( selectedNiftyFutureDates ? apiUrl += `?date=${selectedNiftyFutureDates}`: apiUrl, {
           headers: { Authorization: `Bearer ${authState.access}` }
         });
         console.log("ytytyt",response);
         if (response.status === 200) {
-          setNiftyFuturesDates(response.data)
+          if(!niftyFuturesDate && !selectedNiftyFutureDates ){
+            setNiftyFuturesDates(response?.data?.dates)
+            setSelectedNiftyFutureDates(response?.data?.dates[0])
+            return
+          }
+          const extractTimes = (items) =>
+            items && items.length
+              ? items.map((item) => item.expiration).filter(Boolean)
+              : [];
+          const allCreatedAts = [
+            ...extractTimes(response?.data),
+          ];
+          const filteredExpDate = [...new Set(allCreatedAts)]
+          setNiftyFuturesExpDates(filteredExpDate)
+          getFilteredNiftyValue(filteredExpDate[0],response?.data)
+          setNiftyFuturesData(response?.data)
+          setSelectedNiftyFuturesExpDates(filteredExpDate[0])
 
         } else {
           router.push("/login");
@@ -113,7 +139,7 @@ export default function Page() {
       }
     };
     getNiftyFuturesData();
-  },[])
+  },[selectedNiftyFutureDates])
 
   return (
     <div>
@@ -141,8 +167,8 @@ export default function Page() {
             </h1>
           )}
           <label>
-            Strikes above/below ATM
-            <select onChange={dropDownChange}>
+            Strikes Above/Below ATM :
+            <select className="stock-dropdown" onChange={dropDownChange}>
               <option value="5">5</option>
               <option value="15" selected>
                 15
@@ -150,8 +176,8 @@ export default function Page() {
             </select>
           </label>
           <label>
-            Date
-            <select onChange={dateDropDownChange}>
+            Date :
+            <select className="stock-dropdown" onChange={dateDropDownChange}>
               {uniqueDates.map((date) => (
                 <option key={date} value={date}>
                   {date}
@@ -160,24 +186,28 @@ export default function Page() {
             </select>
           </label>
           {/* ----------COI DIFFERENCE------------------- */}
-          
+          <div className="grand-div">
             <CoiDiffGraph />
+            </div>
+            <div className="grand-div">
             <IntradayDiffGraph/>
+            </div>
          
           {/* -------------------ACTIVE OI SECTION------------------ */}
           <>
           <div className="active-oi-table">
             <ActiveOiTable />
-          </div>
-            <div className="graph-div">
+            <div className="grand-div">
               <ChangeOIGraph />
             </div>
-            <div className="graph-div">
+            <div className="grand-div">
               <CallVsPutGraph />
             </div>
-            <div className="graph-div">
+            <div className="grand-div">
               <ScatterPlotGraph />
             </div>
+            </div>
+
           </>
           {/* -----------------------NIFTY FUTURES SECTION-------------------- */}
           <>
@@ -199,10 +229,10 @@ export default function Page() {
             ) : (
               <> */}
                 <div className="main-div">
-                  <NiftyFuturesTable />
+                  <NiftyFuturesTable selectedNiftyFuturesExpDates={selectedNiftyFuturesExpDates} setSelectedNiftyFuturesExpDates={setSelectedNiftyFuturesExpDates} niftyFuturesExpDates={niftyFuturesExpDates} niftyFuturesFilterData={niftyFuturesFilterData} niftyFuturesDate={niftyFuturesDate} setSelectedNiftyFutureDates={setSelectedNiftyFutureDates} selectedNiftyFutureDates={selectedNiftyFutureDates}/>
                 </div>
-                <div className="main-div">
-                  <NiftyFuturesGraph />
+                <div className="grand-div">
+                  <NiftyFuturesGraph niftyFuturesFilterData={niftyFuturesFilterData} />
                 </div>
               </>
             {/* )} */}
