@@ -58,7 +58,9 @@ export default function Header() {
 
   useEffect(() => {
     // Check authentication status when component mounts
-    getAdvanceDecline();
+    setInterval(() => {
+      getAdvanceDecline();
+    }, 1000*60);
   }, []);
 
   useEffect(() => {
@@ -197,7 +199,7 @@ export default function Header() {
     },
 
     {
-      path: '/fii-dii-data',
+      path: '/fii-dii-data/fno',
       title: 'FII DII Data',
       icon: FaDatabase
     },

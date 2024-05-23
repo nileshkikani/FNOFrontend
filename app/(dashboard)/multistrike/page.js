@@ -11,25 +11,23 @@ const Page = () => {
   useEffect(() => {
     multiStrikeAPiCall();
   }, []);
-  console.log("ssss",strikes)
   return (
     <>
-      <div>
-        {strikes.map((itm, index) => (
-          <div key={index}>
-            <input
-              type="checkbox"
-              id={`strike${index}`}
-              value={itm}
-              onChange={(e) => checkSelectedStrike(e, index + 1)}
-              // checked={checkedStrikes?.includes(index + 1)}
-            />
-            <label htmlFor={`strike${index}`}>{`${itm}`}</label>
-            <span className={`color-dot color-dot-${index}`}></span>
-             <br/>
-          </div>
-        ))}
-      </div>
+      <div className="checkbox-container">
+  {strikes.map((itm, index) => (
+    <div key={index}>
+      <input
+        type="checkbox"
+        id={`strike${index}`}
+        value={itm}
+        onChange={(e) => checkSelectedStrike(e, index + 1)}
+      />
+      <label htmlFor={`strike${index}`}>{`${itm}`}</label>
+      <span className={`color-dot color-dot-${index}`}></span>
+      <br/>
+    </div>
+  ))}
+</div>
       <MultiStrikeChart />
     </>
   );

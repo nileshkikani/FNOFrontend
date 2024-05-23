@@ -1,30 +1,23 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-
-const NAVDATA = [
-  {
-    path: '/fii-dii-data/fno',
-    title: 'Futures and Options'
-  },
-  {
-    path: '/fii-dii-data/cash-market',
-    title: 'Cash Market'
-  }
-];
+import { usePathname } from 'next/navigation';
 
 const CommonNav = () => {
-  const router = useRouter();
+  const pathname = usePathname();
+
   return (
     <>
-      <ul className="fii-dii-header">
-        {NAVDATA.map((item) => (
-          <li key={item.path} className={router.pathname === item.path ? 'fii-dii-header-li-active' : ''}>
-            <Link href={item.path}>{item.title}</Link>
-          </li>
-        ))}
-      </ul>
+      <div className="fii-dii-header">
+        <button className={pathname === '/fii-dii-data/fno' ? 'fii-dii-header-active' : 'fii-dii-header-deactive'}>
+          <Link href={'/fii-dii-data/fno'}>Futures and Options</Link>
+        </button>
+        <button
+          className={pathname === '/fii-dii-data/cash-market' ? 'fii-dii-header-active' : 'fii-dii-header-deactive'}
+        >
+          <Link href={'/fii-dii-data/cash-market'}>Cash Market</Link>
+        </button>
+      </div>
     </>
   );
 };
