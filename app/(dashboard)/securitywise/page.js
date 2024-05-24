@@ -5,6 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import DataTable from 'react-data-table-component';
 import '../securitywise/global.css';
+import DeliveryChart from '@/component/SecurityWise/DeliveryChart';
 import { useRouter } from 'next/navigation';
 
 //  ===========LOADING ANIMATION ===========
@@ -20,6 +21,7 @@ export default function Page() {
   useEffect(() => {
     getData();
   }, []);
+
   useEffect(() => {
     setData(data);
   }, [data]);
@@ -29,6 +31,15 @@ export default function Page() {
     console.log('dataset', dataset);
     setSecurityData(dataset);
     setIsFilterData(true);
+  };
+
+  const processData = (data) => {
+    const dates = data.map((item) => item.date);
+    const tradedVolume = data.map((item) => item.total_traded_quantity);
+    const deliveryVolume = data.map((item) => item.deliverable_qty);
+    const deliveryVolumePercentage = data.map((item) => parseFloat(item.dly_qt_to_traded_qty));
+
+    return { dates, tradedVolume, deliveryVolume, deliveryVolumePercentage };
   };
 
   const routerRedirect = (aPath) => {
@@ -159,6 +170,7 @@ export default function Page() {
             </label>
           </div>
         </div>
+
         <div className="scrolling-table">
           <DataTable
             columns={column}
