@@ -19,6 +19,8 @@ import { useRouter } from 'next/navigation';
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
 const Page = () => {
+  const selectedColorForMoneyFlow = [];
+  const selectedColorForNetMoneyFlow = [];
   const { handleResponceError } = useAuth();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState('');
@@ -30,6 +32,28 @@ const Page = () => {
   const [allStockLoading, setAllStockLoading] = useState(true);
   const [data, setData] = useState('');
   const authState = useAppSelector((state) => state.auth.authState);
+  const [selectedColors, setSelectedColors] = useState('');
+
+  const getModifyResponce = (aValue, aItem, aResponce) => {
+    for (let i = 0; i < aResponce.length; i++) {
+      let increase;
+      if (i == 0) {
+        increase = 'green';
+        aValue.push(increase);
+        continue;
+      } else if (+aResponce[i][aItem] > +aResponce[i - 1][aItem]) {
+        increase = 'green';
+        aValue.push(increase);
+        continue;
+      } else if (+aResponce[i][aItem] < +aResponce[i - 1][aItem]) {
+        increase = 'red';
+        aValue.push(increase);
+        continue;
+      } else {
+        aValue.push('black');
+      }
+    }
+  };
 
   const getData = async () => {
     try {
@@ -51,7 +75,12 @@ const Page = () => {
           setLoading(false);
           return;
         }
+
+        getModifyResponce(selectedColorForMoneyFlow, 'money_flow', response?.data);
+        getModifyResponce(selectedColorForNetMoneyFlow, 'net_money_flow', response?.data);
+        setSelectedColors({ moneyFlowColors: selectedColorForMoneyFlow.reverse(), netMoneyFlowColors: selectedColorForNetMoneyFlow.reverse() });
         setData(response?.data);
+
         setLoading(false);
       } else {
         router.push('/login');
@@ -124,11 +153,11 @@ const Page = () => {
         )}
         <div className="flex-container">
           <div className="dropdown-container">
-            <h1 className="table-title1">SELECT DATE</h1>
+            <h1 className="table-title1">SELECT DATE :</h1>
             <select
               onChange={(e) => filterByStockAndDate(e, true)}
               value={selectedDate ? selectedDate : ''}
-              className="stock-dropdown3"
+              className="stock-dropdown"
             >
               {allDates &&
                 allDates.map((stockData, index) => (
@@ -140,8 +169,8 @@ const Page = () => {
           </div>
 
           <div className="dropdown-container">
-            <h1 className="table-title1">SELECT SCRIPT</h1>
-            <select value={selectedScript} onChange={(e) => filterByStockAndDate(e, false)} className="stock-dropdown3">
+            <h1 className="table-title1">SELECT SCRIPT :</h1>
+            <select value={selectedScript} onChange={(e) => filterByStockAndDate(e, false)} className="stock-dropdown">
               {allScript &&
                 allScript.map((stockData, index) => (
                   <option key={index} value={stockData}>
@@ -175,10 +204,10 @@ const Page = () => {
                         <th className="table-header-cell">Low</th>
                         <th className="table-header-cell">Average</th>
                         <th className="table-header-cell">
-                          Volume<span className="in-thousand1"> in thousand</span>
+                          Volume<span className="in-thousand1">in thousand</span>
                         </th>
                         <th className="table-header-cell">
-                          Money Flow<span className="in-thousand1"> in thousand</span>
+                          Money Flow<span className="in-thousand1">in thousand</span>
                         </th>
                         <th className="table-header-cell">
                           Net Money Flow<span className="in-thousand1">in thousand</span>
@@ -189,12 +218,7 @@ const Page = () => {
                       {data
                         .slice()
                         .reverse()
-                        .map((item, index, array) => {
-                          let moneyFlowClass = '';
-                          if (index < array.length - 1) {
-                            const prevMoneyFlow = array[index + 1].money_flow;
-                            moneyFlowClass = item.money_flow > prevMoneyFlow ? 'text-green-500' : 'text-red-500';
-                          }
+                        .map((item, index) => {
                           return (
                             <tr key={item?.id}>
                               <td className="table-cell">{item?.time}</td>
@@ -204,10 +228,28 @@ const Page = () => {
                               <td className="table-cell">{item?.low}</td>
                               <td className="table-cell">{item?.average}</td>
                               <td className="table-cell">{item?.volume}</td>
-                              <td className={`table-cell ${moneyFlowClass ? moneyFlowClass : 'text-green-500'}`}>
+                              <td
+                                className={`table-cell ${
+                                  selectedColors.moneyFlowColors[index] == 'green'
+                                    ? 'text-green-500'
+                                    : selectedColors.moneyFlowColors[index] == 'red'
+                                    ? 'text-red-500'
+                                    : ''
+                                }`}
+                              >
                                 {item?.money_flow}
                               </td>
-                              <td className="table-cell">{item?.net_money_flow}</td>
+                              <td
+                                className={`table-cell ${
+                                  selectedColors.netMoneyFlowColors[index] == 'green'
+                                    ? 'text-green-500'
+                                    : selectedColors.netMoneyFlowColors[index] == 'red'
+                                    ? 'text-red-500'
+                                    : ''
+                                }`}
+                              >
+                                {item?.net_money_flow}
+                              </td>
                             </tr>
                           );
                         })}
