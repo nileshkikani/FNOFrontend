@@ -1,21 +1,11 @@
-"use client";
-import React from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ReferenceLine,
-} from "recharts";
+'use client';
+import React from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine } from 'recharts';
 
-import useNiftyFutureData from "@/hooks/useNiftyFutureData";
+import useNiftyFutureData from '@/hooks/useNiftyFutureData';
 
 const NiftyFuturesClosePrice = () => {
   const { filterByCreatedDate } = useNiftyFutureData();
-
 
   return (
     <>
@@ -29,7 +19,7 @@ const NiftyFuturesClosePrice = () => {
             top: 5,
             right: 30,
             left: 20,
-            bottom: 5,
+            bottom: 5
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
@@ -37,8 +27,8 @@ const NiftyFuturesClosePrice = () => {
             dataKey="created_at"
             tickFormatter={(timeStr) =>
               new Date(timeStr).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
+                hour: '2-digit',
+                minute: '2-digit'
               })
             }
           />
@@ -46,11 +36,7 @@ const NiftyFuturesClosePrice = () => {
           <Tooltip />
           <Legend />
           <ReferenceLine y={0} stroke="#000" />
-          <Bar
-            name="Open interest change"
-            dataKey="close_price"
-            fill="#a3c949"
-          />
+          <Bar name="Open interest change" dataKey="close_price" fill="#a3c949" />
         </BarChart>
       </div>
     </>

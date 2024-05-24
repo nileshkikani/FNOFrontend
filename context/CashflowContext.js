@@ -65,7 +65,7 @@ export const CashflowProvider = ({ children }) => {
       });
       const responseData = response.data;
 
-      console.log("this is response:",response);
+      console.log('this is response:', response);
       dispatch({ type: 'SET_SELECTED_STOCK', payload: responseData });
 
       if (responseData?.dates) {

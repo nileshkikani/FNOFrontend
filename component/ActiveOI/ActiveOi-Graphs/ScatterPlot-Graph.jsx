@@ -1,23 +1,13 @@
-"use client";
-import React from "react";
-import {
-  Line,
-  LineChart,
-  XAxis,
-  ResponsiveContainer,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
-import useActiveOiData from "@/hooks/useActiveOiData";
+'use client';
+import React from 'react';
+import { Line, LineChart, XAxis, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import useActiveOiData from '@/hooks/useActiveOiData';
 
 const ScatterPlotGraph = () => {
-  const { checkFive, adjustedNiftyStart, adjustedNiftyEnd,filteredByDateForRange } =
-    useActiveOiData();
+  const { checkFive, adjustedNiftyStart, adjustedNiftyEnd, filteredByDateForRange } = useActiveOiData();
 
   return (
-    <div style={{ width: "100%", height: "400px" }}>
+    <div style={{ width: '100%', height: '400px' }}>
       <h1 className="table-title">PCR</h1>
 
       <ResponsiveContainer width="100%" height="100%">
@@ -29,7 +19,7 @@ const ScatterPlotGraph = () => {
             top: 5,
             right: 30,
             left: 20,
-            bottom: 5,
+            bottom: 5
           }}
           syncId="change_oi_brush"
         >
@@ -38,40 +28,28 @@ const ScatterPlotGraph = () => {
             dataKey="created_at"
             tickFormatter={(timeStr) =>
               new Date(timeStr).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
+                hour: '2-digit',
+                minute: '2-digit'
               })
             }
           />
           <YAxis yAxisId="left" />
-          <YAxis
-            yAxisId="right"
-            orientation="right"
-            domain={[adjustedNiftyStart, adjustedNiftyEnd]}
-            hide
-          />
+          <YAxis yAxisId="right" orientation="right" domain={[adjustedNiftyStart, adjustedNiftyEnd]} hide />
           <Tooltip
             labelFormatter={(timeStr) =>
               new Date(timeStr).toLocaleTimeString([], {
-                year: "numeric",
-                month: "numeric",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
               })
             }
           />
           <Legend />
           {!checkFive ? (
             <>
-              <Line
-                yAxisId="left"
-                type="linear"
-                dataKey="pcr"
-                stroke="#545454"
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
-              />
+              <Line yAxisId="left" type="linear" dataKey="pcr" stroke="#545454" activeDot={{ r: 8 }} strokeWidth={2} />
             </>
           ) : (
             <>

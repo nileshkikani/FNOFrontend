@@ -17,7 +17,7 @@ const initialState = {
   strikePrice2: [],
   strikePrice3: [],
   strikePrice4: [],
-  strikePrice5: [],
+  strikePrice5: []
 };
 
 const reducer = (state, action) => {
@@ -33,11 +33,11 @@ const reducer = (state, action) => {
     case 'SET_STRIKE_2':
       return { ...state, strikePrice2: action.payload.strikePrice2 };
     case 'SET_STRIKE_3':
-      return { ...state, strikePrice3: action.payload.strikePrice3};
+      return { ...state, strikePrice3: action.payload.strikePrice3 };
     case 'SET_STRIKE_4':
-      return { ...state, strikePrice4: action.payload.strikePrice4};
+      return { ...state, strikePrice4: action.payload.strikePrice4 };
     case 'SET_STRIKE_5':
-      return { ...state, strikePrice5: action.payload.strikePrice5};
+      return { ...state, strikePrice5: action.payload.strikePrice5 };
     default:
       return state;
   }
@@ -88,8 +88,6 @@ export const MultiStrikeProvider = ({ children }) => {
     }
   };
 
-
-
   useEffect(() => {
     const uniqueStrikePrices = [...new Set(data?.map((item) => item?.strike_price))];
     dispatch({ type: 'SET_STRIKES', payload: uniqueStrikePrices });
@@ -99,23 +97,22 @@ export const MultiStrikeProvider = ({ children }) => {
   const checkSelectedStrike = (e, identifier) => {
     const filteredData = data?.filter((itm) => itm?.strike_price == `${e.target.value}`);
 
-
     switch (identifier) {
       case 1:
         // setStrikePrice1(filteredData);
-        dispatch({ type: 'SET_STRIKE_1', payload: { strikePrice1: e.target.checked ? [...filteredData] :[] } });
+        dispatch({ type: 'SET_STRIKE_1', payload: { strikePrice1: e.target.checked ? [...filteredData] : [] } });
         break;
       case 2:
-        dispatch({ type: 'SET_STRIKE_2', payload: { strikePrice2: e.target.checked ? [...filteredData] :[] } });
+        dispatch({ type: 'SET_STRIKE_2', payload: { strikePrice2: e.target.checked ? [...filteredData] : [] } });
         break;
       case 3:
-        dispatch({ type: 'SET_STRIKE_3', payload: { strikePrice3: e.target.checked ? [...filteredData] :[] } });
+        dispatch({ type: 'SET_STRIKE_3', payload: { strikePrice3: e.target.checked ? [...filteredData] : [] } });
         break;
       case 4:
-        dispatch({ type: 'SET_STRIKE_4', payload: { strikePrice4: e.target.checked ? [...filteredData] :[] } });
+        dispatch({ type: 'SET_STRIKE_4', payload: { strikePrice4: e.target.checked ? [...filteredData] : [] } });
         break;
       case 5:
-        dispatch({ type: 'SET_STRIKE_5', payload: { strikePrice5: e.target.checked ? [...filteredData] :[] } });
+        dispatch({ type: 'SET_STRIKE_5', payload: { strikePrice5: e.target.checked ? [...filteredData] : [] } });
         break;
       default:
         break;

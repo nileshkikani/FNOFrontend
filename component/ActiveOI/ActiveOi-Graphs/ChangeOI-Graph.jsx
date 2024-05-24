@@ -1,5 +1,5 @@
-"use client";
-import React from "react";
+'use client';
+import React from 'react';
 import {
   Line,
   Bar,
@@ -10,24 +10,18 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ComposedChart,
-} from "recharts";
+  ComposedChart
+} from 'recharts';
 
-import useActiveOiData from "@/hooks/useActiveOiData";
+import useActiveOiData from '@/hooks/useActiveOiData';
 
 const ChangeOIGraph = () => {
-  const {
-    checkFive,
-    adjustedNiftyStart,
-    adjustedNiftyEnd,
-    filteredByDateForRange,
-  } = useActiveOiData();
-
+  const { checkFive, adjustedNiftyStart, adjustedNiftyEnd, filteredByDateForRange } = useActiveOiData();
 
   return (
     <>
       <h1 className="table-title">Change in OI</h1>
-      <div style={{ width: "100%", height: "400px" }}>
+      <div style={{ width: '100%', height: '400px' }}>
         <ResponsiveContainer width="100%" height="110%">
           <ComposedChart
             width={500}
@@ -37,7 +31,7 @@ const ChangeOIGraph = () => {
               top: 20,
               right: 20,
               bottom: 20,
-              left: 20,
+              left: 20
             }}
             syncId="change_oi_brush"
           >
@@ -46,59 +40,34 @@ const ChangeOIGraph = () => {
               dataKey="created_at"
               tickFormatter={(timeStr) =>
                 new Date(timeStr).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
+                  hour: '2-digit',
+                  minute: '2-digit'
                 })
               }
             />
             <YAxis yAxisId="left" />
-            <YAxis
-              yAxisId="right"
-              orientation="right"
-              domain={[adjustedNiftyStart, adjustedNiftyEnd]}
-              hide
-            />
+            <YAxis yAxisId="right" orientation="right" domain={[adjustedNiftyStart, adjustedNiftyEnd]} hide />
             <Tooltip
               labelFormatter={(timeStr) =>
                 new Date(timeStr).toLocaleTimeString([], {
-                  year: "numeric",
-                  month: "numeric",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
                 })
               }
             />
             <Legend />
             {!checkFive ? (
               <>
-                <Bar
-                  yAxisId="left"
-                  name="coi difference"
-                  dataKey="call_oi_difference"
-                  fill="#E96767"
-                />
-                <Bar
-                  yAxisId="left"
-                  name="poi difference "
-                  dataKey="put_oi_difference"
-                  fill="#63D168"
-                />
+                <Bar yAxisId="left" name="coi difference" dataKey="call_oi_difference" fill="#E96767" />
+                <Bar yAxisId="left" name="poi difference " dataKey="put_oi_difference" fill="#63D168" />
               </>
             ) : (
               <>
-                <Bar
-                  yAxisId="left"
-                  name="coi difference"
-                  dataKey="large_call_oi_difference"
-                  fill="#E96767"
-                />
-                <Bar
-                  yAxisId="left"
-                  name="poi difference "
-                  dataKey="large_put_oi_difference"
-                  fill="#63D168"
-                />
+                <Bar yAxisId="left" name="coi difference" dataKey="large_call_oi_difference" fill="#E96767" />
+                <Bar yAxisId="left" name="poi difference " dataKey="large_put_oi_difference" fill="#63D168" />
               </>
             )}
             <Line
@@ -114,9 +83,7 @@ const ChangeOIGraph = () => {
               dataKey="created_at"
               height={40}
               stroke="#0A3D62"
-              tickFormatter={(value) =>
-                new Date(value).toISOString().split("T")[0]
-              }
+              tickFormatter={(value) => new Date(value).toISOString().split('T')[0]}
             />
           </ComposedChart>
         </ResponsiveContainer>

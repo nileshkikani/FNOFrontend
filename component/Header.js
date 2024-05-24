@@ -60,7 +60,7 @@ export default function Header() {
     // Check authentication status when component mounts
     setInterval(() => {
       getAdvanceDecline();
-    }, 1000*60);
+    }, 1000 * 60);
   }, []);
 
   useEffect(() => {
@@ -108,7 +108,9 @@ export default function Header() {
 
   const getAdvanceDecline = async () => {
     try {
-      const response = await axiosInstance.get(API_ROUTER.ADR,{headers: { Authorization: `Bearer ${authState.access}` }});
+      const response = await axiosInstance.get(API_ROUTER.ADR, {
+        headers: { Authorization: `Bearer ${authState.access}` }
+      });
       setData(response.data);
     } catch (error) {
       console.error('Error fetching ADR data:', error);

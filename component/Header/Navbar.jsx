@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
 import useAuth from '@/hooks/useAuth';
-import { useRouter,usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { DropDown } from './DropDown';
-import { setAuth, setRememberMe, setUserStatus,setUserStatusInitially } from '@/store/authSlice';
+import { setAuth, setRememberMe, setUserStatus, setUserStatusInitially } from '@/store/authSlice';
 import { useAppSelector } from '@/store';
 import { useDispatch } from 'react-redux';
 import Cookie from 'js-cookie';
@@ -36,8 +36,8 @@ const Navbar = () => {
   const checkIsLoggedInInitially = useAppSelector((state) => state.auth.isCookie);
 
   const checkIsRemember = useAppSelector((state) => state.auth.rememberMe);
-  const { refreshToken,checkTimer } = useAuth();
-  
+  const { refreshToken, checkTimer } = useAuth();
+
   // console.log("from nvbar->",checkIsRemember)
 
   const getAdvanceDecline = async () => {
@@ -63,13 +63,13 @@ const Navbar = () => {
     }
   }, [checkUserIsLoggedIn]);
 
-  useEffect(()=>{
+  useEffect(() => {
     !checkIsRemember && refreshToken();
-  },[])
+  }, []);
 
   // ------------LOGOUT----------
   const logout = async () => {
-        try {
+    try {
       await axiosInstance.post(
         `${API_ROUTER.LOGOUT}`,
         {
@@ -88,7 +88,6 @@ const Navbar = () => {
       Cookie.remove('time');
       storeDispatch(setUserStatusInitially(false));
       storeDispatch(setRememberMe(false));
-
 
       router.push('/login');
     } catch (error) {
@@ -136,9 +135,13 @@ const Navbar = () => {
             <span>ADR: {data && data?.bank_nifty_adr ? data?.bank_nifty_adr : '...'}</span>
           </li>
           {DATA?.map((item, index) => (
-            <li className={`nav-item ${currentPath == item.path && 'active-link'}`} key={index} onClick={()=>isActive(item.path)}>
+            <li
+              className={`nav-item ${currentPath == item.path && 'active-link'}`}
+              key={index}
+              onClick={() => isActive(item.path)}
+            >
               {/* <Link href={item?.path} className={isActive(item.path) ? 'active-link' : ''}> */}
-                {item.title}
+              {item.title}
               {/* </Link> */}
             </li>
           ))}

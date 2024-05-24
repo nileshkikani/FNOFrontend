@@ -1,28 +1,14 @@
-"use client";
-import React from "react";
-import {
-  XAxis,
-  ComposedChart,
-  Line,
-  ResponsiveContainer,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
+'use client';
+import React from 'react';
+import { XAxis, ComposedChart, Line, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-import useActiveOiData from "@/hooks/useActiveOiData";
+import useActiveOiData from '@/hooks/useActiveOiData';
 
 const CallVsPutGraph = () => {
-  const {
-    checkFive,
-    adjustedNiftyStart,
-    adjustedNiftyEnd,
-    filteredByDateForRange,
-  } = useActiveOiData();
+  const { checkFive, adjustedNiftyStart, adjustedNiftyEnd, filteredByDateForRange } = useActiveOiData();
 
   return (
-    <div style={{ width: "100%", height: "400px" }}>
+    <div style={{ width: '100%', height: '400px' }}>
       <h1 className="table-title">Call vs Put OI</h1>
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
@@ -33,7 +19,7 @@ const CallVsPutGraph = () => {
             top: 5,
             right: 30,
             left: 20,
-            bottom: 5,
+            bottom: 5
           }}
           syncId="change_oi_brush"
         >
@@ -42,26 +28,21 @@ const CallVsPutGraph = () => {
             dataKey="created_at"
             tickFormatter={(timeStr) =>
               new Date(timeStr).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
+                hour: '2-digit',
+                minute: '2-digit'
               })
             }
           />
           <YAxis yAxisId="left" />
-          <YAxis
-            yAxisId="right"
-            orientation="right"
-            domain={[adjustedNiftyStart, adjustedNiftyEnd]}
-            hide
-          />
+          <YAxis yAxisId="right" orientation="right" domain={[adjustedNiftyStart, adjustedNiftyEnd]} hide />
           <Tooltip
             labelFormatter={(timeStr) =>
               new Date(timeStr).toLocaleTimeString([], {
-                year: "numeric",
-                month: "numeric",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
               })
             }
           />

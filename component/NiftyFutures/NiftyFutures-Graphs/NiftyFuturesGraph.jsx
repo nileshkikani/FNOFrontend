@@ -1,5 +1,5 @@
-"use client";
-import React from "react";
+'use client';
+import React from 'react';
 import {
   BarChart,
   Bar,
@@ -10,16 +10,15 @@ import {
   ResponsiveContainer,
   Tooltip,
   Legend,
-  ReferenceLine,
-} from "recharts";
+  ReferenceLine
+} from 'recharts';
 
-import useNiftyFutureData from "@/hooks/useNiftyFutureData";
+import useNiftyFutureData from '@/hooks/useNiftyFutureData';
 
-const NiftyFuturesGraph = ({niftyFuturesFilterData}) => {
-
+const NiftyFuturesGraph = ({ niftyFuturesFilterData }) => {
   return (
     <>
-      <div style={{ width: "100%", height: "400px" }}>
+      <div style={{ width: '100%', height: '400px' }}>
         <h1 className="table-title">Open interest change</h1>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -30,7 +29,7 @@ const NiftyFuturesGraph = ({niftyFuturesFilterData}) => {
               top: 5,
               right: 30,
               left: 20,
-              bottom: 5,
+              bottom: 5
             }}
           >
             <CartesianGrid stroke="#E5E5E5" />
@@ -39,8 +38,8 @@ const NiftyFuturesGraph = ({niftyFuturesFilterData}) => {
               dataKey="created_at"
               tickFormatter={(timeStr) =>
                 new Date(timeStr).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
+                  hour: '2-digit',
+                  minute: '2-digit'
                 })
               }
               reversed={true}
@@ -52,25 +51,19 @@ const NiftyFuturesGraph = ({niftyFuturesFilterData}) => {
                   // year: "numeric",
                   // month: "numeric",
                   // day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
+                  hour: '2-digit',
+                  minute: '2-digit'
                 })
               }
             />
             <Legend />
             <ReferenceLine y={0} stroke="#000" />
-            <Bar
-              name="Open interest change"
-              dataKey="change_in_open_interest"
-              fill="#a3c949"
-            />
+            <Bar name="Open interest change" dataKey="change_in_open_interest" fill="#a3c949" />
             <Brush
               dataKey="created_at"
               height={40}
               stroke="#0A3D62"
-              tickFormatter={(value) =>
-                new Date(value).toISOString().split("T")[0]
-              }
+              tickFormatter={(value) => new Date(value).toISOString().split('T')[0]}
             />
           </BarChart>
         </ResponsiveContainer>

@@ -13,7 +13,7 @@ const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 export default function Page() {
   const { setDropdownDate, data, uniqueDates, getData, showNiftyStocksOnly, isLoading, currentSelectedDate } =
     useSecurityWiseData();
-const route= useRouter();
+  const route = useRouter();
   const [isFilterData, setIsFilterData] = useState(false);
   const [securityData, setSecurityData] = useState([]);
 
@@ -31,9 +31,9 @@ const route= useRouter();
     setIsFilterData(true);
   };
 
-const routerRedirect = (aPath)=>{
-  route.push(`/securitywise/${aPath}/`)
-}
+  const routerRedirect = (aPath) => {
+    route.push(`/securitywise/${aPath}/`);
+  };
 
   const loadingAnimation = (
     <div
@@ -53,14 +53,11 @@ const routerRedirect = (aPath)=>{
       name: <span className="table-heading-text">Symbol</span>,
       selector: (row) => row.symbol,
       cell: (row) => (
-        <span
-        onClick={() => routerRedirect(row?.symbol)}
-        className="link"
-      >
+        <span onClick={() => routerRedirect(row?.symbol)} className="link">
           {row?.symbol}
-          </span>
+        </span>
       ),
-      format: (row) => <span className="secwise-cols">{+row.symbol}</span>,
+      format: (row) => <span className="secwise-cols">{+row.symbol}</span>
       // sortable: true
     },
     {

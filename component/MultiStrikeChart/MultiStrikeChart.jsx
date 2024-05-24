@@ -5,29 +5,20 @@ import useMultiStrikeData from '@/hooks/useMultiStrikeData';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const MultiStrikeChart = () => {
-  const {
-    strikePrice1,
-    strikePrice2 ,
-    strikePrice3 ,
-    strikePrice4 ,
-    strikePrice5 ,
-  } = useMultiStrikeData();
+  const { strikePrice1, strikePrice2, strikePrice3, strikePrice4, strikePrice5 } = useMultiStrikeData();
 
   const [options, setOptions] = useState({});
   const [series, setSeries] = useState([]);
 
   useEffect(() => {
-    const extractTimes = (items) =>
-      items && items.length
-        ? items.map((item) => item.created_at).filter(Boolean)
-        : [];
+    const extractTimes = (items) => (items && items.length ? items.map((item) => item.created_at).filter(Boolean) : []);
 
     const allCreatedAts = [
       ...extractTimes(strikePrice1),
       ...extractTimes(strikePrice2),
       ...extractTimes(strikePrice3),
       ...extractTimes(strikePrice4),
-      ...extractTimes(strikePrice5),
+      ...extractTimes(strikePrice5)
     ];
 
     const uniqueCreatedAts = [...new Set(allCreatedAts)];
@@ -55,7 +46,7 @@ const MultiStrikeChart = () => {
       const put_net_oi = getData(strikePrice, 'put_net_oi');
       return [
         { name: `${prefix}_call_net_oi`, data: call_net_oi },
-        { name: `${prefix}_put_net_oi`, data: put_net_oi },
+        { name: `${prefix}_put_net_oi`, data: put_net_oi }
       ];
     };
 
@@ -80,30 +71,28 @@ const MultiStrikeChart = () => {
       chart: {
         // height: 350,
         type: 'line',
-        zoom: { enabled: false },
+        zoom: { enabled: false }
       },
       dataLabels: { enabled: false },
       stroke: {
         width: [5, 7, 5],
         curve: 'straight',
-        dashArray: [0, 8, 5],
+        dashArray: [0, 8, 5]
       },
       title: { text: 'multistrike Statistics', align: 'left' },
       markers: {
         size: 0,
-        hover: { sizeOffset: 6 },
+        hover: { sizeOffset: 6 }
       },
       xaxis: { categories: formattedTimes },
-      grid: { borderColor: '#f1f1f1' },
+      grid: { borderColor: '#f1f1f1' }
     });
 
     setSeries(finalSeries);
   }, [strikePrice1, strikePrice2, strikePrice3, strikePrice4, strikePrice5]);
 
   return (
-    <div id="chart">
-      {options.title && series && <ApexCharts options={options} series={series} height={350} />}
-    </div>
+    <div id="chart">{options.title && series && <ApexCharts options={options} series={series} height={350} />}</div>
   );
 };
 

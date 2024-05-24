@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect } from 'react';
-import "./global.css"
+import './global.css';
 
 //---------CHARTS-----------
 import MultiStrikeChart from '@/component/MultiStrikeChart/MultiStrikeChart';
