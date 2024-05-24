@@ -131,9 +131,9 @@ export default function Page() {
     <div>
       <div>
         {marketClosed ? (
-          <h1 className="top-text-activeoi timer">MARKET CLOSED</h1>
+          <h1 className="timer">MARKET CLOSED</h1>
         ) : (
-          <h1 className="top-text-activeoi">
+          <h1 >
             Next Refresh In:
             <span className="timer">{`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`}</span>
           </h1>

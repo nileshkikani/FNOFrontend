@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-// import "./global.css"
+import "./global.css"
 
 //--------HOOKS---------------
 import useCashflowData from '@/hooks/useCashflowData';
@@ -169,10 +169,10 @@ const Page = () => {
                     <th className="table-header-cell">Low</th>
                     <th className="table-header-cell">Average</th>
                     <th className="table-header-cell">
-                      Volume<span className="in-thousand1">in thousand</span>
+                      Volume<span className="in-thousand1"> in thousand</span>
                     </th>
                     <th className="table-header-cell">
-                      Money Flow<span className="in-thousand1">in thousand</span>
+                      Money Flow<span className="in-thousand1"> in thousand</span>
                     </th>
                     <th className="table-header-cell">
                       Net Money Flow<span className="in-thousand1">in thousand</span>

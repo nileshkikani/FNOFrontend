@@ -1,11 +1,55 @@
-.red-oi-table{
-    @apply text-red-500;
+.red-oi-table {
+  @apply text-red-500;
 }
 
-.green-oi-table{
-    @apply text-green-500 ;
+.green-oi-table {
+  @apply text-green-500;
 }
 
-.active-oi-table{
-    @apply py-10;
+.active-oi-table {
+  @apply py-10;
+}
+
+.timer {
+  @apply text-[#0A3D62] font-bold text-2xl;
+}
+
+.flex-container {
+  @apply flex items-center space-x-10 mt-10 mb-10;
+}
+
+.stock-dropdown {
+  @apply px-5 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500;
+}
+
+.refresh-button2 {
+  @apply py-2 px-4 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300;
+}
+
+.grand-div {
+  @apply mt-[20px] mb-[20px] px-10;
+}
+
+.main-div {
+  @apply flex flex-col;
+}
+
+.table-header {
+  @apply bg-red-500;
+}
+
+.table-cell {
+  @apply px-6 py-4 whitespace-nowrap;
+}
+
+.table-header-cell {
+  @apply px-6 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider;
+}
+
+.table-container1 {
+  @apply overflow-x-auto;
+}
+
+.table1 {
+  @apply min-w-full divide-y divide-gray-200;
 }

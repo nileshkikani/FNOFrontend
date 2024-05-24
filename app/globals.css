@@ -85,11 +85,9 @@
   margin: 0;
 }
 
-
 select {
   @apply px-2 py-1 rounded-sm;
 }
-
 
 /* th,
 td {
@@ -144,9 +142,9 @@ th {
   display: flex;
 }
 
-.active-oi-table {
+/* .active-oi-table {
   overflow-x: auto;
-}
+} */
 
 /* .top-text-activeoi {
   @apply mt-[10px] mb-[10px]; 
@@ -293,44 +291,53 @@ td {
   @apply text-[#0A3D62] px-2 py-1 bg-white;
 }
 
-.timer {
+/* .timer {
   @apply text-[#0A3D62] font-bold text-2xl;
-}
+} */
 
 .nav-item {
   @apply mr-5 hover:text-gray-400 flex;
 }
 
-.grand-div {
+/* .grand-div {
   @apply mt-[20px] mb-[20px] px-10;
-}
-.graph-div-cashFlow {
-  /* @apply py-4; */
+} */
+/* .graph-div-cashFlow {
   width: 50%;
-}
-.graph-cash-bottom{
+} */
+/* .graph-cash-bottom {
   width: 100%;
-}
+} */
 
 .color-dot {
   width: 10px;
   height: 10px;
   display: inline-block;
   border-radius: 50%;
-  margin-left: 3px; 
+  margin-left: 3px;
 }
 
-.color-dot-0 { @apply bg-slate-400; }
-.color-dot-1 { @apply bg-red-400; }
-.color-dot-2 {  @apply bg-lime-400; }
-.color-dot-3 {  @apply bg-cyan-800; }
-.color-dot-4 { @apply bg-orange-900; }
-
+.color-dot-0 {
+  @apply bg-slate-400;
+}
+.color-dot-1 {
+  @apply bg-red-400;
+}
+.color-dot-2 {
+  @apply bg-lime-400;
+}
+.color-dot-3 {
+  @apply bg-cyan-800;
+}
+.color-dot-4 {
+  @apply bg-orange-900;
+}
+/* 
 .checkbox-container {
-  margin-bottom: 10px; 
-}
+  margin-bottom: 10px;
+} */
 
-.checkbox-container input[type="checkbox"] {
+.checkbox-container input[type='checkbox'] {
   margin-right: 10px;
 }
 
@@ -364,9 +371,9 @@ input[type='radio']:checked + label {
 .nav-dropdown {
   @apply p-8;
 }
-.graph-container{
+/* .graph-container {
   display: flex;
-}
+} */
 
 /* ---------------------LOGIN PAGE----------------- */
 
@@ -559,9 +566,9 @@ input[type='radio']:checked + label {
   @apply w-full h-full object-cover bg-gray-900;
 }
 
-.main-div {
+/* .main-div {
   @apply flex flex-col;
-}
+} */
 .link {
   color: blue;
   cursor: pointer;
@@ -685,84 +692,80 @@ input[type='radio']:checked + label {
   @apply hover:bg-gray-100;
 }
 
-
 /*--------fii-dii page navbar----  */
 
-.fii-dii-header {
+/* .fii-dii-header {
   @apply bg-[rgb(249,249,249)] flex items-start gap-4 sticky top-0 z-[1] pt-4 pb-0 px-8 border-b-[rgb(216,220,227)] border-b border-solid;
   -webkit-box-pack: justify;
 }
 
 .fii-dii-header-active {
-  @apply  font-medium text-blue-500 flex relative;
+  @apply font-medium text-blue-500 flex relative;
 }
 
 .fii-dii-header-active::after {
   @apply content-[""] w-full  absolute bg-blue-500 bottom-0 h-1 rounded-[0.5rem_0.5rem_0rem_0rem] mt-4;
 }
 
-.fii-dii-header-deactive{
-  @apply text-[#808284]
-}
-
+.fii-dii-header-deactive {
+  @apply text-[#808284];
+} */
 
 /*-----------------------------------------*/
-.table-title1 {
+/* .table-title1 {
   @apply text-xl font-semibold mt-4 mb-2;
-}
+} */
 
-.loading-container {
+/* .loading-container {
   @apply flex justify-center items-center h-80;
-}
+} */
 
-.table-container1 {
+/* .table-container1 {
   @apply overflow-x-auto;
-}
+} */
 
-.table1 {
+/* .table1 {
   @apply min-w-full divide-y divide-gray-200;
-}
+} */
 
-.table-header {
+/* .table-header {
   @apply bg-gray-50;
 }
 
-.table-header-cell {
+/* .table-header-cell {
   @apply px-6 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider;
-}
+} */
 
-.table-cell {
+/* .table-cell {
   @apply px-6 py-4 whitespace-nowrap;
-}
-
-.in-thousand1 {
+}  */
+/* .in-thousand1 {
   @apply text-xs;
-}
+} */
 
-.flex-container {
-  @apply flex items-center space-x-10 mt-10 mb-10; /* Increase gap between flex items by 5 times */
-}
+/* .flex-container {
+  @apply flex items-center space-x-10 mt-10 mb-10; 
+} */
 
-.dropdown-container {
-  @apply flex items-center space-x-2; /* Reduce gap between dropdowns and refresh button */
-}
+/* .dropdown-container {
+  @apply flex items-center space-x-2; 
+} */
 
-.stock-dropdown3 {
+/* .stock-dropdown3 {
   @apply block w-auto rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
-}
+} */
 
-.refresh-button2 {
+/* .refresh-button2 {
   @apply py-2 px-4 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300;
-}
-#chart {
+} */
+/* #chart {
   max-width: auto;
   margin: 35px auto;
-}
-.text-green-500 {
+} */
+/* .text-green-500 {
   color: green;
 }
 
-.text-red-500 {
+.text-red-500 {`
   color: red;
-}
-
+} */

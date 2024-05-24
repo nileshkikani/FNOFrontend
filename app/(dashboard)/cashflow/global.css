@@ -1,0 +1,75 @@
+.loading-container {
+  @apply flex justify-center items-center h-80;
+}
+
+.graph-container {
+  display: flex;
+}
+
+.graph-div-cashFlow {
+  width: 50%;
+}
+
+.flex-container {
+  @apply flex items-center space-x-10 mt-10 mb-10;
+}
+
+.dropdown-container {
+  @apply flex items-center space-x-2;
+}
+
+.refresh-button2 {
+  @apply py-2 px-4 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300;
+}
+
+.loading-container {
+  @apply flex justify-center items-center h-80;
+}
+
+.table-container1 {
+  @apply overflow-x-auto;
+}
+
+.table1 {
+  @apply min-w-full divide-y divide-gray-200;
+}
+
+.table-header {
+  @apply bg-gray-50;
+}
+
+.table-header-cell {
+  @apply px-6 py-3 text-center text-sm font-semibold text-gray-800 uppercase tracking-wider;
+}
+
+.in-thousand1 {
+  @apply text-[10px] italic font-normal;
+}
+
+.table-cell {
+  @apply px-6 py-4 whitespace-nowrap;
+}
+
+.graph-cash-bottom {
+  width: 100%;
+}
+
+.text-green-500 {
+  color: green;
+}
+
+.text-red-500 {
+  color: red;
+}
+
+.dropdown-container {
+  @apply flex items-center space-x-2; 
+}
+
+.table-title1 {
+  @apply text-xl font-semibold mt-4 mb-2;
+}
+
+.stock-dropdown3 {
+  @apply block w-auto rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+}
