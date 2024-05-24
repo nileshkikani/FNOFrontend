@@ -58,3 +58,27 @@
 .chart-height {
   @apply h-[400px] w-full;
 }
+.chart-div {
+  @apply mt-10;
+}
+.main-div {
+  @apply flex flex-col mt-20 justify-center items-center;
+}
+.title-text {
+  @apply font-Roboto tracking-wider font-normal text-blue21 text-[24px] m-3 ml-20;
+}
+.title-delivery-text {
+  @apply font-Roboto tracking-wider font-normal text-black34 text-[22px];
+}
+.div-container {
+  @apply flex;
+}
+.head-title {
+  @apply mt-5;
+}
+.table-main-div {
+  @apply flex mt-5 w-[100%] justify-end items-center;
+}
+.table-heading {
+  @apply w-full font-Roboto font-thin text-[14px] text-black34 justify-end items-end mb-3;
+}
