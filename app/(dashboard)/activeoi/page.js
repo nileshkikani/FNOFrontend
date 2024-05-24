@@ -2,12 +2,17 @@
 // ===========UTILITIES===============
 import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
+import axiosInstance from "@/utils/axios";
+import { API_ROUTER } from "@/services/apiRouter";
+import "./global.css"
 
 //  ===========HOOKS ===========
 import useActiveOiData from "@/hooks/useActiveOiData";
 import { useAppSelector } from "@/store";
 import useNiftyFutureData from "@/hooks/useNiftyFutureData";
 import NiftyFuturesTable from "@/component/NiftyFutures/NiftyFuturesTable";
+import CoiDiffGraph from "@/component/ActiveOI/ActiveOi-Graphs/CoiDiff-Graph";
+import IntradayDiffGraph from "@/component/ActiveOI/ActiveOi-Graphs/IntradayDiff-Graph";
 
 // ===========GRAPH COMPONENTS ===========
 const ChangeOIGraph = dynamic(() =>
@@ -38,20 +43,26 @@ export default function Page() {
     dropDownChange,
   } = useActiveOiData();
 
-  const { getNiftyFuturesData, selectedOption } = useNiftyFutureData();
+  // const { getNiftyFuturesData, selectedOption } = useNiftyFutureData();
+  const [selectedNiftyFutureDates, setSelectedNiftyFutureDates] = useState("");
 
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);
+  const [niftyFuturesDate,setNiftyFuturesDates] = useState("");
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
-
+  const [niftyFuturesData,setNiftyFuturesData] = useState("");
+  const [niftyFuturesExpDates,setNiftyFuturesExpDates] = useState("");
+  const [selectedNiftyFuturesExpDates,setSelectedNiftyFuturesExpDates] = useState("");
+  const [niftyFuturesFilterData,setNiftyFuturesFilterData] = useState("");
+ 
   const memoizedTimeLeft = useMemo(() => timeLeft, [timeLeft]);
 
   useEffect(() => {
     if(checkUserIsLoggedIn){
 
       getData();
-      getNiftyFuturesData();
+      // getNiftyFuturesData();
       const intervalId = setInterval(() => {
         setTimeLeft((prevTime) => prevTime - 1);
       }, 1000);
@@ -80,6 +91,55 @@ export default function Page() {
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
+useEffect(()=>{
+
+  selectedNiftyFuturesExpDates && getFilteredNiftyValue(selectedNiftyFuturesExpDates,niftyFuturesData)
+},[selectedNiftyFuturesExpDates])
+  const getFilteredNiftyValue =(aDate,aValue)=>{
+    setNiftyFuturesFilterData(aValue?.filter((aItem)=>aItem.expiration == aDate)
+  )}
+
+  
+  useEffect(()=>{
+    const getNiftyFuturesData = async () => {
+      if (!authState && checkUserIsLoggedIn) {
+        return router.push('/login');
+      }
+      try {
+        let apiUrl = `${API_ROUTER.NIFTY_FUTURE_DATA}`;
+        const response = await axiosInstance.get( selectedNiftyFutureDates ? apiUrl += `?date=${selectedNiftyFutureDates}`: apiUrl, {
+          headers: { Authorization: `Bearer ${authState.access}` }
+        });
+        console.log("ytytyt",response);
+        if (response.status === 200) {
+          if(!niftyFuturesDate && !selectedNiftyFutureDates ){
+            setNiftyFuturesDates(response?.data?.dates)
+            setSelectedNiftyFutureDates(response?.data?.dates[0])
+            return
+          }
+          const extractTimes = (items) =>
+            items && items.length
+              ? items.map((item) => item.expiration).filter(Boolean)
+              : [];
+          const allCreatedAts = [
+            ...extractTimes(response?.data),
+          ];
+          const filteredExpDate = [...new Set(allCreatedAts)]
+          setNiftyFuturesExpDates(filteredExpDate)
+          getFilteredNiftyValue(filteredExpDate[0],response?.data)
+          setNiftyFuturesData(response?.data)
+          setSelectedNiftyFuturesExpDates(filteredExpDate[0])
+
+        } else {
+          router.push("/login");
+        }
+      } catch (error) {
+        // handleResponceError();
+        console.log("qwqw");
+      }
+    };
+    getNiftyFuturesData();
+  },[selectedNiftyFutureDates])
 
   return (
     <div>
@@ -97,9 +157,9 @@ export default function Page() {
       ) : (
         <>
           {marketClosed ? (
-            <h1 className="timer">MARKET CLOSED</h1>
+            <h1 className="top-text-activeoi timer">MARKET CLOSED</h1>
           ) : (
-            <h1>
+            <h1 className="top-text-activeoi">
               Next Refresh In:
               <span className="timer">
                 {`${minutes}:${seconds < 10 ? "0" : ""}${seconds}`}
@@ -107,8 +167,8 @@ export default function Page() {
             </h1>
           )}
           <label>
-            Strikes above/below ATM
-            <select onChange={dropDownChange}>
+            Strikes Above/Below ATM :
+            <select className="stock-dropdown" onChange={dropDownChange}>
               <option value="5">5</option>
               <option value="15" selected>
                 15
@@ -116,8 +176,8 @@ export default function Page() {
             </select>
           </label>
           <label>
-            Date
-            <select onChange={dateDropDownChange}>
+            Date :
+            <select className="stock-dropdown" onChange={dateDropDownChange}>
               {uniqueDates.map((date) => (
                 <option key={date} value={date}>
                   {date}
@@ -125,22 +185,33 @@ export default function Page() {
               ))}
             </select>
           </label>
+          {/* ----------COI DIFFERENCE------------------- */}
+          <div className="grand-div">
+            <CoiDiffGraph />
+            </div>
+            <div className="grand-div">
+            <IntradayDiffGraph/>
+            </div>
+         
           {/* -------------------ACTIVE OI SECTION------------------ */}
           <>
+          <div className="active-oi-table">
             <ActiveOiTable />
-            <div className="graph-div">
+            <div className="grand-div">
               <ChangeOIGraph />
             </div>
-            <div className="graph-div">
+            <div className="grand-div">
               <CallVsPutGraph />
             </div>
-            <div className="graph-div">
+            <div className="grand-div">
               <ScatterPlotGraph />
             </div>
+            </div>
+
           </>
           {/* -----------------------NIFTY FUTURES SECTION-------------------- */}
           <>
-            {!selectedOption ? (
+            {/* {!selectedOption ? (
               <div
                 style={{
                   display: "flex",
@@ -156,16 +227,16 @@ export default function Page() {
                 />
               </div>
             ) : (
-              <>
+              <> */}
                 <div className="main-div">
-                  <NiftyFuturesTable />
+                  <NiftyFuturesTable selectedNiftyFuturesExpDates={selectedNiftyFuturesExpDates} setSelectedNiftyFuturesExpDates={setSelectedNiftyFuturesExpDates} niftyFuturesExpDates={niftyFuturesExpDates} niftyFuturesFilterData={niftyFuturesFilterData} niftyFuturesDate={niftyFuturesDate} setSelectedNiftyFutureDates={setSelectedNiftyFutureDates} selectedNiftyFutureDates={selectedNiftyFutureDates}/>
                 </div>
-                <div className="main-div">
-                  <NiftyFuturesGraph />
+                <div className="grand-div">
+                  <NiftyFuturesGraph niftyFuturesFilterData={niftyFuturesFilterData} />
                 </div>
               </>
-            )}
-          </>
+            {/* )} */}
+          {/* </> */}
         </>
       )}
     </div>

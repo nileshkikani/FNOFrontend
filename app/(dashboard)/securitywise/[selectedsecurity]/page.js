@@ -13,22 +13,21 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
-import { useSearchParams } from 'next/navigation';
+import { useParams} from 'next/navigation';
 import { API_ROUTER } from '@/services/apiRouter';
 import { useAppSelector } from '@/store';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useRouter } from 'next/navigation';
 
 const Page = () => {
-  const searchParams = useSearchParams();
-  const stockName = searchParams.get('symbol');
+  const {selectedsecurity} = useParams();
   const [responseData, setResponseData] = useState([]);
   const authState = useAppSelector((state) => state.auth.authState);
   const router = useRouter();
 
   const getSelectedStockData = async () => {
     try {
-      const response = await axiosInstance.get(`${API_ROUTER.LIST_SECWISE_DATE}?symbol=${stockName}`, {
+      const response = await axiosInstance.get(`${API_ROUTER.LIST_SECWISE_DATE}?symbol=${selectedsecurity}`, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       console.log('resp+data from apii+++', response.data);
@@ -41,10 +40,9 @@ const Page = () => {
   const handleBack = () => {
     router.push('/securitywise');
   };
-
   useEffect(() => {
-    getSelectedStockData();
-  }, []);
+    selectedsecurity && getSelectedStockData();
+  }, [selectedsecurity]);
   const chartHeight = Math.max(300, responseData.length * 30);
   return (
     <>

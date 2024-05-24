@@ -77,7 +77,6 @@ export const NiftyFutureProvider = ({ children }) => {
       const response = await axiosInstance.get(API_ROUTER.NIFTY_FUTURE_DATA, {
         headers: { Authorization: `Bearer ${authState.access}` },
       });
-
       // ---------UNIQUE DATE n EXPIRY SELECTION----------
       const uniqueDatesSet = new Set();
       const uniqueCreatedDateSet = new Set();
@@ -102,7 +101,7 @@ export const NiftyFutureProvider = ({ children }) => {
         router.push("/login");
       }
     } catch (error) {
-      handleResponceError();
+      // handleResponceError();
     }
   };
 
@@ -121,6 +120,8 @@ export const NiftyFutureProvider = ({ children }) => {
   // ---------------------------CREATED DATE----------------------
   const handleDateChange = (event) => {
     const selectedDate = event.target.value;
+    console.log("jhasvjhasvfhd",event.target.value)
+    return
     const [day, month, year] = selectedDate.split("/");
     const formattedDate = `${year}-${month}-${day}`;
     const dateObject = new Date(formattedDate);
@@ -148,7 +149,7 @@ export const NiftyFutureProvider = ({ children }) => {
     <NiftyFutureContext.Provider
       value={{
         apiData,
-        getNiftyFuturesData,
+        // getNiftyFuturesData,
         isLoadingNiftyFutures,
         selectedOption,
         filterByCreatedDate,

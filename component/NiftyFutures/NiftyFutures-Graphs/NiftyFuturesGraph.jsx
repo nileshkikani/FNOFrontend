@@ -15,8 +15,7 @@ import {
 
 import useNiftyFutureData from "@/hooks/useNiftyFutureData";
 
-const NiftyFuturesGraph = () => {
-  const { filterByCreatedDate } = useNiftyFutureData();
+const NiftyFuturesGraph = ({niftyFuturesFilterData}) => {
 
   return (
     <>
@@ -26,7 +25,7 @@ const NiftyFuturesGraph = () => {
           <BarChart
             width={1500}
             height={500}
-            data={filterByCreatedDate}
+            data={niftyFuturesFilterData}
             margin={{
               top: 5,
               right: 30,

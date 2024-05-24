@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+// import "./global.css"
 
 //--------HOOKS---------------
 import useCashflowData from '@/hooks/useCashflowData';
@@ -101,10 +102,10 @@ const Page = () => {
         <PropagateLoader color="#33a3e3" loading={loading} size={15} />
       </div>):
 (<div className="graph-container">
-    <div className="graph-div">
+    <div className="graph-div-cashFlow">
       {allData?.stock_data && <ActiveMoneyFlow title={"Stock"} data={allData?.stock_data} />}
     </div>
-    <div className="graph-div">
+    <div className="graph-div-cashFlow">
       {allData?.fno_data && <ActiveMoneyFlow title={"FNO"} data={allData?.fno_data} />}
     </div>
     </div>)}
