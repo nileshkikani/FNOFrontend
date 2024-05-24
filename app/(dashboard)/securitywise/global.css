@@ -55,3 +55,6 @@
 .div-main {
   @apply h-[100vh] overflow-hidden sticky top-60;
 }
+.chart-height {
+  @apply h-[400px] w-full;
+}
