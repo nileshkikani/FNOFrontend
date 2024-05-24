@@ -13,6 +13,7 @@ import useNiftyFutureData from '@/hooks/useNiftyFutureData';
 import NiftyFuturesTable from '@/component/NiftyFutures/NiftyFuturesTable';
 import CoiDiffGraph from '@/component/ActiveOI/ActiveOi-Graphs/CoiDiff-Graph';
 import IntradayDiffGraph from '@/component/ActiveOI/ActiveOi-Graphs/IntradayDiff-Graph';
+import useAuth from '@/hooks/useAuth';
 
 // ===========GRAPH COMPONENTS ===========
 const ChangeOIGraph = dynamic(() => import('@/component/ActiveOI/ActiveOi-Graphs/ChangeOI-Graph'));
@@ -29,7 +30,7 @@ export default function Page() {
 
   // const { getNiftyFuturesData, selectedOption } = useNiftyFutureData();
   const [selectedNiftyFutureDates, setSelectedNiftyFutureDates] = useState('');
-
+  const { handleResponceError } = useAuth();
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);
   const [niftyFuturesDate, setNiftyFuturesDates] = useState('');
