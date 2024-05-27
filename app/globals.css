@@ -199,13 +199,13 @@ td {
   font-size: 14px;
 }
 
-.btndiv {
+/* .btndiv {
   @apply my-5 flex justify-center;
-}
+} */
 
-.prevbtn {
+/* .prevbtn {
   @apply bg-white border-gray-950 border px-3 py-2 rounded;
-}
+} */
 
 .pageno {
   @apply p-2 text-blue-600 font-bold;
@@ -226,9 +226,9 @@ td {
   @apply text-yellow-300;
 }
 
-.nextbtn {
+/* .nextbtn {
   @apply bg-white border-gray-950 border px-3 py-2 rounded;
-}
+} */
 
 .expiry-created-date {
   @apply flex items-center justify-between mt-[20px] mb-[20px];

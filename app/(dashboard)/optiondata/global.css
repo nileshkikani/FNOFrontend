@@ -1,0 +1,36 @@
+.green-field {
+  @apply bg-green-100 text-green-700;
+}
+
+.red-field {
+  @apply bg-red-100 text-red-700;
+}
+
+tbody {
+  @apply border-collapse border border-gray-800;
+}
+
+td {
+  @apply p-2;
+}
+
+.inside-cell {
+  @apply flex items-center justify-end;
+}
+
+.table-title {
+  @apply text-[#0a3d62] font-bold text-[25px];
+}
+
+/* ------PAGINATION----- */
+.btndiv {
+  @apply my-5 flex justify-center;
+}
+
+.prevbtn {
+  @apply bg-white border-gray-950 border px-3 py-2 rounded;
+}
+
+.nextbtn {
+  @apply bg-white border-gray-950 border px-3 py-2 rounded;
+}
