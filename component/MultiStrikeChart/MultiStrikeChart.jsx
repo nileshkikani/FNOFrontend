@@ -45,26 +45,31 @@ const MultiStrikeChart = () => {
       const call_net_oi = getData(strikePrice, 'call_net_oi');
       const put_net_oi = getData(strikePrice, 'put_net_oi');
       return [
-        { name: `${prefix}_call_net_oi`, data: call_net_oi },
-        { name: `${prefix}_put_net_oi`, data: put_net_oi }
-      ];
+        { name: `${prefix}CALL`, data: call_net_oi },
+        { name: `${prefix}PUT`, data: put_net_oi }
+      ];  
     };
 
     let finalSeries = [];
     if (shouldAddSeries(strikePrice1)) {
-      finalSeries.push(...createSeries(strikePrice1, 'strikePrice1'));
+      const strikeValue = [...new Set(strikePrice1.map(item => item.strike_price))];
+      finalSeries.push(...createSeries(strikePrice1,strikeValue ));
     }
     if (shouldAddSeries(strikePrice2)) {
-      finalSeries.push(...createSeries(strikePrice2, 'strikePrice2'));
+      const strikeValue = [...new Set(strikePrice2.map(item => item.strike_price))];
+      finalSeries.push(...createSeries(strikePrice2, strikeValue ));
     }
     if (shouldAddSeries(strikePrice3)) {
-      finalSeries.push(...createSeries(strikePrice3, 'strikePrice3'));
+      const strikeValue = [...new Set(strikePrice3.map(item => item.strike_price))];
+      finalSeries.push(...createSeries(strikePrice3, strikeValue));
     }
     if (shouldAddSeries(strikePrice4)) {
-      finalSeries.push(...createSeries(strikePrice4, 'strikePrice4'));
+      const strikeValue = [...new Set(strikePrice4.map(item => item.strike_price))];
+      finalSeries.push(...createSeries(strikePrice4, strikeValue));
     }
     if (shouldAddSeries(strikePrice5)) {
-      finalSeries.push(...createSeries(strikePrice5, 'strikePrice5'));
+      const strikeValue = [...new Set(strikePrice5.map(item => item.strike_price))];
+      finalSeries.push(...createSeries(strikePrice5, strikeValue));
     }
 
     setOptions({
