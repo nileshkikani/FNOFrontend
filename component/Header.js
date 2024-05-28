@@ -108,9 +108,7 @@ export default function Header() {
 
   const getAdvanceDecline = async () => {
     try {
-      const response = await axiosInstance.get(API_ROUTER.ADR, {
-        headers: { Authorization: `Bearer ${authState.access}` }
-      });
+      const response = await axiosInstance.get(API_ROUTER.ADR);
       setData(response.data);
     } catch (error) {
       console.error('Error fetching ADR data:', error);

@@ -8,13 +8,13 @@
   @apply bg-blue21 font-Roboto tracking-wider text-white px-2 py-1 rounded-md;
 }
 .table-heading-text {
-  @apply font-Roboto tracking-wide font-semibold text-[16px] text-blue21 mt-5 mb-3 2xl:text-[18px];
+  @apply font-Roboto tracking-wide font-semibold text-[16px] text-blue21 mt-5 mb-3 2xl:text-[18px] text-end;
 }
 .column-div {
   @apply flex bg-white flex-col space-y-2 my-2 justify-end items-center;
 }
 .column-green-text {
-  @apply text-[#0A8B3D] font-semibold font-Roboto tracking-wide text-[16px];
+  @apply text-[#0A8B3D] font-semibold font-Roboto tracking-wide text-[16px] justify-center;
 }
 .column-red-text {
   @apply text-red-600 font-semibold font-Roboto tracking-wide text-[16px];
@@ -81,4 +81,10 @@
 }
 .table-heading {
   @apply w-full font-Roboto font-thin text-[14px] text-black34 justify-end items-end mb-3;
+}
+.insight-text {
+  @apply break-words font-Roboto tracking-wide font-normal text-[16px];
+}
+.insight-div {
+  @apply p-3 justify-center items-center;
 }

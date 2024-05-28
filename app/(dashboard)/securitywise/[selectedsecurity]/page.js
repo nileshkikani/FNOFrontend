@@ -41,20 +41,66 @@ const Page = () => {
       const response = await axiosInstance.get(`${API_ROUTER.LIST_SECWISE_DATE}?symbol=${selectedsecurity}`, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
-      console.log('resp+data from apii+++', response.data);
+      console.log('response', response.data);
       setResponseData(response.data);
       const cData = processData(response.data);
-      const monthlyData = response.data.slice(0, 30).map((item, index) => {
-        const nextSevenRecords = response.data.slice(index, index + 7);
-        const weeklyQtToTradedQtys = nextSevenRecords.map((record) => Number(record.dly_qt_to_traded_qty));
-        const sumOfQtToTradedQtys = weeklyQtToTradedQtys.reduce(
-          (accumulator, currentValue) => accumulator + currentValue,
-          0
+      const monthlyData = response.data.map((item, index) => {
+        const tradedVolume = item.total_traded_quantity;
+        const deliveryVolume = item.deliverable_qty;
+        const priceChange = ((item?.close_price - item?.prev_close) / item?.prev_close) * 100;
+        const avgTradedVolume = item?.average_traded_quantity;
+        const avgDeliveryVolume = item?.average_delivery_quantity;
+        const deliveryPercent = (deliveryVolume / tradedVolume) * 100;
+        const avgDeliveryPercent = (avgDeliveryVolume / avgTradedVolume) * 100;
+        console.log(
+          'avgDeliveryPercent',
+          avgDeliveryPercent,
+          'deliveryPercent',
+          deliveryPercent,
+          'priceChange',
+          priceChange
         );
-        const weeklyPercentage = sumOfQtToTradedQtys / 7;
-        return { ...item, ...{ weeklyPercentage } };
+        let insight = {};
+        if (deliveryPercent > avgDeliveryPercent && priceChange > 0) {
+          insight.value = 'Jump in delivery with rise in price';
+          insight.color = '#006aff';
+        } else if (deliveryPercent > avgDeliveryPercent && priceChange <= 0) {
+          insight.value = 'Jump in delivery';
+          insight.color = '#00a25b';
+        } else if (deliveryPercent < avgDeliveryPercent && priceChange < 0) {
+          insight.value = 'Falling delivery with fall in price';
+          insight.color = '#fc5a5a';
+        } else if (deliveryPercent < avgDeliveryPercent && priceChange > 0) {
+          insight.value = 'Falling delivery with rise in price';
+          insight.color = '#006aff';
+        } else if (deliveryPercent < avgDeliveryPercent) {
+          insight.value = 'Falling delivery';
+          insight.color = '#fc5a5a';
+        } else if (deliveryPercent > avgDeliveryPercent && priceChange < 0) {
+          insight.value = 'Rising delivery with fall in price';
+          insight.color = '#fc5a5a';
+        } else if (deliveryPercent > avgDeliveryPercent && priceChange > 0) {
+          insight.value = 'Rising delivery with rise in price';
+          insight.color = '#00a25b';
+        } else if (deliveryPercent > avgDeliveryPercent) {
+          insight.value = 'Rising delivery';
+          insight.color = '#00a25b';
+        } else if (priceChange > 0) {
+          insight.value = 'Drop in delivery with rise in price';
+          insight.color = '#006aff';
+        } else {
+          insight.value = 'Drop in delivery';
+          insight.color = '#fc5a5a';
+        }
+
+        return { ...item, ...{ priceChange: priceChange.toFixed(2), insight } };
       });
-      setMonthlyData(monthlyData);
+      console.log('monthlyData----', monthlyData);
+      // const insights = await calculateInsights(monthlyData);
+      // console.log('insights', insights);
+      const last30Days = monthlyData.slice(0, 30);
+
+      setMonthlyData(last30Days);
       setDeliveryChartData(cData);
     } catch (err) {
       console.log('error getting selected stock data', err);
@@ -97,9 +143,9 @@ const Page = () => {
     },
     {
       name: <span className="table-heading">{'PRICE CHANGE %'}</span>,
-      selector: (row) => row?.last_price - row?.prev_close,
+      selector: (row) => +((row?.close_price - row?.prev_close) / row?.prev_close) * 100,
       format: (row) => {
-        const difference = row?.last_price - row?.prev_close;
+        const difference = ((row?.close_price - row?.prev_close) / row?.prev_close) * 100;
         return difference > 0 ? (
           <span className="column-green-text">{difference.toFixed(2)}%</span>
         ) : (
@@ -108,19 +154,30 @@ const Page = () => {
       },
       sortable: true
     },
-    // {
-    //   name: <span className="table-heading">{'INSIGHT (VS WEEKLY AVG)'}</span>,
-    //   selector: (row) => +row?.last_price,
-    //   format: (row) => {
-    //     const difference = row?.last_price - row?.prev_close;
-    //     // return difference > 0 ? (
-    //     //   <span className="column-green-text">{difference.toFixed(2)}%</span>
-    //     // ) : (
-    //     //   <span className="column-red-text">{`${difference.toFixed(2)}%`}</span>
-    //     // );
-    //   },
-    //   sortable: true
-    // },
+    {
+      name: <span className="table-heading">{'INSIGHT (VS WEEKLY AVG)'}</span>,
+      selector: (row) => +((row?.average_delivery_quantity / row?.average_traded_quantity) * 100),
+      format: (row) => {
+        // const difference = row?.last_price - row?.prev_close;
+        const insight = row?.insight;
+        return (
+          <div className="insight-div">
+            <span style={{ color: insight?.color }} className="insight-text">
+              {insight && insight?.value?.length > 16 ? (
+                <span>
+                  {insight?.value?.substring(0, 16)}
+                  <br />
+                  <span className="text-sm text-gray-500">{insight?.value?.substring(16)}</span>
+                </span>
+              ) : (
+                <span>{insight?.value}</span>
+              )}
+            </span>
+          </div>
+        );
+      },
+      sortable: true
+    },
     {
       name: <span className="table-heading">{"COMBINED ROLLING WEEK AVG. VOLUME('000)"}</span>,
       selector: (row) => +row.average_traded_quantity,
@@ -133,18 +190,22 @@ const Page = () => {
     },
     {
       name: <span className="table-heading">{'ROLLING WEEK DELIVERY %'}</span>,
-      selector: (row) => +row.weeklyPercentage,
+      selector: (row) => +((row?.average_delivery_quantity / row?.average_traded_quantity) * 100),
       format: (row) => (
-        <span className="secwise-cols">{(+row?.weeklyPercentage.toFixed(2)).toLocaleString('en-IN')}</span>
+        <span className="secwise-cols">
+          {(+((row?.average_delivery_quantity / row?.average_traded_quantity) * 100).toFixed(2)).toLocaleString(
+            'en-IN'
+          )}
+        </span>
       ),
       sortable: true
     },
     {
       name: <span className="table-heading">{'CLOSE PRICE'}</span>,
-      selector: (row) => +row?.last_price,
+      selector: (row) => +row?.close_price,
       format: (row) => (
         <span>
-          <span className="secwise-cols">{(+row.last_price).toLocaleString('en-IN')}</span>
+          <span className="secwise-cols">{(+row.close_price).toLocaleString('en-IN')}</span>
         </span>
       ),
 
