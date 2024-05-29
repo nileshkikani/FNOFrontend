@@ -476,7 +476,7 @@ input[type='radio']:checked + label {
   @apply text-white bg-white flex sm:hidden md:flex justify-end mr-2 lg:mr-5 relative;
 }
 .nav-logo {
-  @apply sm:w-20 lg:w-28 h-full object-cover lg:flex hidden;
+  @apply sm:w-20 lg:w-28 h-full object-cover lg:flex hidden cursor-pointer;
 }
 .nav-logo-transparent {
   @apply sm:w-20 lg:w-28 h-full object-cover flex lg:hidden bg-white;

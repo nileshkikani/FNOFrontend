@@ -244,7 +244,12 @@ export default function Header() {
       <div className="header-container" ref={ref}>
         <nav className="nav-container" onChange={handleSelectChange}>
           <div className="nav-img">
-            <img className="nav-logo" src="/fnoLogo.png" alt="Logo" />
+            <img
+              className="nav-logo"
+              onClick={() => (checkUserIsLoggedIn ? router.push('/activeoi') : router.push('/login'))}
+              src="/fnoLogo.png"
+              alt="Logo"
+            />
             {checkUserIsLoggedIn && (
               <button className="nav-bar-logo" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                 <img src="/barIcon.png" alt="Logo" />
