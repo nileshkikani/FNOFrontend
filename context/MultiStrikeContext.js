@@ -17,7 +17,8 @@ const initialState = {
   strikePrice2: [],
   strikePrice3: [],
   strikePrice4: [],
-  strikePrice5: []
+  strikePrice5: [],
+  selectedStrikePrices: []
 };
 
 const reducer = (state, action) => {
@@ -38,10 +39,25 @@ const reducer = (state, action) => {
       return { ...state, strikePrice4: action.payload.strikePrice4 };
     case 'SET_STRIKE_5':
       return { ...state, strikePrice5: action.payload.strikePrice5 };
+    case 'ADD_SELECTED_STRIKE':
+      return {
+        ...state,
+        selectedStrikePrices: [...state.selectedStrikePrices, action.payload]
+      };
+    case 'REMOVE_SELECTED_STRIKE':
+      return {
+        ...state,
+        selectedStrikePrices: state.selectedStrikePrices.filter((price) => price !== action.payload)
+      };
+      case 'REMOVE_ALL':
+        return{
+          ...state,selectedStrikePrices:action.payload
+        }
     default:
       return state;
   }
 };
+
 
 export const MultiStrikeProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -57,12 +73,12 @@ export const MultiStrikeProvider = ({ children }) => {
     strikePrice2,
     strikePrice3,
     strikePrice4,
-    strikePrice5,
-    strikePrice1IsChecked,
-    strikePrice2IsChecked,
-    strikePrice3IsChecked,
-    strikePrice4IsChecked,
-    strikePrice5IsChecked
+    strikePrice5
+    // strikePrice1IsChecked,
+    // strikePrice2IsChecked,
+    // strikePrice3IsChecked,
+    // strikePrice4IsChecked,
+    // strikePrice5IsChecked
   } = state;
 
   // ----------------API CALL-----------------
@@ -96,6 +112,12 @@ export const MultiStrikeProvider = ({ children }) => {
   // -------storing selected strike---------
   const checkSelectedStrike = (e, identifier) => {
     const filteredData = data?.filter((itm) => itm?.strike_price == `${e.target.value}`);
+    const { value, checked } = e.target;
+    if (checked) {
+      dispatch({ type: 'ADD_SELECTED_STRIKE', payload: value });
+    } else {
+      dispatch({ type: 'REMOVE_SELECTED_STRIKE', payload: value });
+    }
 
     switch (identifier) {
       case 1:
@@ -119,6 +141,15 @@ export const MultiStrikeProvider = ({ children }) => {
     }
   };
 
+  const whenComponentUnmount = () => {
+    dispatch({ type: 'SET_STRIKE_1', payload: { strikePrice1: [] } });
+    dispatch({ type: 'SET_STRIKE_2', payload: { strikePrice2: [] } });
+    dispatch({ type: 'SET_STRIKE_3', payload: { strikePrice3: [] } });
+    dispatch({ type: 'SET_STRIKE_4', payload: { strikePrice4: [] } });
+    dispatch({ type: 'SET_STRIKE_5', payload: { strikePrice5: [] } });
+    dispatch({ type: 'REMOVE_ALL', payload: [] });
+  };
+
   const contextValue = useMemo(
     () => ({
       ...state,
@@ -126,16 +157,18 @@ export const MultiStrikeProvider = ({ children }) => {
       strikes,
       multiStrikeAPiCall,
       checkSelectedStrike,
+      whenComponentUnmount,
+      // selectedStrikePrices,
       strikePrice1,
       strikePrice2,
       strikePrice3,
       strikePrice4,
-      strikePrice5,
-      strikePrice1IsChecked,
-      strikePrice2IsChecked,
-      strikePrice3IsChecked,
-      strikePrice4IsChecked,
-      strikePrice5IsChecked
+      strikePrice5
+      // strikePrice1IsChecked,
+      // strikePrice2IsChecked,
+      // strikePrice3IsChecked,
+      // strikePrice4IsChecked,
+      // strikePrice5IsChecked
     }),
     [
       state,
@@ -143,16 +176,18 @@ export const MultiStrikeProvider = ({ children }) => {
       multiStrikeAPiCall,
       data,
       checkSelectedStrike,
+      whenComponentUnmount,
+      // selectedStrikePrices,
       strikePrice1,
       strikePrice2,
       strikePrice3,
       strikePrice4,
-      strikePrice5,
-      strikePrice1IsChecked,
-      strikePrice2IsChecked,
-      strikePrice3IsChecked,
-      strikePrice4IsChecked,
-      strikePrice5IsChecked
+      strikePrice5
+      // strikePrice1IsChecked,
+      // strikePrice2IsChecked,
+      // strikePrice3IsChecked,
+      // strikePrice4IsChecked,
+      // strikePrice5IsChecked
     ]
   );
 

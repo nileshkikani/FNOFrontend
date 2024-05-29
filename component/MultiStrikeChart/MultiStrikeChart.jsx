@@ -5,7 +5,7 @@ import useMultiStrikeData from '@/hooks/useMultiStrikeData';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const MultiStrikeChart = () => {
-  const { strikePrice1, strikePrice2, strikePrice3, strikePrice4, strikePrice5 } = useMultiStrikeData();
+  const { strikePrice1, strikePrice2, strikePrice3, strikePrice4, strikePrice5,whenComponentUnmount } = useMultiStrikeData();
 
   const [options, setOptions] = useState({});
   const [series, setSeries] = useState([]);
@@ -45,8 +45,8 @@ const MultiStrikeChart = () => {
       const call_net_oi = getData(strikePrice, 'call_net_oi');
       const put_net_oi = getData(strikePrice, 'put_net_oi');
       return [
-        { name: `${prefix}CALL`, data: call_net_oi },
-        { name: `${prefix}PUT`, data: put_net_oi }
+        { name: `${prefix} CALL`, data: call_net_oi },
+        { name: `${prefix} PUT`, data: put_net_oi }
       ];  
     };
 
@@ -95,6 +95,12 @@ const MultiStrikeChart = () => {
 
     setSeries(finalSeries);
   }, [strikePrice1, strikePrice2, strikePrice3, strikePrice4, strikePrice5]);
+
+  useEffect(()=>{
+    return ()=>{
+      whenComponentUnmount();
+    }
+  },[])
 
   return (
     <div id="chart">{options.title && series && <ApexCharts options={options} series={series} height={350} />}</div>
