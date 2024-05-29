@@ -1,18 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '@/utils/axios';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ComposedChart,
-  LabelList,
-  Tooltip,
-  Legend,
-  ResponsiveContainer
-} from 'recharts';
 import { useParams } from 'next/navigation';
 import { API_ROUTER } from '@/services/apiRouter';
 import { useAppSelector } from '@/store';
@@ -248,7 +236,7 @@ const Page = () => {
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
             transition: 'background-color 0.3s ease',
             marginLeft: '10px',
-            marginTop: '10px'
+            marginTop: '20px'
           }}
         >
           <IoMdArrowRoundBack size={20} />

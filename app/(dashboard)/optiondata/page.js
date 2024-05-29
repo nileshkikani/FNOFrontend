@@ -2,7 +2,7 @@
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { useAppSelector } from '@/store';
 import dynamic from 'next/dynamic';
 import useAuth from '@/hooks/useAuth';
@@ -27,7 +27,7 @@ export default function Page() {
         headers: { Authorization: `Bearer ${authState.access}` }
       })
       .then((response) => {
-        setApiData(response.data.results);
+        setApiData(response.data.results.reverse());
         setIsLoading(false);
       })
       .catch((err) => handleResponceError());
