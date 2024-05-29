@@ -440,7 +440,11 @@ export default function Header() {
       )}
 
       {popoverShow && (
-        <div className="popover-container" ref={popoverRef}>
+        <div
+          className="popover-container"
+          ref={popoverRef}
+          style={{ position: 'fixed', top: `${window.innerHeight * 0.1}px`, right: 0 }}
+        >
           <div>
             <div className="popover-content">
               <span className="popover-heading-text">Tools to predict direction</span>
@@ -469,7 +473,11 @@ export default function Header() {
       )}
 
       {profilePopoverShow && (
-        <div className="profile-popover-container" ref={profilePopoverRef}>
+        <div
+          className="profile-popover-container"
+          ref={profilePopoverRef}
+          style={{ position: 'fixed', top: `${window.innerHeight * 0.1}px`, right: 0 }}
+        >
           <div className="popover-content">
             <ul className="popover-ul">
               {ProfileMenuItems.map((item) => {
