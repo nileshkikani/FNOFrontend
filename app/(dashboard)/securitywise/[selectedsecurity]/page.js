@@ -35,54 +35,79 @@ const Page = () => {
       const monthlyData = response.data.map((item, index) => {
         const tradedVolume = item.total_traded_quantity;
         const deliveryVolume = item.deliverable_qty;
-        const priceChange = ((item?.close_price - item?.prev_close) / item?.prev_close) * 100;
-        const avgTradedVolume = item?.average_traded_quantity;
-        const avgDeliveryVolume = item?.average_delivery_quantity;
+        const priceChange = ((item.close_price - item.prev_close) / item.prev_close) * 100;
+        const avgTradedVolume = item.average_traded_quantity;
+        const avgDeliveryVolume = item.average_delivery_quantity;
         const deliveryPercent = (deliveryVolume / tradedVolume) * 100;
         const avgDeliveryPercent = (avgDeliveryVolume / avgTradedVolume) * 100;
-        console.log(
-          'avgDeliveryPercent',
-          avgDeliveryPercent,
-          'deliveryPercent',
-          deliveryPercent,
-          'priceChange',
-          priceChange
-        );
+
         let insight = {};
-        if (deliveryPercent > avgDeliveryPercent && priceChange > 0) {
-          insight.value = 'Jump in delivery with rise in price';
-          insight.color = '#006aff';
-        } else if (deliveryPercent > avgDeliveryPercent && priceChange <= 0) {
-          insight.value = 'Jump in delivery';
-          insight.color = '#00a25b';
-        } else if (deliveryPercent < avgDeliveryPercent && priceChange < 0) {
-          insight.value = 'Falling delivery with fall in price';
-          insight.color = '#fc5a5a';
-        } else if (deliveryPercent < avgDeliveryPercent && priceChange > 0) {
-          insight.value = 'Falling delivery with rise in price';
-          insight.color = '#006aff';
+        let someThreshold = 10;
+
+        if (deliveryPercent > avgDeliveryPercent) {
+          if (priceChange > 0) {
+            if (deliveryPercent - avgDeliveryPercent > someThreshold) {
+              insight.value = 'Jump in delivery with rise in price';
+              insight.color = '#006aff';
+              insight.bgcolor = '#bcdfeb19';
+            } else {
+              insight.value = 'Rising delivery with rise in price';
+              insight.color = '#00a25b';
+              insight.bgcolor = '#00a25b33';
+            }
+          } else if (priceChange < 0) {
+            insight.value = 'Rising delivery with fall in price';
+            insight.color = '#006aff';
+            insight.bgcolor = '#bcdfeb19';
+          } else {
+            if (deliveryPercent - avgDeliveryPercent > someThreshold) {
+              insight.value = 'Jump in delivery';
+              insight.color = '#00a25b';
+              insight.bgcolor = '#00a25b33';
+            } else {
+              insight.value = 'Rising delivery';
+              insight.color = '#00a25b';
+              insight.bgcolor = '#00a25b33';
+            }
+          }
         } else if (deliveryPercent < avgDeliveryPercent) {
-          insight.value = 'Falling delivery';
-          insight.color = '#fc5a5a';
-        } else if (deliveryPercent > avgDeliveryPercent && priceChange < 0) {
-          insight.value = 'Rising delivery with fall in price';
-          insight.color = '#fc5a5a';
-        } else if (deliveryPercent > avgDeliveryPercent && priceChange > 0) {
-          insight.value = 'Rising delivery with rise in price';
-          insight.color = '#00a25b';
-        } else if (deliveryPercent > avgDeliveryPercent) {
-          insight.value = 'Rising delivery';
-          insight.color = '#00a25b';
-        } else if (priceChange > 0) {
-          insight.value = 'Drop in delivery with rise in price';
-          insight.color = '#006aff';
-        } else {
-          insight.value = 'Drop in delivery';
-          insight.color = '#fc5a5a';
+          if (priceChange > 0) {
+            if (avgDeliveryPercent - deliveryPercent > someThreshold) {
+              insight.value = 'Drop in delivery with rise in price';
+              insight.color = '#006aff';
+              insight.bgcolor = '#bcdfeb19';
+            } else {
+              insight.value = 'Falling delivery with rise in price';
+              insight.color = '#006aff';
+              insight.bgcolor = '#bcdfeb19';
+            }
+          } else if (priceChange < 0) {
+            if (avgDeliveryPercent - deliveryPercent > someThreshold) {
+              insight.value = 'Drop in delivery with fall in price';
+              insight.color = '#fc5a5a';
+
+              insight.bgcolor = '#fc5a5a19';
+            } else {
+              insight.value = 'Falling delivery with fall in price';
+              insight.color = '#fc5a5a';
+              insight.bgcolor = '#fc5a5a19';
+            }
+          } else {
+            if (avgDeliveryPercent - deliveryPercent > someThreshold) {
+              insight.value = 'Drop in delivery';
+              insight.color = '#fc5a5a';
+              insight.bgcolor = '#fc5a5a19';
+            } else {
+              insight.value = 'Falling delivery';
+              insight.color = '#fc5a5a';
+              insight.bgcolor = '#fc5a5a19';
+            }
+          }
         }
 
-        return { ...item, ...{ priceChange: priceChange.toFixed(2), insight } };
+        return { ...item, priceChange: priceChange.toFixed(2), insight };
       });
+
       console.log('monthlyData----', monthlyData);
       // const insights = await calculateInsights(monthlyData);
       // console.log('insights', insights);
@@ -126,7 +151,13 @@ const Page = () => {
     {
       name: <span className="table-heading">{'DELIVERY %'}</span>,
       selector: (row) => +row.dly_qt_to_traded_qty,
-      format: (row) => <span className="secwise-cols">{row?.dly_qt_to_traded_qty}</span>,
+      format: (row) => (
+        // <div style={{ backgroundColor: row?.insight?.bgcolor, width:'100%' }}>
+        <span style={{ color: row?.insight?.color }} className="secwise-cols">
+          {row?.dly_qt_to_traded_qty}%
+        </span>
+        // </div>
+      ),
       sortable: true
     },
     {
@@ -144,7 +175,9 @@ const Page = () => {
     },
     {
       name: <span className="table-heading">{'INSIGHT (VS WEEKLY AVG)'}</span>,
-      selector: (row) => +((row?.average_delivery_quantity / row?.average_traded_quantity) * 100),
+      selector: (row) =>
+        +((row?.deliverable_qty / row?.total_traded_quantity) * 100) >
+        (row?.average_delivery_quantity / row?.average_traded_quantity) * 100,
       format: (row) => {
         // const difference = row?.last_price - row?.prev_close;
         const insight = row?.insight;

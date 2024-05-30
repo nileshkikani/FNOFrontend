@@ -244,7 +244,12 @@ export default function Header() {
       <div className="header-container" ref={ref}>
         <nav className="nav-container" onChange={handleSelectChange}>
           <div className="nav-img">
-            <img className="nav-logo" src="/fnoLogo.png" alt="Logo" />
+            <img
+              className="nav-logo"
+              onClick={() => (checkUserIsLoggedIn ? router.push('/activeoi') : router.push('/login'))}
+              src="/fnoLogo.png"
+              alt="Logo"
+            />
             {checkUserIsLoggedIn && (
               <button className="nav-bar-logo" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                 <img src="/barIcon.png" alt="Logo" />
@@ -440,7 +445,11 @@ export default function Header() {
       )}
 
       {popoverShow && (
-        <div className="popover-container" ref={popoverRef}>
+        <div
+          className="popover-container"
+          ref={popoverRef}
+          style={{ position: 'fixed', top: `${window.innerHeight * 0.1}px`, right: 0 }}
+        >
           <div>
             <div className="popover-content">
               <span className="popover-heading-text">Tools to predict direction</span>
@@ -469,7 +478,11 @@ export default function Header() {
       )}
 
       {profilePopoverShow && (
-        <div className="profile-popover-container" ref={profilePopoverRef}>
+        <div
+          className="profile-popover-container"
+          ref={profilePopoverRef}
+          style={{ position: 'fixed', top: `${window.innerHeight * 0.1}px`, right: 0 }}
+        >
           <div className="popover-content">
             <ul className="popover-ul">
               {ProfileMenuItems.map((item) => {
