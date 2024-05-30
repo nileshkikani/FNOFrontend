@@ -38,7 +38,7 @@ const Page = () => {
     for (let i = 0; i < aResponce.length; i++) {
       let increase;
       if (i == 0) {
-        increase = 'green';
+        increase = 'black';
         aValue.push(increase);
         continue;
       } else if (+aResponce[i][aItem] > +aResponce[i - 1][aItem]) {

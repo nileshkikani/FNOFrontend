@@ -1,3 +1,5 @@
+
+'use client';
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import useMultiStrikeData from '@/hooks/useMultiStrikeData';
@@ -33,7 +35,6 @@ const MultiStrikeChart = () => {
           }
         }
       }
-      console.error('Invalid datetime format:', datetime);
       return 'Invalid Time';
     });
 
@@ -80,11 +81,11 @@ const MultiStrikeChart = () => {
       },
       dataLabels: { enabled: false },
       stroke: {
-        width: [5, 7, 5],
+        width: 2,
         curve: 'straight',
         dashArray: [0, 8, 5]
       },
-      title: { text: 'multistrike Statistics', align: 'left' },
+      title: { text: 'Multistrike Statistics', align: 'left' },
       markers: {
         size: 0,
         hover: { sizeOffset: 6 }
