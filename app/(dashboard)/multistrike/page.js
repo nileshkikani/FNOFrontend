@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import './global.css';
-import axios from 'axios';
+// import axios from 'axios';
 import axiosInstance from '@/utils/axios';
 import { API_ROUTER } from '@/services/apiRouter';
 import { useAppSelector } from '@/store';
@@ -32,7 +32,7 @@ const Page = () => {
   const premiumDecayApiCall = async () => {
     try {
       let apiUrl = API_ROUTER.PREMIUM_DECAY;
-      const response = await axios.get(apiUrl, {
+      const response = await axiosInstance.get(apiUrl, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       setDecayValue(response.data.data);
@@ -47,7 +47,7 @@ const Page = () => {
   const checkPremiumDecayStrike = (e, identifier) => {
     // console.log(e.target.value,"oooo")
     // console.log("insiddeduncc")
-    const filteredData = allPremiumDecayStrikes?.filter((itm) => itm?.strike_price === e.target.value);
+    // const filteredData = allPremiumDecayStrikes?.filter((itm) => itm?.strike_price === e.target.value);
     // const { value, checked } = e.target;
     // if (checked) {
     //   dispatch({ type: 'ADD_SELECTED_STRIKE', payload: value });
@@ -136,21 +136,21 @@ const Page = () => {
       {/* -----------PREMIUM DECAY SECTION--------- */}
       <div className="strike-dropdown">
         <label>Select Strike</label>
-        <div className="checkbox-container">
+        {/* <div className="checkbox-container">
           {allPremiumDecayStrikes?.map((itm, index) => (
             <div key={index}>
               <input
                 type="checkbox"
-                id={`strike${index}`}
+                id={`decay${index}`}
                 value={itm.strike_price}
-                checked={selectedPremiumDecayStrikes.includes(itm)}
-                onChange={(e) => checkPremiumDecayStrike(e, index + 1)}
+                // checked={selectedPremiumDecayStrikes.includes(itm)}
+                // onChange={(e) => checkPremiumDecayStrike(e, index + 1)}
               />
               <label htmlFor={`strike${index}`}>{itm.strike_price}</label>
               <br />
             </div>
           ))}
-        </div>
+        </div> */}
         <div className="total-decay-values">
           <label>total call decay: {allPremiumDecayStrikes?.total_call_decay}</label>
           <label>total put decay: {allPremiumDecayStrikes?.total_put_decay}</label>
