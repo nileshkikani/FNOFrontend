@@ -74,11 +74,6 @@ export const MultiStrikeProvider = ({ children }) => {
     strikePrice3,
     strikePrice4,
     strikePrice5
-    // strikePrice1IsChecked,
-    // strikePrice2IsChecked,
-    // strikePrice3IsChecked,
-    // strikePrice4IsChecked,
-    // strikePrice5IsChecked
   } = state;
 
   // ----------------API CALL-----------------
@@ -99,6 +94,7 @@ export const MultiStrikeProvider = ({ children }) => {
       } else {
         router.push('/login');
       }
+      console.log("eeew",response?.data )
     } catch (err) {
       handleResponceError();
     }
@@ -164,11 +160,6 @@ export const MultiStrikeProvider = ({ children }) => {
       strikePrice3,
       strikePrice4,
       strikePrice5
-      // strikePrice1IsChecked,
-      // strikePrice2IsChecked,
-      // strikePrice3IsChecked,
-      // strikePrice4IsChecked,
-      // strikePrice5IsChecked
     }),
     [
       state,
@@ -183,11 +174,6 @@ export const MultiStrikeProvider = ({ children }) => {
       strikePrice3,
       strikePrice4,
       strikePrice5
-      // strikePrice1IsChecked,
-      // strikePrice2IsChecked,
-      // strikePrice3IsChecked,
-      // strikePrice4IsChecked,
-      // strikePrice5IsChecked
     ]
   );
 

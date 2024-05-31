@@ -2,7 +2,7 @@
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { useAppSelector } from '@/store';
 import dynamic from 'next/dynamic';
 import useAuth from '@/hooks/useAuth';
@@ -27,7 +27,7 @@ export default function Page() {
         headers: { Authorization: `Bearer ${authState.access}` }
       })
       .then((response) => {
-        setApiData(response.data.results);
+        setApiData(response.data.results.reverse());
         setIsLoading(false);
       })
       .catch((err) => handleResponceError());
@@ -110,19 +110,19 @@ export default function Page() {
                       </span>
                     )}
                   </td>
-                  <td>{item?.call_volume}</td>
-                  <td>{item?.call_net_oi}</td>
+                  <td>{Number(item?.call_volume).toLocaleString('en-IN')}</td>
+                  <td>{Number(item?.call_net_oi).toLocaleString('en-IN' )}</td>
                   <td className={item.call_change_oi < 0 ? 'red-field' : 'green-field'}>
                     {item.call_change_oi < 0 ? (
                       <>
                         <span className="inside-cell">
-                          {item.call_change_oi} <IoMdArrowRoundDown size={25} style={{ color: 'red' }} />
+                          {Number(item.call_change_oi).toLocaleString('en-IN')} <IoMdArrowRoundDown size={25} style={{ color: 'red' }} />
                         </span>
                       </>
                     ) : (
                       <>
                         <span className="inside-cell">
-                          {item.call_change_oi} <IoMdArrowRoundUp size={25} style={{ color: 'green' }} />
+                          {Number(item.call_change_oi).toLocaleString('en-IN')} <IoMdArrowRoundUp size={25} style={{ color: 'green' }} />
                         </span>
                       </>
                     )}
@@ -131,32 +131,32 @@ export default function Page() {
                     {item.call_price_change < 0 ? (
                       <>
                         <span className="inside-cell">
-                          {item.call_price_change} <IoMdArrowRoundDown size={25} style={{ color: 'red' }} />
+                          {Number(item.call_price_change).toLocaleString('en-IN')} <IoMdArrowRoundDown size={25} style={{ color: 'red' }} />
                         </span>
                       </>
                     ) : (
                       <>
                         <span className="inside-cell">
-                          {item.call_price_change} <IoMdArrowRoundUp size={25} style={{ color: 'green' }} />
+                          {Number(item.call_price_change).toLocaleString('en-IN')} <IoMdArrowRoundUp size={25} style={{ color: 'green' }} />
                         </span>
                       </>
                     )}
                   </td>
-                  <td>{item?.call_ltp}</td>
-                  <td>{item?.strike_price}</td>
-                  <td>{item?.put_ltp}</td>
+                  <td>{Number(item?.call_ltp).toLocaleString('en-IN')}</td>
+                  <td>{Number(item?.strike_price).toLocaleString('en-IN')}</td>
+                  <td>{Number(item?.put_ltp).toLocaleString('en-IN')}</td>
                   <td className={item.put_price_change < 0 ? 'red-field' : 'green-field'}>
                     {' '}
                     {item.put_price_change < 0 ? (
                       <>
                         <span className="inside-cell">
-                          {item.put_price_change} <IoMdArrowRoundDown size={25} style={{ color: 'red' }} />
+                          {Number(item.put_price_change).toLocaleString('en-IN')} <IoMdArrowRoundDown size={25} style={{ color: 'red' }} />
                         </span>
                       </>
                     ) : (
                       <>
                         <span className="inside-cell">
-                          {item.put_price_change} <IoMdArrowRoundUp size={25} style={{ color: 'green' }} />
+                          {Number(item.put_price_change).toLocaleString('en-IN')} <IoMdArrowRoundUp size={25} style={{ color: 'green' }} />
                         </span>
                       </>
                     )}
@@ -165,19 +165,19 @@ export default function Page() {
                     {item.put_change_oi < 0 ? (
                       <>
                         <span className="inside-cell">
-                          {item.put_change_oi} <IoMdArrowRoundDown size={25} style={{ color: 'red' }} />
+                          {Number(item.put_change_oi).toLocaleString('en-IN')} <IoMdArrowRoundDown size={25} style={{ color: 'red' }} />
                         </span>
                       </>
                     ) : (
                       <>
                         <span className="inside-cell">
-                          {item.put_change_oi} <IoMdArrowRoundUp size={25} style={{ color: 'green' }} />
+                          {Number(item.put_change_oi).toLocaleString('en-IN')} <IoMdArrowRoundUp size={25} style={{ color: 'green' }} />
                         </span>
                       </>
                     )}
                   </td>
-                  <td>{item?.put_net_oi}</td>
-                  <td>{item?.put_volume}</td>
+                  <td>{Number(item?.put_net_oi).toLocaleString('en-IN')}</td>
+                  <td>{Number(item?.put_volume).toLocaleString('en-IN')}</td>
                   <td className={item.put_price_change < 0 && item.put_change_oi > 0 ? 'red-field' : item.put_price_change > 0 && item.put_change_oi < 0 ? 'green-field' : item.put_price_change > 0 && item.put_change_oi > 0 ? 'red-field' : 'green-field'}>
                     {item.put_price_change < 0 && item.put_change_oi > 0 && (
                       <span className="inside-cell">

@@ -38,7 +38,7 @@ const Page = () => {
     for (let i = 0; i < aResponce.length; i++) {
       let increase;
       if (i == 0) {
-        increase = 'green';
+        increase = 'black';
         aValue.push(increase);
         continue;
       } else if (+aResponce[i][aItem] > +aResponce[i - 1][aItem]) {
@@ -184,7 +184,6 @@ const Page = () => {
             Refresh
           </button>
         </div>
-
         {loading ? (
           <div className="loading-container">
             <PropagateLoader color="#33a3e3" loading={loading} size={15} />
@@ -192,7 +191,6 @@ const Page = () => {
         ) : (
           <>
             <div>
-              {data && (
                 <div className="table-container1">
                   <table className="table1">
                     <thead className="table-header">
@@ -214,10 +212,11 @@ const Page = () => {
                         </th>
                       </tr>
                     </thead>
+              {data && (
                     <tbody className="bg-white divide-y divide-gray-200">
                       {data
-                        .slice()
-                        .reverse()
+                      .slice()
+                      .reverse()
                         .map((item, index) => {
                           return (
                             <tr key={item?.id}>
@@ -254,9 +253,9 @@ const Page = () => {
                           );
                         })}
                     </tbody>
+                )}
                   </table>
                 </div>
-              )}
             </div>
             <div className="graph-cash-bottom">
               <MoneyFlowGraph data={data} />

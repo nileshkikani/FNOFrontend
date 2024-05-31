@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import useFiiDiiData from '@/hooks/useFiiDiiData';
 import { useAppSelector } from '@/store';
+import "../global.css"
 
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 import DailyIndexOption from '@/component/FII-DII-Graphs/DailyIndexOption-Graph';
@@ -20,8 +21,8 @@ export default function Page() {
   }, []);
 
   return (
-    <>
-      <div>
+    <div className='div-parent'>
+      <div className="chart-div">
         <div className="radio-button-group">
           <div className="radio-button-nested">
             <input
@@ -85,7 +86,6 @@ export default function Page() {
             </label>
           </div>
         </div>
-      </div>
       {isLoading ? (
         <div
           style={{
@@ -113,6 +113,7 @@ export default function Page() {
           </div>
         </>
       )}
-    </>
+            </div>
+    </div>
   );
 }

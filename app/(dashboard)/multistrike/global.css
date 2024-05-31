@@ -7,3 +7,11 @@
     max-width: auto;
     margin: 35px auto;
   }
+
+  .strike-dropdown{
+    @apply flex items-center space-x-4 p-4 bg-gray-100 rounded-md;
+  }
+
+  .dropdown-container{
+    @apply flex items-center space-x-2;
+  } 
