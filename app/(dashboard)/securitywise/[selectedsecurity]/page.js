@@ -31,7 +31,7 @@ const Page = () => {
       });
       setResponseData(response.data);
       const cData = processData(response.data);
-      const last30Days = response.data.slice(0, 30);
+      const last30Days = response.data;
       const monthlyData = await Promise.all(
         last30Days.map(async (item, index) => {
           const tradedVolume = item.total_traded_quantity;

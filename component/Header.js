@@ -90,7 +90,7 @@ export default function Header() {
   useEffect(() => {
     closeProfilePopover();
     getAdvanceDecline();
-    getAccessToken();
+    // getAccessToken();
   }, [isRefresh, pathname]);
 
   useEffect(() => {

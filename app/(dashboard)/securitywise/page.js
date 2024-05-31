@@ -17,6 +17,7 @@ export default function Page() {
   const route = useRouter();
   const [isFilterData, setIsFilterData] = useState(false);
   const [securityData, setSecurityData] = useState([]);
+  const [sData, setSData] = useState([]);
   // Current page index
 
   const loader = useRef(null);
@@ -26,7 +27,9 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    // setData(data);
+    console.log('data.map', data);
+    setData(data);
+    setSData(data);
   }, [data]);
 
   useEffect(() => {
@@ -34,10 +37,11 @@ export default function Page() {
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !isLoading) {
           setPage((prevPage) => prevPage + 1);
-          getData(currentSelectedDate, page + 1);
+          console.log('sData', sData);
+          getData(currentSelectedDate, page + 1, sData);
         }
       },
-      { threshold: 1.0 }
+      { threshold: 0.5 }
     );
 
     if (loader.current) {

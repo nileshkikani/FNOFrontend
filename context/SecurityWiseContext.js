@@ -20,7 +20,7 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_DATA':
-      return { ...state, data: action.payload };
+      return { ...state, data: [...state.data, ...action.payload] };
     case 'SET_IS_LOADING':
       return { ...state, isLoading: action.payload };
     case 'SET_UNIQUE_DATES':
@@ -41,12 +41,13 @@ export const SecurityWiseProvider = ({ children }) => {
   const { uniqueDates, data, isLoading } = state;
   const [hasMore, setHasMore] = useState(true); // Whether there are more pages to load
   const [page, setPage] = useState(1);
+  const [securityData, setSecurityData] = useState([]);
 
   // -------------------------API CALL------------------------
 
   const getData = useCallback(
-    async (selectedDate, page) => {
-      dispatch({ type: 'SET_IS_LOADING', payload: true });
+    async (selectedDate, page, sData) => {
+      dispatch({ type: 'SET_IS_LOADING', payload: page === 1 ? true : false });
       if (!authState && checkUserIsLoggedIn) {
         return router.push('/login');
       }
@@ -68,9 +69,13 @@ export const SecurityWiseProvider = ({ children }) => {
 
           if (selectedDate) {
             if (page === 1) {
-              dispatch({ type: 'SET_DATA', payload: response.data });
+              dispatch({ type: 'SET_DATA', payload: response.data.results });
             } else {
-              dispatch({ type: 'SET_DATA', payload: [...state.data, ...response.data] });
+              // const updatedData = useAppSelector((state) => state.data);
+              // console.log('updatedData', updatedData);
+              console.log('state.data', sData);
+              console.log('[...state.data, ...response.data.results]', [...state.data, ...response.data.results]);
+              dispatch({ type: 'SET_DATA', payload: response.data.results });
             }
             setPage(page + 1);
           } else {
@@ -85,11 +90,12 @@ export const SecurityWiseProvider = ({ children }) => {
           // localStorage.setItem('lastPath', currentPath);
         } else {
           setHasMore(false);
-          router.push('/login');
+          dispatch({ type: 'SET_DATA', payload: state.data });
+          // router.push('/login');
         }
       } catch (err) {
         setHasMore(false);
-        handleResponceError();
+        // handleResponceError();
       }
     },
     [authState]
