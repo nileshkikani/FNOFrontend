@@ -30,6 +30,8 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/store';
 import { useCallback } from 'react';
 import { setAuth, setRememberMe, setUserStatus, setUserStatusInitially } from '@/store/authSlice';
+import axios from 'axios';
+// import { SmartAPI } from 'smartapi-javascript';
 
 export default function Header() {
   const router = useRouter();
@@ -55,6 +57,13 @@ export default function Header() {
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
   const checkIsLoggedInInitially = useAppSelector((state) => state.auth.isCookie);
   const { refreshToken, checkTimer } = useAuth();
+  var http = require('http');
+  // let { SmartAPI, WebSocket, WebSocketV2 } = require('smartapi-javascript');
+  // const SmartAPI = require('smartapi-javascript');
+
+  // const smart_api = new SmartAPI({
+  //   api_key: process.env.SMARTAPI_API_KEY // Replace with your API key
+  // });
 
   useEffect(() => {
     // Check authentication status when component mounts
@@ -81,6 +90,7 @@ export default function Header() {
   useEffect(() => {
     closeProfilePopover();
     getAdvanceDecline();
+    getAccessToken();
   }, [isRefresh, pathname]);
 
   useEffect(() => {
@@ -105,6 +115,70 @@ export default function Header() {
       window.removeEventListener('mousedown', handleOutsideClick);
     };
   }, [popoverShow, profilePopoverShow]);
+
+  async function generateToken() {
+    try {
+      const response = await smart_api.generateSession(
+        process.env.SMARTAPI_CLIENT_CODE,
+        process.env.SMARTAPI_PASSWORD,
+        process.env.SMARTAPI_TOTP
+      );
+      const jwtToken = response.data.access_token;
+      console.log('JWT Token:', jwtToken);
+      return jwtToken;
+    } catch (error) {
+      console.error('Error generating JWT token:', error);
+    }
+  }
+
+  async function getAccessToken() {
+    const url = 'https://apiconnect.angelbroking.com/rest/auth/angelbroking/user/v1/loginByPassword';
+    const payload = {
+      clientcode: 'HEEB1141',
+      password: '8567',
+      totp: 'ZWXAUZOUP6KTEUH3DYPJD5QI34'
+    };
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-ClientLocalIP': '192.168.0.62', // Optional
+      'X-ClientPublicIP': '103.250.188.226', // Optional
+      'X-MACAddress': '5c:1b:f4:97:1c:4c', // Optional
+      Accept: 'application/json',
+      'X-PrivateKey': '7kOkUQK3',
+      'X-UserType': 'USER',
+      'X-SourceID': 'WEB'
+      // 'Access-Control-Allow-Origin': '*',
+      // 'Access-Control-Allow-Credentials': 'true',
+      // 'Access-Control-Max-Age': '1800',
+      // 'Access-Control-Allow-Headers': 'content-type',
+      // 'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, PATCH, OPTIONS'
+    };
+
+    var config = {
+      method: 'post',
+      url: 'https://apiconnect.angelbroking.com/rest/auth/angelbroking/user/v1/loginByPassword',
+
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-UserType': 'USER',
+        'X-SourceID': 'WEB',
+        'X-ClientLocalIP': 'CLIENT_LOCAL_IP',
+        'X-ClientPublicIP': 'CLIENT_PUBLIC_IP',
+        'X-MACAddress': 'MAC_ADDRESS',
+        'X-PrivateKey': 'L5IoqK0k'
+      },
+      data: JSON.stringify(payload)
+    };
+
+    try {
+      const response = await axios(config);
+      console.log('Access Token:', response.data.data);
+      return response.data.data;
+    } catch (error) {
+      console.error('Error obtaining access token:', error);
+    }
+  }
 
   const getAdvanceDecline = async () => {
     try {

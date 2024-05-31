@@ -8,7 +8,7 @@
   @apply bg-blue21 font-Roboto tracking-wider text-white px-2 py-1 rounded-md;
 }
 .table-heading-text {
-  @apply font-Roboto tracking-wide font-semibold text-[16px] text-blue21 mt-5 mb-3 2xl:text-[18px] text-end;
+  @apply font-Roboto tracking-wide font-semibold text-[16px] text-blue21 mt-5 mb-3 2xl:text-[16px] text-center;
 }
 .column-div {
   @apply flex bg-white flex-col space-y-2 my-2 justify-end items-center;
@@ -86,5 +86,11 @@
   @apply break-words font-Roboto tracking-wide font-normal text-[16px];
 }
 .insight-div {
-  @apply p-3 justify-center items-center;
+  @apply p-3 justify-end items-end;
+}
+.delivery-div {
+  @apply ml-16;
+}
+.traded-div {
+  @apply ml-5;
 }

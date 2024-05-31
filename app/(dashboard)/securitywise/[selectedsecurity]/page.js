@@ -41,96 +41,102 @@ const Page = () => {
       const response = await axiosInstance.get(`${API_ROUTER.LIST_SECWISE_DATE}?symbol=${selectedsecurity}`, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
-      console.log('response', response.data);
       setResponseData(response.data);
       const cData = processData(response.data);
-      const monthlyData = response.data.map((item, index) => {
-        const tradedVolume = item.total_traded_quantity;
-        const deliveryVolume = item.deliverable_qty;
-        const priceChange = ((item.close_price - item.prev_close) / item.prev_close) * 100;
-        const avgTradedVolume = item.average_traded_quantity;
-        const avgDeliveryVolume = item.average_delivery_quantity;
-        const deliveryPercent = (deliveryVolume / tradedVolume) * 100;
-        const avgDeliveryPercent = (avgDeliveryVolume / avgTradedVolume) * 100;
+      const last30Days = response.data.slice(0, 30);
+      const monthlyData = await Promise.all(
+        last30Days.map(async (item, index) => {
+          const tradedVolume = item.total_traded_quantity;
+          const deliveryVolume = item.deliverable_qty;
+          const priceChange = ((item.close_price - item.prev_close) / item.prev_close) * 100;
+          const avgTradedVolume = item.average_traded_quantity;
+          const avgDeliveryVolume = item.average_delivery_quantity;
+          const deliveryPercent = (deliveryVolume / tradedVolume) * 100;
+          const avgDeliveryPercent = (avgDeliveryVolume / avgTradedVolume) * 100;
 
-        let insight = {};
-        let someThreshold = 10;
-
-        if (deliveryPercent > avgDeliveryPercent) {
-          if (priceChange > 0) {
-            if (deliveryPercent - avgDeliveryPercent > someThreshold) {
-              insight.value = 'Jump in delivery with rise in price';
-              insight.color = '#006aff';
-              insight.bgcolor = '#bcdfeb19';
-            } else {
-              insight.value = 'Rising delivery with rise in price';
-              insight.color = '#00a25b';
-              insight.bgcolor = '#00a25b33';
-            }
-          } else if (priceChange < 0) {
-            insight.value = 'Rising delivery with fall in price';
-            insight.color = '#006aff';
-            insight.bgcolor = '#bcdfeb19';
-          } else {
-            if (deliveryPercent - avgDeliveryPercent > someThreshold) {
-              insight.value = 'Jump in delivery';
-              insight.color = '#00a25b';
-              insight.bgcolor = '#00a25b33';
-            } else {
-              insight.value = 'Rising delivery';
-              insight.color = '#00a25b';
-              insight.bgcolor = '#00a25b33';
-            }
-          }
-        } else if (deliveryPercent < avgDeliveryPercent) {
-          if (priceChange > 0) {
-            if (avgDeliveryPercent - deliveryPercent > someThreshold) {
-              insight.value = 'Drop in delivery with rise in price';
-              insight.color = '#006aff';
-              insight.bgcolor = '#bcdfeb19';
-            } else {
-              insight.value = 'Falling delivery with rise in price';
-              insight.color = '#006aff';
-              insight.bgcolor = '#bcdfeb19';
-            }
-          } else if (priceChange < 0) {
-            if (avgDeliveryPercent - deliveryPercent > someThreshold) {
-              insight.value = 'Drop in delivery with fall in price';
-              insight.color = '#fc5a5a';
-
-              insight.bgcolor = '#fc5a5a19';
-            } else {
-              insight.value = 'Falling delivery with fall in price';
-              insight.color = '#fc5a5a';
-              insight.bgcolor = '#fc5a5a19';
-            }
-          } else {
-            if (avgDeliveryPercent - deliveryPercent > someThreshold) {
-              insight.value = 'Drop in delivery';
-              insight.color = '#fc5a5a';
-              insight.bgcolor = '#fc5a5a19';
-            } else {
-              insight.value = 'Falling delivery';
-              insight.color = '#fc5a5a';
-              insight.bgcolor = '#fc5a5a19';
-            }
-          }
-        }
-
-        return { ...item, priceChange: priceChange.toFixed(2), insight };
-      });
+          const insight = await getInsight(deliveryPercent, avgDeliveryPercent, priceChange);
+          return { ...item, priceChange: priceChange.toFixed(2), insight };
+        })
+      );
 
       console.log('monthlyData----', monthlyData);
       // const insights = await calculateInsights(monthlyData);
       // console.log('insights', insights);
-      const last30Days = monthlyData.slice(0, 30);
 
-      setMonthlyData(last30Days);
+      setMonthlyData(monthlyData);
       setDeliveryChartData(cData);
     } catch (err) {
       console.log('error getting selected stock data', err);
     }
   };
+
+  async function getInsight(deliveryPercent, avgDeliveryPercent, priceChange) {
+    let someThreshold = 10;
+    let insight = {};
+
+    if (deliveryPercent > avgDeliveryPercent) {
+      if (priceChange > 0) {
+        if (deliveryPercent - avgDeliveryPercent > someThreshold) {
+          insight.value = 'Jump in delivery with rise in price';
+          insight.color = '#006aff';
+          insight.bgcolor = '#bcdfeb19';
+        } else {
+          insight.value = 'Rising delivery with rise in price';
+          insight.color = '#00a25b';
+          insight.bgcolor = '#00a25b33';
+        }
+      } else if (priceChange < 0) {
+        insight.value = 'Rising delivery with fall in price';
+        insight.color = '#006aff';
+        insight.bgcolor = '#bcdfeb19';
+      } else {
+        if (deliveryPercent - avgDeliveryPercent > someThreshold) {
+          insight.value = 'Jump in delivery';
+          insight.color = '#00a25b';
+          insight.bgcolor = '#00a25b33';
+        } else {
+          insight.value = 'Rising delivery';
+          insight.color = '#00a25b';
+          insight.bgcolor = '#00a25b33';
+        }
+      }
+    } else if (deliveryPercent < avgDeliveryPercent) {
+      if (priceChange > 0) {
+        if (avgDeliveryPercent - deliveryPercent > someThreshold) {
+          insight.value = 'Drop in delivery with rise in price';
+          insight.color = '#006aff';
+          insight.bgcolor = '#bcdfeb19';
+        } else {
+          insight.value = 'Falling delivery with rise in price';
+          insight.color = '#006aff';
+          insight.bgcolor = '#bcdfeb19';
+        }
+      } else if (priceChange < 0) {
+        if (avgDeliveryPercent - deliveryPercent > someThreshold) {
+          insight.value = 'Drop in delivery with fall in price';
+          insight.color = '#fc5a5a';
+
+          insight.bgcolor = '#fc5a5a19';
+        } else {
+          insight.value = 'Falling delivery with fall in price';
+          insight.color = '#fc5a5a';
+          insight.bgcolor = '#fc5a5a19';
+        }
+      } else {
+        if (avgDeliveryPercent - deliveryPercent > someThreshold) {
+          insight.value = 'Drop in delivery';
+          insight.color = '#fc5a5a';
+          insight.bgcolor = '#fc5a5a19';
+        } else {
+          insight.value = 'Falling delivery';
+          insight.color = '#fc5a5a';
+          insight.bgcolor = '#fc5a5a19';
+        }
+      }
+    }
+
+    return insight;
+  }
 
   const column = [
     {
