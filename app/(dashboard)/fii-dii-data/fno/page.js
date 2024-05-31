@@ -59,7 +59,7 @@ export default function Page() {
       console.log('error getting fii-dii daily data:', error);
     }
   };
-  console.log('rtrtr', data);
+  // console.log('rtrtr', data);
   useEffect(() => {
     authState && getFiiDiiData();
   }, [monthFromDropdown, yearFromDropdown]);
@@ -73,18 +73,18 @@ export default function Page() {
     setYearFromDropdown(year);
   };
 
-  // ---------client checkbox handle------
+  // ---------client checkbox handle------  
   const checkClientType = (e) => {
     const checkClient = e.target.value;
     const filteredClient = data.filter((item) => item?.client_type === checkClient);
     setfilteredByClient(filteredClient);
-    console.log('jjjj', filteredClient);
+    // console.log('jjjj', filteredClient);
   };
 
   return (
     <div className="div-parent">
       <div className="chart-div">
-        <div className="radio-button-group">
+        <div className="radio-button-group client-month-flex">
           <div className="radio-button-nested">
             <input
               type="radio"
@@ -147,7 +147,6 @@ export default function Page() {
           </div>
           <div>
             <label>
-              Select Month :
               <select className="stock-dropdown" onChange={handleMonthChange}>
                 {dropdownOptions.map((option, index) => {
                   const year = option.year;

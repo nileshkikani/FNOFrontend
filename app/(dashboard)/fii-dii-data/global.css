@@ -47,3 +47,7 @@
 .fii-dii-header-deactive {
   @apply text-[#808284];
 }
+
+.client-month-flex{
+  @apply flex justify-between;
+}

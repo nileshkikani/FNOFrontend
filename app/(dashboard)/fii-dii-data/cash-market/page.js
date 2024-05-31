@@ -180,14 +180,11 @@ const Page = () => {
       <div style={{ width: '100%', height: '500px' }} className="chart-div">
         <h1 className="table-title">Cash Market Activity - Long Term View</h1>
         <label>
-          Select Month :
           <select className="stock-dropdown" onChange={handleMonthChange}>
             {dropdownOptions.map((option, index) => {
               const year = option.year;
               const month = option.month;
-
               const monthName = moment(`${year}-${month}`, 'YYYY-MM').format('MMMM');
-
               return (
                 <option key={index} value={`${year}-${month}`}>
                   {`${monthName} ${year}`}
