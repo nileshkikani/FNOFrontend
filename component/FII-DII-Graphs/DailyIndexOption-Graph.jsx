@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush } from 'recharts';
 import useFiiDiiData from '@/hooks/useFiiDiiData';
 
-const DailyIndexOption = () => {
-  const { filteredClientData } = useFiiDiiData();
+const DailyIndexOption = ({filteredByClient}) => {
+  // const { filteredClientData } = useFiiDiiData();
   const [yAxisDomain, setYAxisDomain] = useState([0, 100]);
 
   useEffect(() => {
-    const callOiValues = filteredClientData.map((item) => item.daily_dif_index_call);
-    const putOiValues = filteredClientData.map((item) => item.daily_dif_index_put);
+    const callOiValues = filteredByClient?.map((item) => item.daily_dif_index_call);
+    const putOiValues = filteredByClient?.map((item) => item.daily_dif_index_put);
     const allValues = callOiValues.concat(putOiValues);
     const minValue = Math.min(...allValues);
     const maxValue = Math.max(...allValues);
 
     setYAxisDomain([minValue, maxValue]);
-  }, [filteredClientData]);
+  }, [filteredByClient]);
 
   return (
     <div style={{ width: '100%', height: '400px' }}>
@@ -23,7 +23,7 @@ const DailyIndexOption = () => {
         <ComposedChart
           width={500}
           height={400}
-          data={filteredClientData}
+          data={filteredByClient}
           margin={{
             top: 5,
             right: 30,
@@ -48,7 +48,7 @@ const DailyIndexOption = () => {
           <Legend />
           <Bar name="call oi" dataKey="daily_dif_index_call" fill="#63D168" activeDot={{ r: 8 }} />
           <Bar name="put oi" dataKey="daily_dif_index_put" fill="#E96767" activeDot={{ r: 8 }} />
-          <Brush dataKey="date" height={30} stroke="#0A3D62" />
+          {/* <Brush dataKey="date" height={30} stroke="#0A3D62" /> */}
         </ComposedChart>
       </ResponsiveContainer>
     </div>

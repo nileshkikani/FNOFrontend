@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush } from 'recharts';
 import useFiiDiiData from '@/hooks/useFiiDiiData';
 
-const FuturesDataGraph = () => {
-  const { filteredClientData } = useFiiDiiData();
+const FuturesDataGraph = ({filteredByClient}) => {
+  // const { filteredClientData } = useFiiDiiData();
   const [yAxisDomain, setYAxisDomain] = useState([0, 100]);
 
   useEffect(() => {
-    const values = filteredClientData.map((item) => item.dif_future_index);
+    const values = filteredByClient.map((item) => item.dif_future_index);
     const minValue = Math.min(...values);
     const maxValue = Math.max(...values);
 
     setYAxisDomain([minValue, maxValue]);
-  }, [filteredClientData]);
+  }, [filteredByClient]);
 
   return (
     <div style={{ width: '100%', height: '400px' }}>
@@ -21,7 +21,7 @@ const FuturesDataGraph = () => {
         <ComposedChart
           width={500}
           height={400}
-          data={filteredClientData}
+          data={filteredByClient}
           margin={{
             top: 5,
             right: 30,
@@ -45,7 +45,7 @@ const FuturesDataGraph = () => {
           <Tooltip />
           <Legend />
           <Bar name="future difference" dataKey="dif_future_index" fill="#33A3E3" activeDot={{ r: 8 }} />
-          <Brush dataKey="date" height={30} stroke="#0A3D62" />
+          {/* <Brush dataKey="date" height={30} stroke="#0A3D62" /> */}
         </ComposedChart>
       </ResponsiveContainer>
     </div>

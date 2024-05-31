@@ -100,7 +100,7 @@ export const NiftyFutureProvider = ({ children }) => {
         router.push('/login');
       }
     } catch (error) {
-      // handleResponceError();
+      handleResponceError();
     }
   };
 

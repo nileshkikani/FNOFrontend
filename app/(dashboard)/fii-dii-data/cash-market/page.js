@@ -2,16 +2,25 @@
 import { API_ROUTER } from '@/services/apiRouter';
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '@/utils/axios';
+// import axios from 'axios';
+import moment from 'moment';
 import { useAppSelector } from '@/store';
 import DataTable from 'react-data-table-component';
 import { XAxis, ComposedChart, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend, Bar } from 'recharts';
 import '../global.css';
 
 const Page = () => {
+  const dropdownOptions = [];
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentYear = currentDate.getFullYear();
   const [data, setData] = useState([]);
   const authState = useAppSelector((state) => state.auth.authState);
-  const [allMonths, setAllMonths] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState('');
+
+  const [reversedFilteredData, setReversedFilteredData] = useState([]);
+  const [monthFromDropdown, setMonthFromDropdown] = useState(currentMonth);
+  const [yearFromDropdown, setYearFromDropdown] = useState(currentYear);
+
 
   const column = [
     {
@@ -24,6 +33,7 @@ const Page = () => {
         return `${day} ${month}`;
       },
       sortable: true
+      // sortFunction: customSort
     },
     {
       name: <span className="table-heading-text">{'FII Cash Buy'}</span>,
@@ -34,7 +44,6 @@ const Page = () => {
           {' Cr'}
         </span>
       ),
-
       sortable: true
     },
     {
@@ -97,40 +106,45 @@ const Page = () => {
     }
   ];
 
+  // ----------last 6 month loop--------------
+  for (let i = 5; i >= 0; i--) {
+    let month = currentMonth - i;
+    let year = currentYear;
+    if (month <= 0) {
+      month = 12 + month;
+      year = currentYear - 1;
+    }
+    dropdownOptions.push({ year, month });
+  }
+  dropdownOptions.reverse();
+
   const getDailyFiiDiiData = async () => {
     try {
-      const response = await axiosInstance.get(API_ROUTER.DAILY_FII_DII_DATA, {
+      let apiUrl = `${API_ROUTER.DAILY_FII_DII_DATA}?month=${monthFromDropdown}&year=${yearFromDropdown}`;
+      const response = await axiosInstance.get(apiUrl, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
-      console.log('rrrs', response.data);
+      // console.log('rrrs', response.data);
       setData(response.data);
 
-      const uniqueMonthsSet = new Set();
-      response.data.forEach((item) => {
-        const date = item.date.substring(0, 7);
-        uniqueMonthsSet.add(date);
-      });
-
-      const uniqueMonthsArray = Array.from(uniqueMonthsSet);
-
-      setAllMonths(uniqueMonthsArray);
-      if (uniqueMonthsArray.length > 0) {
-        setSelectedMonth(uniqueMonthsArray[0]);
-      }
     } catch (error) {
       console.log('error getting fii-dii daily data:', error);
     }
   };
+
+  // -------dropdown handler--------
   const handleMonthChange = (event) => {
-    setSelectedMonth(event.target.value);
-  };
+    const selectedValue = event.target.value;
+    const [year, month] = selectedValue.split('-');
+    setMonthFromDropdown(month);
+    setYearFromDropdown(year);
+};
 
-  const filteredData = selectedMonth ? data.filter((item) => item.date.startsWith(selectedMonth)) : data;
-  let maxFiiNet = Math.max(...filteredData.map((item) => item.fii_net));
-  let maxDiiNet = Math.max(...filteredData.map((item) => item.dii_net));
+  let maxFiiNet = Math.max(...data.map((item) => item.fii_net));
+  let maxDiiNet = Math.max(...data.map((item) => item.dii_net));
 
-  let minFiiNet = Math.min(...filteredData.map((item) => item.fii_net));
-  let minDiiNet = Math.min(...filteredData.map((item) => item.dii_net));
+  let minFiiNet = Math.min(...data.map((item) => item.fii_net));
+  let minDiiNet = Math.min(...data.map((item) => item.dii_net));
 
   let startRange = 0;
   let endRange = 0;
@@ -147,8 +161,18 @@ const Page = () => {
   }
 
   useEffect(() => {
-    getDailyFiiDiiData();
-  }, []);
+    if(dropdownOptions.length >0){
+      getDailyFiiDiiData();
+    }
+  }, [monthFromDropdown, yearFromDropdown]);
+
+
+  // -------REVERSING DATA FOR DATATABLE ONLY--------
+  useEffect(() => {
+    const reversedData = [...data].reverse();
+    setReversedFilteredData(reversedData);
+  }, [data]);
+
 
   return (
     <div className="div-parent">
@@ -157,24 +181,26 @@ const Page = () => {
         <h1 className="table-title">Cash Market Activity - Long Term View</h1>
         <label>
           Select Month :
-          <select className="stock-dropdown" value={selectedMonth} onChange={handleMonthChange}>
-            {allMonths &&
-              allMonths.map((date) => {
-                const [year, month] = date.split('-');
-                const monthName = new Date(`${year}-${month}-01`).toLocaleString('en-US', { month: 'long' });
-                return (
-                  <option key={date} value={date}>
-                    {`${monthName} ${year}`}
-                  </option>
-                );
-              })}
+          <select className="stock-dropdown" onChange={handleMonthChange}>
+            {dropdownOptions.map((option, index) => {
+              const year = option.year;
+              const month = option.month;
+
+              const monthName = moment(`${year}-${month}`, 'YYYY-MM').format('MMMM');
+
+              return (
+                <option key={index} value={`${year}-${month}`}>
+                  {`${monthName} ${year}`}
+                </option>
+              );
+            })}
           </select>
         </label>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             width={500}
             height={400}
-            data={filteredData}
+            data={data}
             margin={{
               top: 5,
               right: 30,
@@ -195,7 +221,7 @@ const Page = () => {
             />
 
             {/* <YAxis yAxisId="left" /> */}
-            <YAxis domain={[startRange, endRange]} />
+            <YAxis domain={[startRange,endRange]} />
             <Tooltip
               labelFormatter={(timeStr) =>
                 new Date(timeStr).toLocaleTimeString([], {
@@ -236,7 +262,7 @@ const Page = () => {
         <div className="data-table">
           <DataTable
             columns={column}
-            data={filteredData}
+            data={reversedFilteredData}
             pagination={true}
             paginationPerPage={12}
             paginationRowsPerPageOptions={[12]}

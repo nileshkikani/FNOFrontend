@@ -14,19 +14,19 @@ import {
 
 import useFiiDiiData from '@/hooks/useFiiDiiData';
 
-const OptionDataGraph = () => {
-  const { filteredClientData } = useFiiDiiData();
+const OptionDataGraph = ({filteredByClient}) => {
+  // const { filteredClientData } = useFiiDiiData();
   const [yAxisDomain, setYAxisDomain] = useState([0, 100]);
 
   useEffect(() => {
-    const callOiValues = filteredClientData.map((item) => item.dif_index_call);
-    const putOiValues = filteredClientData.map((item) => item.dif_index_put);
+    const callOiValues = filteredByClient.map((item) => item.dif_index_call);
+    const putOiValues = filteredByClient.map((item) => item.dif_index_put);
     const allValues = callOiValues.concat(putOiValues);
     const minValue = Math.min(...allValues);
     const maxValue = Math.max(...allValues);
 
     setYAxisDomain([minValue, maxValue]);
-  }, [filteredClientData]);
+  }, [filteredByClient]);
 
   return (
     <>
@@ -36,7 +36,7 @@ const OptionDataGraph = () => {
           <ComposedChart
             width={500}
             height={400}
-            data={filteredClientData}
+            data={filteredByClient}
             margin={{
               top: 5,
               right: 30,
@@ -61,7 +61,7 @@ const OptionDataGraph = () => {
             <Legend />
             <Bar name="call oi" dataKey="dif_index_call" fill="#63D168" activeDot={{ r: 8 }} />
             <Bar name="put oi" dataKey="dif_index_put" fill="#E96767" activeDot={{ r: 8 }} />
-            <Brush dataKey="date" height={30} stroke="#0A3D62" />
+            {/* <Brush dataKey="date" height={30} stroke="#0A3D62" /> */}
           </ComposedChart>
         </ResponsiveContainer>
       </div>
