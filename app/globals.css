@@ -219,7 +219,7 @@ td {
 }
 
 .secwise-cols {
-  @apply font-Roboto tracking-wide text-base;
+  @apply font-Roboto tracking-wide text-base text-end;
 }
 
 .active-link {

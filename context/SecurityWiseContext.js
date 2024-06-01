@@ -20,7 +20,7 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_DATA':
-      return { ...state, data: action.payload };
+      return { ...state, data: [...state.data, ...action.payload] };
     case 'SET_IS_LOADING':
       return { ...state, isLoading: action.payload };
     case 'SET_UNIQUE_DATES':
@@ -39,24 +39,28 @@ export const SecurityWiseProvider = ({ children }) => {
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
   const { uniqueDates, data, isLoading } = state;
+  const [hasMore, setHasMore] = useState(true); // Whether there are more pages to load
+  const [page, setPage] = useState(1);
+  const [securityData, setSecurityData] = useState([]);
 
   // -------------------------API CALL------------------------
 
   const getData = useCallback(
-    async (selectedDate) => {
-      dispatch({ type: 'SET_IS_LOADING', payload: true });
+    async (selectedDate, page, sData) => {
+      dispatch({ type: 'SET_IS_LOADING', payload: page === 1 ? true : false });
       if (!authState && checkUserIsLoggedIn) {
         return router.push('/login');
       }
       try {
         let apiUrl = `${API_ROUTER.LIST_SECWISE_DATE}`;
         if (selectedDate) {
-          apiUrl += `?date=${selectedDate}`;
+          apiUrl += `?page=${page}&date=${selectedDate}`;
         }
         const response = await axiosInstance.get(apiUrl, {
           headers: { Authorization: `Bearer ${authState.access}` }
         });
         if (response.status === 200) {
+          console.log('response.data', response);
           const customDateComparator = (dateStr1, dateStr2) => {
             const date1 = new Date(dateStr1);
             const date2 = new Date(dateStr2);
@@ -64,22 +68,34 @@ export const SecurityWiseProvider = ({ children }) => {
           };
 
           if (selectedDate) {
-            dispatch({ type: 'SET_DATA', payload: response.data });
+            if (page === 1) {
+              dispatch({ type: 'SET_DATA', payload: response.data.results });
+            } else {
+              // const updatedData = useAppSelector((state) => state.data);
+              // console.log('updatedData', updatedData);
+              console.log('state.data', sData);
+              console.log('[...state.data, ...response.data.results]', [...state.data, ...response.data.results]);
+              dispatch({ type: 'SET_DATA', payload: response.data.results });
+            }
+            setPage(page + 1);
           } else {
             dispatch({
               type: 'SET_UNIQUE_DATES',
               payload: response.data.dates.sort(customDateComparator).reverse()
             });
           }
-
+          setHasMore(response.data.length > 0);
           dispatch({ type: 'SET_IS_LOADING', payload: false });
           // const currentPath = window.location.pathname;
           // localStorage.setItem('lastPath', currentPath);
         } else {
-          router.push('/login');
+          setHasMore(false);
+          dispatch({ type: 'SET_DATA', payload: state.data });
+          // router.push('/login');
         }
       } catch (err) {
-        handleResponceError();
+        setHasMore(false);
+        // handleResponceError();
       }
     },
     [authState]
@@ -89,16 +105,22 @@ export const SecurityWiseProvider = ({ children }) => {
   const setDropdownDate = (event) => {
     const d = event.target.value;
     setCurrentSelectedDate(d);
-    getData(d);
+    setPage(1);
+    getData(d, 1);
   };
 
   useEffect(() => {
     if (initialLoad && uniqueDates.length > 0) {
       setCurrentSelectedDate(uniqueDates[0]);
-      getData(uniqueDates[0]);
+      getData(uniqueDates[0], page);
       setInitialLoad(false);
     }
   }, [getData, initialLoad, uniqueDates]);
+
+  useEffect(() => {
+    console.log('page', page);
+    getData(currentSelectedDate, page);
+  }, [page]);
 
   const NIFTY_STOCKS = [
     'HINDUNILVR',
@@ -189,7 +211,8 @@ export const SecurityWiseProvider = ({ children }) => {
       showNiftyStocksOnly,
       // stockGraph,
       isLoading,
-      currentSelectedDate
+      currentSelectedDate,
+      hasMore
     ]
   );
 
