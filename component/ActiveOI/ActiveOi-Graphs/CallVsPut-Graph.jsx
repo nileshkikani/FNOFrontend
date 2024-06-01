@@ -2,10 +2,8 @@
 import React from 'react';
 import { XAxis, ComposedChart, Line, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-import useActiveOiData from '@/hooks/useActiveOiData';
 
-const CallVsPutGraph = () => {
-  const { checkFive, adjustedNiftyStart, adjustedNiftyEnd, filteredByDateForRange } = useActiveOiData();
+const CallVsPutGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
 
   return (
     <div style={{ width: '100%', height: '400px' }}>
@@ -14,7 +12,7 @@ const CallVsPutGraph = () => {
         <ComposedChart
           width={500}
           height={400}
-          data={filteredByDateForRange}
+          data={data}
           margin={{
             top: 5,
             right: 30,
@@ -47,7 +45,7 @@ const CallVsPutGraph = () => {
             }
           />
           <Legend />
-          {!checkFive ? (
+          {strikeAtm && strikeAtm == "15" ? (
             <>
               <Line
                 yAxisId="left"

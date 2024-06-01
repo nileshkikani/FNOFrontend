@@ -41,13 +41,13 @@ export default function RootLayout({ children }) {
             {
               <SecurityWiseProvider>
                 <FiiDiiDataProvider>
-                  <ActiveOiProvider>
+                  {/* <ActiveOiProvider> */}
                     {/* <CashflowProvider> */}
                       <MultiStrikeProvider>
                         <NiftyFutureProvider>{children}</NiftyFutureProvider>
                       </MultiStrikeProvider>
                     {/* </CashflowProvider> */}
-                  </ActiveOiProvider>
+                  {/* </ActiveOiProvider> */}
                 </FiiDiiDataProvider>
               </SecurityWiseProvider>
             }

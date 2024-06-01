@@ -13,10 +13,8 @@ import {
   ComposedChart
 } from 'recharts';
 
-import useActiveOiData from '@/hooks/useActiveOiData';
 
-const ChangeOIGraph = () => {
-  const { checkFive, adjustedNiftyStart, adjustedNiftyEnd, filteredByDateForRange } = useActiveOiData();
+const ChangeOIGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
 
   return (
     <>
@@ -26,7 +24,7 @@ const ChangeOIGraph = () => {
           <ComposedChart
             width={500}
             height={400}
-            data={filteredByDateForRange}
+            data={data}
             margin={{
               top: 20,
               right: 20,
@@ -59,7 +57,7 @@ const ChangeOIGraph = () => {
               }
             />
             <Legend />
-            {!checkFive ? (
+            {strikeAtm && strikeAtm == "15" ? (
               <>
                 <Bar yAxisId="left" name="coi difference" dataKey="call_oi_difference" fill="#E96767" />
                 <Bar yAxisId="left" name="poi difference " dataKey="put_oi_difference" fill="#63D168" />

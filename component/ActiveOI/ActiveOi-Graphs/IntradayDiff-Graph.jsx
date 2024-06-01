@@ -12,10 +12,8 @@ import {
   Brush
 } from 'recharts';
 
-import useActiveOiData from '@/hooks/useActiveOiData';
 
-const IntradayDiffGraph = () => {
-  const { checkFive, adjustedNiftyStart, adjustedNiftyEnd, filteredByDateForRange } = useActiveOiData();
+const IntradayDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
 
   return (
     <div style={{ width: '100%', height: '400px' }}>
@@ -24,7 +22,7 @@ const IntradayDiffGraph = () => {
         <ComposedChart
           width={500}
           height={400}
-          data={filteredByDateForRange}
+          data={data}
           margin={{
             top: 5,
             right: 30,
@@ -57,7 +55,7 @@ const IntradayDiffGraph = () => {
             }
           />
           <Legend />
-          {!checkFive ? (
+          {strikeAtm && strikeAtm == "15" ? (
             <>
               <Line
                 yAxisId="left"

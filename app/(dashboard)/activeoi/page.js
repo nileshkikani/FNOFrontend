@@ -26,17 +26,22 @@ const NiftyFuturesGraph = dynamic(() => import('@/component/NiftyFutures/NiftyFu
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
 export default function Page() {
-  const { getData, dateDropDownChange, uniqueDates, isLoading, dropDownChange } = useActiveOiData();
-
+  // const { getData, dateDropDownChange, uniqueDates, isLoading, dropDownChange } = useActiveOiData();
+  let adjustedNiftyStart;
+  let adjustedNiftyEnd;
   // const { getNiftyFuturesData, selectedOption } = useNiftyFutureData();
   const [selectedNiftyFutureDates, setSelectedNiftyFutureDates] = useState('');
+  const [strikeAtm, setStrikeAtm] = useState("15");
   const { handleResponceError } = useAuth();
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);
   const [niftyFuturesDate, setNiftyFuturesDates] = useState('');
+  const [activeoiDate, setActiveoiDate] = useState('');
+  const [selectedActiveoiDate, setSelectedActiveoiDate] = useState('');
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
   const [niftyFuturesData, setNiftyFuturesData] = useState('');
+  const [activeoiData, setActiveoiData] = useState('');
   const [niftyFuturesExpDates, setNiftyFuturesExpDates] = useState('');
   const [selectedNiftyFuturesExpDates, setSelectedNiftyFuturesExpDates] = useState('');
   const [niftyFuturesFilterData, setNiftyFuturesFilterData] = useState('');
@@ -45,14 +50,14 @@ export default function Page() {
 
   useEffect(() => {
     if (checkUserIsLoggedIn) {
-      getData();
+      getActiveoiData();
       // getNiftyFuturesData();
       const intervalId = setInterval(() => {
         setTimeLeft((prevTime) => prevTime - 1);
       }, 1000);
       // return () => clearInterval(intervalId);
     }
-  }, [getData, setTimeLeft]);
+  }, [setTimeLeft]);
 
   useEffect(() => {
     const now = new Date();
@@ -81,12 +86,16 @@ export default function Page() {
   const getFilteredNiftyValue = (aDate, aValue) => {
     setNiftyFuturesFilterData(aValue?.filter((aItem) => aItem.expiration == aDate));
   };
-
+  useEffect(() => {
+    if (selectedActiveoiDate) {
+      getActiveoiData();  
+    }
+  }, [selectedActiveoiDate]);
+  useEffect(() => {
+      authState && getActiveoiData();  
+  }, []);
   // ----------NIFTRY FUTURES API CALL----------------
   const getNiftyFuturesData = async () => {
-    if (!authState && checkUserIsLoggedIn) {
-      return router.push('/login');
-    }
     try {
       let apiUrl = `${API_ROUTER.NIFTY_FUTURE_DATA}`;
       const response = await axiosInstance.get(
@@ -119,12 +128,37 @@ export default function Page() {
     }
   };
 
+  const getActiveoiData = async () => {
+    let apiUrl = `${API_ROUTER.ACTIVE_OI}`;
+    try {
+      const response = await axiosInstance.get(selectedActiveoiDate ? (apiUrl += `?date=${selectedActiveoiDate}`) : apiUrl, {
+        headers: { Authorization: `Bearer ${authState.access}` }
+      });
+      if (response.status === 200) {
+        if (!activeoiDate && !selectedActiveoiDate) {
+        setActiveoiDate(response?.data?.dates)
+        setSelectedActiveoiDate(response.data.dates[0])
+        return
+        }
+        setActiveoiData(response.data)
+        const maxLiveNifty = Math.max(response.data.map((item) => item?.live_nifty));
+        const minLiveNifty = Math.min(response.data.map((item) => item?.live_nifty));
+        const range = 10;
+        adjustedNiftyStart = minLiveNifty - range;
+        adjustedNiftyEnd = maxLiveNifty + range;
+      } else {
+        router.push('/login');
+      }
+    } catch (err) {
+      handleResponceError();
+    }
+  };
   useEffect(() => {
     getNiftyFuturesData();
   }, [selectedNiftyFutureDates]);
 
   const refreshData = () => {
-    getData();
+    getActiveoiData();
     getNiftyFuturesData();
   };
 
@@ -143,17 +177,17 @@ export default function Page() {
       <div className="flex-container">
         <label>
           Strikes Above/Below ATM :
-          <select className="stock-dropdown" onChange={dropDownChange}>
+          <select className="stock-dropdown" value={strikeAtm ? strikeAtm : ''} onChange={(e)=>setStrikeAtm(e.target.value)}>
             <option value="5">5</option>
-            <option value="15" selected>
+            <option value="15">
               15
             </option>
           </select>
         </label>
         <label>
           Date :
-          <select className="stock-dropdown" onChange={dateDropDownChange}>
-            {uniqueDates.map((date) => (
+          <select className="stock-dropdown" value={selectedActiveoiDate ? selectedActiveoiDate : ''} onChange={(e)=>setSelectedActiveoiDate(e.target.value)}>
+            {activeoiDate && activeoiDate.map((date) => (
               <option key={date} value={date}>
                 {date}
               </option>
@@ -167,7 +201,7 @@ export default function Page() {
         </div>
       </div>
 
-      {isLoading ? (
+      {!selectedActiveoiDate ? (
         <div
           style={{
             display: 'flex',
@@ -176,29 +210,29 @@ export default function Page() {
             height: '80vh'
           }}
         >
-          <PropagateLoader color="#33a3e3" loading={isLoading} size={15} />
+          <PropagateLoader color="#33a3e3" loading={!selectedActiveoiDate} size={15} />
         </div>
       ) : (
         <>
           {/* ----------COI DIFFERENCE------------------- */}
           <div className="grand-div">
-            <CoiDiffGraph />
+            <CoiDiffGraph strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
           </div>
           <div className="grand-div">
-            <IntradayDiffGraph />
+            <IntradayDiffGraph strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd} />
           </div>
           {/* -------------------ACTIVE OI SECTION------------------ */}
           <>
             <div className="active-oi-table">
-              <ActiveOiTable />
+              <ActiveOiTable strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd} />
               <div className="grand-div">
-                <ChangeOIGraph />
+                <ChangeOIGraph strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
               </div>
               <div className="grand-div">
-                <CallVsPutGraph />
+                <CallVsPutGraph strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
               </div>
               <div className="grand-div">
-                <ScatterPlotGraph />
+                <ScatterPlotGraph strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
               </div>
             </div>
           </>

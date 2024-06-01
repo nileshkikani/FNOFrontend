@@ -18,9 +18,7 @@ const Page = () => {
 
   const [decayValue, setDecayValue] = useState();
   const [allPremiumDecayStrikes, setAllPremiumDecayStrikes] = useState([]);
-  // const [selectedPremiumDecayStrikes,setSelectedPremiumDecayStrikes] = useState([])
 
-  const selectedPremiumDecayStrikes = [];
 
   //--------PREMIUM DECAY STRIKE STATES--------
   const [strike1, setStrike1] = useState([]);
@@ -36,7 +34,6 @@ const Page = () => {
       const response = await axiosInstance.get(apiUrl, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
-      console.log('jhasvbjhvbjhsf==>', response);
       setDecayValue(response.data.data);
       setAllPremiumDecayStrikes(response.data);
     } catch (error) {
@@ -102,7 +99,6 @@ const Page = () => {
 
   useEffect(() => {
     if (strikes.length > 0) {
-      const thirdCheckboxValue = strikes[2];
       checkSelectedStrike({ target: { value: strikes[2], checked: true } }, 3);
     }
   }, [strikes]);

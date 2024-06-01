@@ -12,11 +12,9 @@ import {
   Brush
 } from 'recharts';
 
-import useActiveOiData from '@/hooks/useActiveOiData';
 
-const CoiDiffGraph = () => {
-  const { checkFive, adjustedNiftyStart, adjustedNiftyEnd, filteredByDateForRange } = useActiveOiData();
-
+const CoiDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
+ 
   return (
     <div style={{ width: '100%', height: '400px' }}>
       <h1 className="table-title">COI Difference</h1>
@@ -24,7 +22,7 @@ const CoiDiffGraph = () => {
         <ComposedChart
           width={500}
           height={400}
-          data={filteredByDateForRange}
+          data={data}
           margin={{
             top: 5,
             right: 30,
@@ -57,7 +55,7 @@ const CoiDiffGraph = () => {
             }
           />
           <Legend />
-          {!checkFive ? (
+          {strikeAtm && strikeAtm == "15" ? (
             <>
               <Line
                 yAxisId="left"

@@ -53,6 +53,7 @@ export const ActiveOiProvider = ({ children }) => {
 
   // -----------API CALL---------------------------
   const getData = useCallback(async () => {
+    return
     if (!authState && !checkUserIsLoggedIn) {
       return;
     }
@@ -62,6 +63,7 @@ export const ActiveOiProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       if (response.status === 200) {
+        console.log("rheloooo===<><<>>>>>",response)
         const uDate = Array.from(new Set(response.data.map((item) => item.created_at.split('T')[0])));
         dispatch({ type: 'SET_DATA', payload: response.data });
         dispatch({ type: 'SET_UNIQUE_DATES', payload: uDate });
@@ -82,7 +84,7 @@ export const ActiveOiProvider = ({ children }) => {
         router.push('/login');
       }
     } catch (err) {
-      handleResponceError();
+      // handleResponceError();
     }
   }, [authState]);
 

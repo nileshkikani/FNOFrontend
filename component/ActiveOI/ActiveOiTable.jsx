@@ -1,10 +1,8 @@
 import React from 'react';
 
 // ------HOOKS------
-import useActiveOiData from '@/hooks/useActiveOiData';
 
-const ActiveOiTable = () => {
-  const { filteredByDate, checkFive } = useActiveOiData();
+const ActiveOiTable = ({strikeAtm,data}) => {
 
   const getClass = (value) => {
     return value < 0 ? 'red-oi-table' : 'green-oi-table';
@@ -29,7 +27,7 @@ const ActiveOiTable = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredByDate?.map((item) => (
+            {data && data?.map((item) => (
               <tr key={item?.id}>
                 <td className="table-cell">
                   {Number(item?.live_nifty).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
@@ -37,7 +35,7 @@ const ActiveOiTable = () => {
                 <td className="table-cell">
                   {new Date(item?.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </td>
-                {!checkFive ? (
+                {strikeAtm && strikeAtm == "15" ? (
                   <>
                     <td className="table-cell">
                       {Number(item?.ce_oi).toLocaleString('en-IN', { maximumFractionDigits: 0 })}

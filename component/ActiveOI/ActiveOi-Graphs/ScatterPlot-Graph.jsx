@@ -1,10 +1,8 @@
 'use client';
 import React from 'react';
 import { Line, LineChart, XAxis, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import useActiveOiData from '@/hooks/useActiveOiData';
 
-const ScatterPlotGraph = () => {
-  const { checkFive, adjustedNiftyStart, adjustedNiftyEnd, filteredByDateForRange } = useActiveOiData();
+const ScatterPlotGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
 
   return (
     <div style={{ width: '100%', height: '400px' }}>
@@ -14,7 +12,7 @@ const ScatterPlotGraph = () => {
         <LineChart
           width={500}
           height={300}
-          data={filteredByDateForRange}
+          data={data}
           margin={{
             top: 5,
             right: 30,
@@ -47,7 +45,7 @@ const ScatterPlotGraph = () => {
             }
           />
           <Legend />
-          {!checkFive ? (
+          {strikeAtm && strikeAtm == "15" ? (
             <>
               <Line yAxisId="left" type="linear" dataKey="pcr" stroke="#545454" activeDot={{ r: 8 }} strokeWidth={2} />
             </>
