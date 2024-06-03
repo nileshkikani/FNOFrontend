@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import './global.css';
 
 //--------HOOKS---------------
-import useCashflowData from '@/hooks/useCashflowData';
+// import useCashflowData from '@/hooks/useCashflowData';
 
 //-----GRAPH COMPONENTS----------
 const MoneyFlowGraph = dynamic(() => import('@/component/MoneyFlow-Graphs/MoneyFlow-Graph'));

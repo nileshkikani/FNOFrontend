@@ -52,7 +52,7 @@ const CallVsPutGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) =>
                 type="monotone"
                 name="call oi"
                 dataKey="ce_oi"
-                stroke="#63D168"
+                stroke="#E96767"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
               />
@@ -61,7 +61,7 @@ const CallVsPutGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) =>
                 type="monotone"
                 name="put oi"
                 dataKey="pe_oi"
-                stroke="#E96767"
+                stroke="#63D168"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
               />

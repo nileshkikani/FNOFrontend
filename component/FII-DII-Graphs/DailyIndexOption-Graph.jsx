@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush } from 'recharts';
-import useFiiDiiData from '@/hooks/useFiiDiiData';
+// import useFiiDiiData from '@/hooks/useFiiDiiData';
 
 const DailyIndexOption = ({filteredByClient}) => {
   // const { filteredClientData } = useFiiDiiData();

@@ -21,7 +21,6 @@ const Page = () => {
   const [monthFromDropdown, setMonthFromDropdown] = useState(currentMonth);
   const [yearFromDropdown, setYearFromDropdown] = useState(currentYear);
 
-
   const column = [
     {
       name: <span className="table-heading-text">{'Date'}</span>,
@@ -126,7 +125,6 @@ const Page = () => {
       });
       // console.log('rrrs', response.data);
       setData(response.data);
-
     } catch (error) {
       console.log('error getting fii-dii daily data:', error);
     }
@@ -138,7 +136,7 @@ const Page = () => {
     const [year, month] = selectedValue.split('-');
     setMonthFromDropdown(month);
     setYearFromDropdown(year);
-};
+  };
 
   let maxFiiNet = Math.max(...data.map((item) => item.fii_net));
   let maxDiiNet = Math.max(...data.map((item) => item.dii_net));
@@ -161,11 +159,10 @@ const Page = () => {
   }
 
   useEffect(() => {
-    if(dropdownOptions.length >0){
+    if (dropdownOptions.length > 0) {
       getDailyFiiDiiData();
     }
   }, [monthFromDropdown, yearFromDropdown]);
-
 
   // -------REVERSING DATA FOR DATATABLE ONLY--------
   useEffect(() => {
@@ -173,26 +170,27 @@ const Page = () => {
     setReversedFilteredData(reversedData);
   }, [data]);
 
-
   return (
     <div className="div-parent">
       {/* ---------chart----------- */}
-      <div style={{ width: '100%', height: '500px' }} className="chart-div">
-        <h1 className="table-title">Cash Market Activity - Long Term View</h1>
-        <label>
-          <select className="stock-dropdown" onChange={handleMonthChange}>
-            {dropdownOptions.map((option, index) => {
-              const year = option.year;
-              const month = option.month;
-              const monthName = moment(`${year}-${month}`, 'YYYY-MM').format('MMMM');
-              return (
-                <option key={index} value={`${year}-${month}`}>
-                  {`${monthName} ${year}`}
-                </option>
-              );
-            })}
-          </select>
-        </label>
+      <div style={{ width: '100%', height: '500px' }} className="fii-dii-chart-div">
+        <div className='cash-market-dd'>
+          <h1 className="table-title">Cash Market Activity - Long Term View</h1>
+          <label>
+            <select className="stock-dropdown" onChange={handleMonthChange}>
+              {dropdownOptions.map((option, index) => {
+                const year = option.year;
+                const month = option.month;
+                const monthName = moment(`${year}-${month}`, 'YYYY-MM').format('MMMM');
+                return (
+                  <option key={index} value={`${year}-${month}`}>
+                    {`${monthName} ${year}`}
+                  </option>
+                );
+              })}
+            </select>
+          </label>
+        </div>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             width={500}
@@ -218,7 +216,7 @@ const Page = () => {
             />
 
             {/* <YAxis yAxisId="left" /> */}
-            <YAxis domain={[startRange,endRange]} />
+            <YAxis domain={[startRange, endRange]} />
             <Tooltip
               labelFormatter={(timeStr) =>
                 new Date(timeStr).toLocaleTimeString([], {
