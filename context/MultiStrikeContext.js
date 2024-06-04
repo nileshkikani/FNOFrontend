@@ -73,7 +73,8 @@ export const MultiStrikeProvider = ({ children }) => {
     strikePrice2,
     strikePrice3,
     strikePrice4,
-    strikePrice5
+    strikePrice5,
+    selectedStrikePrices
   } = state;
 
   // ----------------API CALL-----------------
@@ -107,14 +108,17 @@ export const MultiStrikeProvider = ({ children }) => {
 
   // -------storing selected strike---------
   const checkSelectedStrike = (e, identifier) => {
-    const filteredData = data?.filter((itm) => itm?.strike_price == `${e.target.value}`);
-    const { value, checked } = e.target;
+    const filteredData = data?.filter((itm) => itm?.strike_price == e.target.value);
+    const checked = e.target.checked;
+    const { value } = e.target;
     if (checked) {
-      dispatch({ type: 'ADD_SELECTED_STRIKE', payload: value });
+      if (!selectedStrikePrices.includes(+value)) {
+        dispatch({ type: 'ADD_SELECTED_STRIKE', payload: +value });
+      }
     } else {
-      dispatch({ type: 'REMOVE_SELECTED_STRIKE', payload: value });
+      dispatch({ type: 'REMOVE_SELECTED_STRIKE', payload: +value });
     }
-
+    
     switch (identifier) {
       case 1:
         // setStrikePrice1(filteredData);
@@ -154,7 +158,7 @@ export const MultiStrikeProvider = ({ children }) => {
       multiStrikeAPiCall,
       checkSelectedStrike,
       whenComponentUnmount,
-      // selectedStrikePrices,
+      selectedStrikePrices,
       strikePrice1,
       strikePrice2,
       strikePrice3,
@@ -168,7 +172,7 @@ export const MultiStrikeProvider = ({ children }) => {
       data,
       checkSelectedStrike,
       whenComponentUnmount,
-      // selectedStrikePrices,
+      selectedStrikePrices,
       strikePrice1,
       strikePrice2,
       strikePrice3,
