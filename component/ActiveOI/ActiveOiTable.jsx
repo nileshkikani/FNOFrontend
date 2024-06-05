@@ -38,31 +38,6 @@ const ActiveOiTable = ({strikeAtm,data}) => {
                 {strikeAtm && strikeAtm == "15" ? (
                   <>
                     <td className="table-cell">
-                      {Number(item?.ce_oi).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    </td>
-                    <td className="table-cell">
-                      {Number(item?.pe_oi).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    </td>
-                    <td className="table-cell">
-                      {Number(item?.net_difference).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    </td>
-                    <td className="table-cell">{item?.pcr}</td>
-                    <td className="table-cell">
-                      {Number(item?.coi_difference).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    </td>
-                    <td className={getClass(item?.intraday_difference)}>
-                      {Number(item?.intraday_difference).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    </td>
-                    <td className="table-cell">
-                      {Number(item?.call_oi_difference).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    </td>
-                    <td className="table-cell">
-                      {Number(item?.put_oi_difference).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    <td className="table-cell">
                       {Number(item?.large_ce_oi).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </td>
                     <td className="table-cell">
@@ -83,6 +58,31 @@ const ActiveOiTable = ({strikeAtm,data}) => {
                     </td>
                     <td className="table-cell">
                       {Number(item?.large_put_oi_difference).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="table-cell">
+                      {Number(item?.ce_oi).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="table-cell">
+                      {Number(item?.pe_oi).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="table-cell">
+                      {Number(item?.net_difference).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="table-cell">{item?.pcr}</td>
+                    <td className="table-cell">
+                      {Number(item?.coi_difference).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className={getClass(item?.intraday_difference)}>
+                      {Number(item?.intraday_difference).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="table-cell">
+                      {Number(item?.call_oi_difference).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="table-cell">
+                      {Number(item?.put_oi_difference).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </td>
                   </>
                 )}

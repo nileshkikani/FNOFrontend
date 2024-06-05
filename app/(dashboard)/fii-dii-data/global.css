@@ -20,8 +20,12 @@
   @apply border-slate-200 rounded-xl  border;
 }
 
-.chart-div {
+.fii-dii-chart-div {
   @apply bg-white p-10;
+}
+
+.cash-market-dd{
+  @apply flex justify-between items-center py-10;
 }
 
 .table-div {

@@ -5,7 +5,7 @@ const NiftyFuturesTable = ({selectedNiftyFuturesExpDates,setSelectedNiftyFutures
   
   return (
     <>
-      <div className="mx-10">
+      <div>
         <h1 className="table-title">NIFTY FUTURES</h1>
         <div className="expiry-created-date">
           <div className="expirydate-div">

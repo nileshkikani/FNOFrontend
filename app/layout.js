@@ -3,10 +3,10 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 
 //-------CONTEXTS------
-import { ActiveOiProvider } from '@/context/ActiveOIContext';
+// import { ActiveOiProvider } from '@/context/ActiveOIContext';
 import { NiftyFutureProvider } from '@/context/NiftyFutureContext';
-import { CashflowProvider } from '@/context/CashflowContext';
-import { FiiDiiDataProvider } from '@/context/FiiDiiDataContext';
+// import { CashflowProvider } from '@/context/CashflowContext';
+// import { FiiDiiDataProvider } from '@/context/FiiDiiDataContext';
 import { SecurityWiseProvider } from '@/context/SecurityWiseContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { MultiStrikeProvider } from '@/context/MultiStrikeContext';
@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
             {/* {middleware(router.asPath)} */}
             {
               <SecurityWiseProvider>
-                <FiiDiiDataProvider>
+                {/* <FiiDiiDataProvider> */}
                   {/* <ActiveOiProvider> */}
                     {/* <CashflowProvider> */}
                       <MultiStrikeProvider>
@@ -48,7 +48,7 @@ export default function RootLayout({ children }) {
                       </MultiStrikeProvider>
                     {/* </CashflowProvider> */}
                   {/* </ActiveOiProvider> */}
-                </FiiDiiDataProvider>
+                {/* </FiiDiiDataProvider> */}
               </SecurityWiseProvider>
             }
           </AuthProvider>

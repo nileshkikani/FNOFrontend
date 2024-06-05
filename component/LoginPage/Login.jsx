@@ -4,6 +4,7 @@ import { useAppSelector } from '@/store';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { setRememberMe } from '@/store/authSlice';
+import { setEmail } from '@/store/userSlice';
 
 const Login = () => {
   const { getData, refreshToken } = useAuth();
@@ -14,14 +15,8 @@ const Login = () => {
     e.preventDefault();
     let email = e.target.email?.value;
     let password = e.target.password?.value;
+    storeDispatch(setEmail(email))
     getData({ email, password });
-    // if(checkIsRemember){
-    //   refreshToken();
-    // }
-    // setInterval(() => {
-    //   refreshToken();
-    // }, 15000); // -------55 minute(3300000)---
-    // window.location.reload();
   };
 
   return (

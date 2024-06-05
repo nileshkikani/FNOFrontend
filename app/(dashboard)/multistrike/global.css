@@ -15,3 +15,15 @@
   .dropdown-container{
     @apply flex items-center space-x-2;
   } 
+
+  .last45mindecay-green{
+    @apply text-green-500;
+  }
+
+  .last45mindecay-red{
+    @apply text-red-400;
+  }
+
+  .decay-labels{
+    @apply flex items-center;
+  }

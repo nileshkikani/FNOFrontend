@@ -83,7 +83,7 @@ export default function Page() {
 
   return (
     <div className="div-parent">
-      <div className="chart-div">
+      <div className="fii-dii-chart-div">
         <div className="radio-button-group client-month-flex">
           <div className="radio-button-nested">
             <input

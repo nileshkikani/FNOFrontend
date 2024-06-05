@@ -41,7 +41,7 @@ const Page = () => {
     }
   };
 
-  console.log('erree', allPremiumDecayStrikes);
+  // console.log('erree', allPremiumDecayStrikes);
 
   const checkPremiumDecayStrike = (e, identifier) => {
     if (e.target.checked) {
@@ -113,13 +113,15 @@ const Page = () => {
       checkPremiumDecayStrike({ target: { value: allPremiumDecayStrikes[2].strike_price, checked: true } }, 3);
     }
   }, [allPremiumDecayStrikes]);
-  // console.log("Rr",totalDecayValues)
+  // console.log("selss",selectedStrikePrices)
+  // console.log("sskk",strikes)
   return (
     <>
       {/* -----------MULTISTRIKE SECTION--------- */}
       <div className="checkbox-container">
         {strikes.map((itm, index) => (
           <div key={index}>
+            {console.log("qw",itm,"reeerr",selectedStrikePrices)}
             <input
               type="checkbox"
               id={`strike${index}`}
@@ -127,7 +129,7 @@ const Page = () => {
               checked={selectedStrikePrices.includes(itm)}
               onChange={(e) => checkSelectedStrike(e, index + 1)}
             />
-            <label htmlFor={`strike${index}`}>{`${itm}`}</label>
+            <label htmlFor={`strike${index}`}>{itm}</label>
             <span className={`color-dot color-dot-${index}`}></span>
             <br />
           </div>
@@ -139,7 +141,7 @@ const Page = () => {
       <div className="checkbox-container">
         {allPremiumDecayStrikes?.map((itm, index) => (
           <div key={index}>
-            {console.log("bsabcbsdbds==<><><>",itm,selectedPremiumDecay)}
+            {console.log("bsabcbsdbds==<><><>",itm,"ji",selectedPremiumDecay)}
             <input
               type="checkbox"
               id={`decay${index}`}
@@ -149,6 +151,10 @@ const Page = () => {
             />
             <label htmlFor={`strike${index}`}>{itm.strike_price}</label>
             <span className={`color-dot color-dot-${index}`}></span>
+           &nbsp;&nbsp;
+            <label>call decay of last 45 minutes:<span className={itm.last_9_call_decay_sum<0?'last45mindecay-red':'last45mindecay-green'}>{itm.last_9_call_decay_sum}</span></label>
+            <label>put decay of last 45 minutes:<span className={itm.last_9_put_decay_sum<0?'last45mindecay-red':'last45mindecay-green'}>{itm.last_9_put_decay_sum}</span></label>
+           
             <br />
           </div>
         ))}

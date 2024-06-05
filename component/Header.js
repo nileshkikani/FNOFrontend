@@ -286,7 +286,7 @@ export default function Header() {
 
   let ProfileMenuItems = [
     {
-      path: '/',
+      path: '/account-details',
       title: 'Account Details',
       icon: FaGear
     },

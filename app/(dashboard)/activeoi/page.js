@@ -7,9 +7,9 @@ import { API_ROUTER } from '@/services/apiRouter';
 import './global.css';
 
 //  ===========HOOKS ===========
-import useActiveOiData from '@/hooks/useActiveOiData';
+// import useActiveOiData from '@/hooks/useActiveOiData';
 import { useAppSelector } from '@/store';
-import useNiftyFutureData from '@/hooks/useNiftyFutureData';
+// import useNiftyFutureData from '@/hooks/useNiftyFutureData';
 import NiftyFuturesTable from '@/component/NiftyFutures/NiftyFuturesTable';
 import CoiDiffGraph from '@/component/ActiveOI/ActiveOi-Graphs/CoiDiff-Graph';
 import IntradayDiffGraph from '@/component/ActiveOI/ActiveOi-Graphs/IntradayDiff-Graph';
@@ -216,23 +216,23 @@ export default function Page() {
         <>
           {/* ----------COI DIFFERENCE------------------- */}
           <div className="grand-div">
-            <CoiDiffGraph strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
+            <CoiDiffGraph strikeAtm={strikeAtm} data={[...activeoiData].reverse()} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
           </div>
           <div className="grand-div">
-            <IntradayDiffGraph strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd} />
+            <IntradayDiffGraph strikeAtm={strikeAtm} data={[...activeoiData].reverse()} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd} />
           </div>
           {/* -------------------ACTIVE OI SECTION------------------ */}
           <>
             <div className="active-oi-table">
               <ActiveOiTable strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd} />
               <div className="grand-div">
-                <ChangeOIGraph strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
+                <ChangeOIGraph strikeAtm={strikeAtm} data={[...activeoiData].reverse()} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
               </div>
               <div className="grand-div">
-                <CallVsPutGraph strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
+                <CallVsPutGraph strikeAtm={strikeAtm} data={[...activeoiData].reverse()} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
               </div>
               <div className="grand-div">
-                <ScatterPlotGraph strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
+                <ScatterPlotGraph strikeAtm={strikeAtm} data={[...activeoiData].reverse()} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
               </div>
             </div>
           </>
@@ -256,14 +256,14 @@ export default function Page() {
                     selectedNiftyFuturesExpDates={selectedNiftyFuturesExpDates}
                     setSelectedNiftyFuturesExpDates={setSelectedNiftyFuturesExpDates}
                     niftyFuturesExpDates={niftyFuturesExpDates}
-                    niftyFuturesFilterData={niftyFuturesFilterData}
+                    niftyFuturesFilterData={[...niftyFuturesFilterData].reverse()}
                     niftyFuturesDate={niftyFuturesDate}
                     setSelectedNiftyFutureDates={setSelectedNiftyFutureDates}
                     selectedNiftyFutureDates={selectedNiftyFutureDates}
                   />
                 </div>
                 <div className="grand-div">
-                  <NiftyFuturesGraph niftyFuturesFilterData={niftyFuturesFilterData} />
+                  <NiftyFuturesGraph niftyFuturesFilterData={[...niftyFuturesFilterData].reverse()} />
                 </div>
               </>
             )}
