@@ -30,8 +30,9 @@ const Page = () => {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       setResponseData(response.data);
-      const cData = processData(response.data);
-      const last30Days = response.data;
+      console.log('response.data', response.data);
+      const cData = processData(response?.data?.results);
+      const last30Days = response?.data?.results;
       const monthlyData = await Promise.all(
         last30Days.map(async (item, index) => {
           const tradedVolume = item.total_traded_quantity;
@@ -241,7 +242,7 @@ const Page = () => {
   ];
 
   const processData = (data) => {
-    const last30Days = data.slice(0, 30);
+    const last30Days = data;
     const sortedData = last30Days.sort((a, b) => new Date(a.date) - new Date(b.date));
     const dates = sortedData.map((item) => moment(item.date).format('DD-MMM'));
     const tradedVolume = sortedData.map((item) => item.total_traded_quantity);

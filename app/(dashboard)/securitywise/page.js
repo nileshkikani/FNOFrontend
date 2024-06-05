@@ -6,68 +6,128 @@ import dynamic from 'next/dynamic';
 import DataTable from 'react-data-table-component';
 import '../securitywise/global.css';
 import DeliveryChart from '@/component/SecurityWise/DeliveryChart';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 //  ===========LOADING ANIMATION ===========
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
 export default function Page() {
-  const { setDropdownDate, data, uniqueDates, getData, showNiftyStocksOnly, isLoading, currentSelectedDate, hasMore } =
-    useSecurityWiseData();
+  const {
+    setDropdownDate,
+    data,
+    // page,
+    uniqueDates,
+    getData,
+    showNiftyStocksOnly,
+    isLoading,
+    currentSelectedDate,
+    hasMore,
+    // isShowNifty,
+    refreshData,
+    setCurrentSelectedDate
+  } = useSecurityWiseData();
   const route = useRouter();
   const [isFilterData, setIsFilterData] = useState(false);
+  const [changeDate, setChangeDate] = useState(false);
   const [securityData, setSecurityData] = useState([]);
   const [sData, setSData] = useState([]);
+  let [page, setPage] = useState(1);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [isShowNifty, setIsShowNifty] = useState(false);
+  const [isMoreData, setIsMoreData] = useState(true);
+  const [isMore, setIsMore] = useState(true);
+
+  // const [currentSelectedDate, setCurrentSelectedDate] = useState('');
+
+  const pathname = usePathname();
+  let routeName = pathname.match('securitywise') ? 'securitywise' : null;
   // Current page index
 
   const loader = useRef(null);
 
   useEffect(() => {
+    console.log('hello security');
     getData();
   }, []);
 
   useEffect(() => {
     console.log('data.map', data);
+    routeName = pathname.match('securitywise') ? 'securitywise' : null;
     setData(data);
+    if (data?.length > 0) {
+      setIsMoreData(true);
+      setIsMore(!isMore);
+    }
     setSData(data);
   }, [data]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading) {
-          setPage((prevPage) => prevPage + 1);
-          console.log('sData', sData);
-          getData(currentSelectedDate, page + 1, sData);
-        }
-      },
-      { threshold: 0.5 }
-    );
+    console.log('currentSelectedDate', isMoreData);
 
-    if (loader.current) {
-      observer.observe(loader.current);
-    }
+    console.log('routeName', routeName);
+    getSecurityData();
+  }, [selectedDate, pathname]);
 
-    return () => {
-      if (loader.current) {
-        observer.unobserve(loader.current);
+  useEffect(() => {
+    console.log('currentSelectedDate', selectedDate);
+    if (uniqueDates.length > 0) {
+      if (!changeDate) {
+        setSelectedDate(uniqueDates[0]);
       }
-    };
-  }, [loader.current, hasMore, isLoading]);
+    }
+  }, [uniqueDates, selectedDate]);
+
+  useEffect(() => {
+    console.log('Data updated', data);
+    console.log('Data Length:', data?.length);
+    console.log('Has More Data:', isMoreData);
+  }, [data, isMoreData]);
+
+  const getSecurityData = (pageNo, isNifty) => {
+    console.log('selectedDate', isMoreData);
+    const pageNum = pageNo ? pageNo : page;
+    const isNiftyData = isNifty ? isNifty : isShowNifty ? 1 : 0;
+    if (routeName && selectedDate) {
+      console.log('routername', routeName);
+      if (page !== 1 && !isMoreData) {
+        console.log('isMoreData', isMoreData);
+        return;
+      } else {
+        console.log('page else', pageNum);
+        getData(selectedDate, pageNum, isNiftyData).then(() => {
+          setPage(pageNum + 1);
+        });
+      }
+    } else {
+      setPage(1);
+      refreshData();
+    }
+  };
+
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       if (entries[0].isIntersecting && !isLoading && hasMore) {
+  //         console.log('Bottom reached, loading more data.');
+  //         getData(currentSelectedDate, page + 1, isShowNifty);
+  //       }
+  //     },
+  //     { threshold: 0.1 } // Trigger when 10% of 'loader' is visible
+  //   );
+  // }, [hasMore, page, getData]);
 
   const setData = async (data) => {
     const dataArray = await Promise.all(
       data.map(async (item, index) => {
-        const tradedVolume = item.total_traded_quantity;
-        const deliveryVolume = item.deliverable_qty;
-        const priceChange = ((item.close_price - item.prev_close) / item.prev_close) * 100;
-        const avgTradedVolume = item.average_traded_quantity;
-        const avgDeliveryVolume = item.average_delivery_quantity;
-        const deliveryPercent = (deliveryVolume / tradedVolume) * 100;
-        const avgDeliveryPercent = (avgDeliveryVolume / avgTradedVolume) * 100;
+        const key = 'id' + Math.random().toString(16).slice(2);
+        const insight = await getInsight(
+          (item.deliverable_qty / item.total_traded_quantity) * 100,
+          (item.average_delivery_quantity / item.average_traded_quantity) * 100,
+          ((item.close_price - item.prev_close) / item.prev_close) * 100
+        );
 
-        const insight = await getInsight(deliveryPercent, avgDeliveryPercent, priceChange);
-        return { ...item, priceChange: priceChange.toFixed(2), insight };
+        return { ...item, insight, uniqueKey: key };
       })
     );
     const dataset = (await Promise.resolve(dataArray)).sort((a, b) => b.times_delivery - a.times_delivery);
@@ -75,6 +135,7 @@ export default function Page() {
 
     setSecurityData(dataset);
     setIsFilterData(true);
+    setChangeDate(false);
   };
 
   async function getInsight(deliveryPercent, avgDeliveryPercent, priceChange) {
@@ -173,20 +234,25 @@ export default function Page() {
   const column = [
     {
       name: <span className="table-heading-text">Symbol</span>,
-      selector: (row) => row.symbol,
-      cell: (row) => (
-        <span onClick={() => routerRedirect(row?.symbol)} className="link">
+      selector: (row, index) => row.symbol,
+      cell: (row, index) => (
+        <span onClick={() => routerRedirect(row?.symbol)} index={index} className="link">
           {row?.symbol}
         </span>
       ),
-      format: (row) => <span className="secwise-cols">{+row.symbol}</span>
-      // sortable: true
+      format: (row, index) => (
+        <span index={index} className="secwise-cols">
+          {+row.symbol}
+        </span>
+      ),
+      sortable: true,
+      grow: 2
     },
     {
       name: <span className="table-heading-text">{'Delivered Qty'}</span>,
-      selector: (row) => +row.times_delivery,
-      format: (row) => (
-        <span className="secwise-cols">
+      selector: (row, index) => +row.times_delivery,
+      format: (row, index) => (
+        <span index={index} className="secwise-cols">
           {(+row.deliverable_qty).toLocaleString('en-IN')} <br /> <span className="green">{row.times_delivery}x</span>
         </span>
       ),
@@ -194,15 +260,19 @@ export default function Page() {
     },
     {
       name: <span className="table-heading-text">{'Avg Delivered Qty'}</span>,
-      selector: (row) => +row.average_delivery_quantity,
-      format: (row) => <span className="secwise-cols">{(+row.average_delivery_quantity).toLocaleString('en-IN')}</span>,
+      selector: (row, index) => +row.average_delivery_quantity,
+      format: (row, index) => (
+        <span index={index} className="secwise-cols">
+          {(+row.average_delivery_quantity).toLocaleString('en-IN')}
+        </span>
+      ),
       sortable: true
     },
     {
       name: <span className="table-heading-text">{'Traded Qty'}</span>,
-      selector: (row) => +row.times_traded,
-      format: (row) => (
-        <span>
+      selector: (row, index) => +row.times_traded,
+      format: (row, index) => (
+        <span index={index}>
           <span className="secwise-cols">{(+row.total_traded_quantity).toLocaleString('en-IN')}</span> <br />
           <span className="green">{row.times_traded}x</span>
         </span>
@@ -212,9 +282,9 @@ export default function Page() {
     },
     {
       name: <span className="table-heading-text">{'Avg Traded Qty'}</span>,
-      selector: (row) => +row.average_traded_quantity,
-      format: (row) => (
-        <div className="traded-div">
+      selector: (row, index) => +row.average_traded_quantity,
+      format: (row, index) => (
+        <div index={index} className="traded-div">
           <span className="secwise-cols">{(+row.average_traded_quantity).toLocaleString('en-IN')}</span>
         </div>
       ),
@@ -222,11 +292,11 @@ export default function Page() {
     },
     {
       name: <span className="table-heading-text">{'Last Price'}</span>,
-      selector: (row) => +row.last_price,
-      format: (row) => {
+      selector: (row, index) => +row.last_price,
+      format: (row, index) => {
         const value = ((row?.last_price - row?.prev_close) / row?.prev_close) * 100;
         return (
-          <div className="column-div">
+          <div index={index} className="column-div">
             <span className="secwise-cols">{(+row.last_price).toLocaleString('en-IN')}</span>
             <div className="row-div">
               <div className={value > 0 ? 'triangle-green-div' : 'triangle-red-div'} />
@@ -241,14 +311,13 @@ export default function Page() {
     },
     {
       name: <span className="table-heading-text">{'Insight (Vs Weekly Avg)'}</span>,
-      selector: (row) =>
+      selector: (row, index) =>
         +((row?.deliverable_qty / row?.total_traded_quantity) * 100) >
         (row?.average_delivery_quantity / row?.average_traded_quantity) * 100,
-      format: (row) => {
-        // const difference = row?.last_price - row?.prev_close;
+      format: (row, index) => {
         const insight = row?.insight;
         return (
-          <div className="insight-div">
+          <div index={index} className="insight-div">
             <span style={{ color: insight?.color }} className="insight-text">
               {insight && insight?.value?.length > 16 ? (
                 <span>
@@ -267,15 +336,12 @@ export default function Page() {
     },
     {
       name: <span className="table-heading-text">{'% Dly Qt to Traded Qty'}</span>,
-      selector: (row) => +row.dly_qt_to_traded_qty,
-      format: (row) => {
-        // const
-        return (
-          <div className="delivery-div">
-            <span className="secwise-cols">{(+row.dly_qt_to_traded_qty).toLocaleString('en-IN')}</span>
-          </div>
-        );
-      },
+      selector: (row, index) => +row.dly_qt_to_traded_qty,
+      format: (row, index) => (
+        <div index={index} className="delivery-div">
+          <span className="secwise-cols">{(+row.dly_qt_to_traded_qty).toLocaleString('en-IN')}</span>
+        </div>
+      ),
       sortable: true
     }
   ];
@@ -295,7 +361,20 @@ export default function Page() {
           <div className="half-width">
             <label>
               {/* Date */}
-              <select className="date-picker-modal" onChange={setDropdownDate} value={currentSelectedDate}>
+              <select
+                className="date-picker-modal"
+                onChange={async (event) => {
+                  const selectedDate = event.target.value;
+                  console.log('selectedDate', selectedDate);
+                  setPage(1);
+                  setChangeDate(true);
+                  await refreshData();
+                  setSelectedDate(selectedDate);
+                  // setCurrentSelectedDate(selectedDate);
+                  getSecurityData();
+                }}
+                value={selectedDate}
+              >
                 {uniqueDates?.map((itm, index) => (
                   <option key={index} value={itm}>
                     {itm}
@@ -303,20 +382,78 @@ export default function Page() {
                 ))}
               </select>
             </label>
+            {/* <input
+              value={''}
+              placeholder="Enter Stock Symbol"
+              //  onChange={(event) => filterByStockAndDate(event)}
+            /> */}
           </div>
           <div className="half-last-width">
             <label>
               <input
                 type="checkbox"
                 className='className="checkbox-label"'
-                onChange={(event) => showNiftyStocksOnly(event.target.checked)}
+                onChange={async (event) => {
+                  console.log('!isShowNifty', !isShowNifty);
+                  setIsShowNifty(!isShowNifty);
+                  setPage(1); // set page to 1
+                  await refreshData();
+                  setTimeout(() => {
+                    console.log('page no', page);
+                    getSecurityData(1, !isShowNifty ? 1 : 0);
+                  }, 1000);
+                }}
               />
               <span className="checkbox-text">NIFTY STOCKS</span>
             </label>
           </div>
         </div>
 
-        <div className="scrolling-table">
+        <div className="scrolling-tableData">
+          <InfiniteScroll
+            dataLength={data?.length}
+            next={() => {
+              console.log('Next page', page);
+              if (isMoreData) {
+                // setPage((prev) => prev + 1);
+                getSecurityData();
+              }
+            }}
+            hasMore={isMoreData}
+            height={1000}
+            scrollableTarget="scrollableDiv"
+          >
+            <DataTable
+              columns={column}
+              data={securityData}
+              noDataComponent={
+                <div ref={loader} style={{ height: '100px', margin: '10px 0' }}>
+                  {isLoading && <PropagateLoader color="#33a3e3" loading={true} size={15} />}
+                </div>
+              }
+              className="sticky-header"
+              keyField="uniqueKey"
+            />
+          </InfiniteScroll>
+        </div>
+
+        {/* <div className="scrolling-table"> */}
+        {/* <InfiniteScroll
+          dataLength={data?.length}
+          next={() => {
+            console.log('Next page', page);
+            if (isMoreData) {
+              console.log('if (isMoreData)', isMoreData);
+              setPage((prev) => prev + 1);
+              getSecurityData();
+            }
+          }}
+          hasMore={isMoreData}
+          // height={`calc(100vh - ${loader.current?.offsetHeight}px)`}
+          height={1000}
+          scrollableTarget="scrollableDiv"
+          pullDownToRefreshThreshold={100}
+        >
           <DataTable
             columns={column}
             data={securityData}
@@ -325,9 +462,12 @@ export default function Page() {
                 {isLoading && <PropagateLoader color="#33a3e3" loading={true} size={15} />}
               </div>
             }
-            fixedHeader={{ top: true }}
+            persistTableHead
+            keyField="uniqueKey"
+            fixedHeader={false}
           />
-        </div>
+        </InfiniteScroll> */}
+        {/* </div> */}
       </div>
     </div>
   );
