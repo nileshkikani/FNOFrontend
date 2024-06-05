@@ -251,7 +251,7 @@ export default function Page() {
               </div>
             ) : (
               <>
-                <div className="main-div">
+                <div>
                   <NiftyFuturesTable
                     selectedNiftyFuturesExpDates={selectedNiftyFuturesExpDates}
                     setSelectedNiftyFuturesExpDates={setSelectedNiftyFuturesExpDates}

@@ -118,16 +118,17 @@ const Page = () => {
   return (
     <>
       {/* -----------MULTISTRIKE SECTION--------- */}
-      <div className="checkbox-container">
+      <div className="checkbox-container-mulistrike">
         {strikes.map((itm, index) => (
-          <div key={index}>
-            {console.log("qw",itm,"reeerr",selectedStrikePrices)}
+          <div key={index} className='checkbox-div-multistrike'>
+            {/* {console.log("qw",itm,"reeerr",selectedStrikePrices)} */}
             <input
               type="checkbox"
               id={`strike${index}`}
               value={itm}
               checked={selectedStrikePrices.includes(itm)}
               onChange={(e) => checkSelectedStrike(e, index + 1)}
+              className='checkboxes-itself'
             />
             <label htmlFor={`strike${index}`}>{itm}</label>
             <span className={`color-dot color-dot-${index}`}></span>
@@ -140,14 +141,15 @@ const Page = () => {
       {/* -----------PREMIUM DECAY SECTION--------- */}
       <div className="checkbox-container">
         {allPremiumDecayStrikes?.map((itm, index) => (
-          <div key={index}>
-            {console.log("bsabcbsdbds==<><><>",itm,"ji",selectedPremiumDecay)}
+          <div key={index} >
+            {/* {console.log("bsabcbsdbds==<><><>",itm,"ji",selectedPremiumDecay)} */}
             <input
               type="checkbox"
               id={`decay${index}`}
               value={itm.strike_price}
               checked={selectedPremiumDecay.includes(itm.strike_price)}
               onChange={(e) => checkPremiumDecayStrike(e, index + 1)}
+              className='checkboxes-itself' 
             />
             <label htmlFor={`strike${index}`}>{itm.strike_price}</label>
             <span className={`color-dot color-dot-${index}`}></span>
