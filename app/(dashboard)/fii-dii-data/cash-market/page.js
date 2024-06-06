@@ -234,7 +234,7 @@ const Page = () => {
               name="FII"
               // type="monotone"
               dataKey="fii_net"
-              fill="#6c6290"
+              fill="#33a3e3"
               activeDot={{ r: 8 }}
               strokeWidth={2}
             />
@@ -243,7 +243,8 @@ const Page = () => {
               name="DII"
               // type="linear"
               dataKey="dii_net"
-              fill="#33a3e3"
+              fill="#6c6290"
+             
               strokeWidth={2}
               dot={false}
             />

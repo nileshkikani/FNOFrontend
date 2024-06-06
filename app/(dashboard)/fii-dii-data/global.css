@@ -13,7 +13,7 @@
 }
 
 .div-parent {
-  @apply px-80 bg-[#F4F4F4];
+  @apply bg-[#F4F4F4];
 }
 
 .data-table {

@@ -61,7 +61,7 @@ const CoiDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
                 yAxisId="left"
                 type="monotone"
                 name="call oi"
-                dataKey="coi_difference"
+                dataKey="large_coi_difference"
                 stroke="#63D168"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
@@ -73,7 +73,7 @@ const CoiDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
                 yAxisId="left"
                 name="call oi "
                 type="monotone"
-                dataKey="large_coi_difference"
+                dataKey="coi_difference"
                 stroke="#63D168"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}

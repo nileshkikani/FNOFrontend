@@ -31,15 +31,15 @@
 }
 
 .table-container1 {
-  @apply overflow-x-auto;
+  @apply overflow-x-auto relative;
 }
 
 .table1 {
-  @apply min-w-full divide-y divide-gray-200;
+  @apply min-w-full divide-y divide-gray-200 relative;
 }
 
 .table-header {
-  @apply bg-gray-50;
+  @apply bg-gray-50 sticky top-0 z-10;
 }
 
 .table-header-cell {

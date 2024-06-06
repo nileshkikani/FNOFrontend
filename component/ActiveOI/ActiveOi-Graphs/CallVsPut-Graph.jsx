@@ -51,7 +51,7 @@ const CallVsPutGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) =>
                 yAxisId="left"
                 type="monotone"
                 name="call oi"
-                dataKey="ce_oi"
+                dataKey="large_ce_oi"
                 stroke="#E96767"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
@@ -60,7 +60,7 @@ const CallVsPutGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) =>
                 yAxisId="left"
                 type="monotone"
                 name="put oi"
-                dataKey="pe_oi"
+                dataKey="large_pe_oi"
                 stroke="#63D168"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
@@ -72,7 +72,7 @@ const CallVsPutGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) =>
                 yAxisId="left"
                 name="call oi "
                 type="monotone"
-                dataKey="large_ce_oi"
+                dataKey="ce_oi"
                 stroke="#63D168"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
@@ -81,7 +81,7 @@ const CallVsPutGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) =>
                 yAxisId="left"
                 name="put oi "
                 type="monotone"
-                dataKey="large_pe_oi"
+                dataKey="pe_oi"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
                 stroke="#E96767"

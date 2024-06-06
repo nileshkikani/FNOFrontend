@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .checkbox-container {
-    @apply mb-10 p-4 border rounded-lg max-w-[700px] ;
+    @apply mb-10 p-4 border rounded-lg max-w-[1100px] ;
   }
 
   /* .checkbox-container-mulistrike{

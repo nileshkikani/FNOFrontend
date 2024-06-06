@@ -229,9 +229,9 @@ const Page = () => {
                               <td className="table-cell">{item?.volume}</td>
                               <td
                                 className={`table-cell ${
-                                  selectedColors.moneyFlowColors[index] == 'green'
+                                  selectedColors.netMoneyFlowColors[index] == 'green'
                                     ? 'text-green-500'
-                                    : selectedColors.moneyFlowColors[index] == 'red'
+                                    : selectedColors.netMoneyFlowColors[index] == 'red'
                                     ? 'text-red-500'
                                     : ''
                                 }`}

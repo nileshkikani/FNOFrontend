@@ -59,13 +59,13 @@ const ChangeOIGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => 
             <Legend />
             {strikeAtm && strikeAtm == "15" ? (
               <>
-                <Bar yAxisId="left" name="coi difference" dataKey="call_oi_difference" fill="#E96767" />
-                <Bar yAxisId="left" name="poi difference " dataKey="put_oi_difference" fill="#63D168" />
+                <Bar yAxisId="left" name="coi difference" dataKey="large_call_oi_difference" fill="#E96767" />
+                <Bar yAxisId="left" name="poi difference " dataKey="large_put_oi_difference" fill="#63D168" />
               </>
             ) : (
               <>
-                <Bar yAxisId="left" name="coi difference" dataKey="large_call_oi_difference" fill="#E96767" />
-                <Bar yAxisId="left" name="poi difference " dataKey="large_put_oi_difference" fill="#63D168" />
+                <Bar yAxisId="left" name="coi difference" dataKey="call_oi_difference" fill="#E96767" />
+                <Bar yAxisId="left" name="poi difference " dataKey="put_oi_difference" fill="#63D168" />
               </>
             )}
             <Line
