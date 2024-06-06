@@ -94,3 +94,19 @@
 .traded-div {
   @apply ml-5;
 }
+.scrolling-tableData {
+  height: 100vh; /* Adjust based on your layout needs */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: white; /* Ensure the header is not transparent */
+}
+
+/* Optional: Add a box shadow or border to make the header stand out */
+.sticky-header thead tr th {
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
