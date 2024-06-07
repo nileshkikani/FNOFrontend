@@ -89,12 +89,12 @@ const CoiDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
             strokeWidth={2}
             dot={false}
           />
-          <Brush
+          {/* <Brush
             dataKey="created_at"
             height={40}
             stroke="#0A3D62"
             tickFormatter={(value) => new Date(value).toISOString().split('T')[0]}
-          />
+          /> */}
         </ComposedChart>
       </ResponsiveContainer>
     </div>
