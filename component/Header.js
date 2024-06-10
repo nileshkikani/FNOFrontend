@@ -31,7 +31,9 @@ import { useAppSelector } from '@/store';
 import { useCallback } from 'react';
 import { setAuth, setRememberMe, setUserStatus, setUserStatusInitially } from '@/store/authSlice';
 import axios from 'axios';
-// import { SmartAPI } from 'smartapi-javascript';
+// import SmartAPI from 'smartapi-javascript';
+import { TOTP } from 'totp-generator';
+import { initializeWebSocket, socket } from '@/utils/socket';
 
 export default function Header() {
   const router = useRouter();
@@ -57,16 +59,27 @@ export default function Header() {
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
   const checkIsLoggedInInitially = useAppSelector((state) => state.auth.isCookie);
   const { refreshToken, checkTimer } = useAuth();
+  const [bankNiftyPrice, setBankNiftyPrice] = useState(null);
+  const [niftyPrice, setNiftyPrice] = useState(null);
+
   var http = require('http');
-  // let { SmartAPI, WebSocket, WebSocketV2 } = require('smartapi-javascript');
+
+  // const { authenticator } = require('otplib');
+  const { createDigest, keyDecoder, keyEncoder, authenticator } = require('@otplib/preset-default');
+  let { SmartAPI, WebSocket, WebSocketClient } = require('smartapi-javascript');
   // const SmartAPI = require('smartapi-javascript');
 
-  // const smart_api = new SmartAPI({
-  //   api_key: process.env.SMARTAPI_API_KEY // Replace with your API key
-  // });
+  const smart_api = new SmartAPI({
+    api_key: 'mFDgvhuI' // Replace with your API key
+  });
+
+  useEffect(() => {
+    generateToken();
+  }, []);
 
   useEffect(() => {
     // Check authentication status when component mounts
+
     setInterval(() => {
       getAdvanceDecline();
     }, 1000 * 60);
@@ -90,7 +103,6 @@ export default function Header() {
   useEffect(() => {
     closeProfilePopover();
     getAdvanceDecline();
-    // getAccessToken();
   }, [isRefresh, pathname]);
 
   useEffect(() => {
@@ -117,46 +129,28 @@ export default function Header() {
   }, [popoverShow, profilePopoverShow]);
 
   async function generateToken() {
-    try {
-      const response = await smart_api.generateSession(
-        process.env.SMARTAPI_CLIENT_CODE,
-        process.env.SMARTAPI_PASSWORD,
-        process.env.SMARTAPI_TOTP
-      );
-      const jwtToken = response.data.access_token;
-      console.log('JWT Token:', jwtToken);
-      return jwtToken;
-    } catch (error) {
-      console.error('Error generating JWT token:', error);
+    const response = await getAccessToken();
+    console.log('RESPONSE---', response);
+    if (response.status === 200) {
+      const data = response?.data?.data;
+      connectWebSocket(data);
     }
   }
 
   async function getAccessToken() {
     const url = 'https://apiconnect.angelbroking.com/rest/auth/angelbroking/user/v1/loginByPassword';
-    const payload = {
-      clientcode: 'HEEB1141',
-      password: '8567',
-      totp: 'ZWXAUZOUP6KTEUH3DYPJD5QI34'
-    };
-    const headers = {
-      'Content-Type': 'application/json',
-      'X-ClientLocalIP': '192.168.0.62', // Optional
-      'X-ClientPublicIP': '103.250.188.226', // Optional
-      'X-MACAddress': '5c:1b:f4:97:1c:4c', // Optional
-      Accept: 'application/json',
-      'X-PrivateKey': '7kOkUQK3',
-      'X-UserType': 'USER',
-      'X-SourceID': 'WEB'
-      // 'Access-Control-Allow-Origin': '*',
-      // 'Access-Control-Allow-Credentials': 'true',
-      // 'Access-Control-Max-Age': '1800',
-      // 'Access-Control-Allow-Headers': 'content-type',
-      // 'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, PATCH, OPTIONS'
+    const TOTP_SECRET_KEY = 'UKZUNOZS3WMKU33LJHSF3ZOZR4';
+
+    const token = await TOTP.generate(TOTP_SECRET_KEY, { algorithm: 'SHA-1' });
+    const data = {
+      clientcode: 'METD1460',
+      password: '3636',
+      totp: token.otp
     };
 
     var config = {
       method: 'post',
-      url: 'https://apiconnect.angelbroking.com/rest/auth/angelbroking/user/v1/loginByPassword',
+      url: url,
 
       headers: {
         'Content-Type': 'application/json',
@@ -166,19 +160,32 @@ export default function Header() {
         'X-ClientLocalIP': 'CLIENT_LOCAL_IP',
         'X-ClientPublicIP': 'CLIENT_PUBLIC_IP',
         'X-MACAddress': 'MAC_ADDRESS',
-        'X-PrivateKey': 'L5IoqK0k'
+        'X-PrivateKey': 'mFDgvhuI'
       },
-      data: JSON.stringify(payload)
+      data: data
     };
 
     try {
       const response = await axios(config);
       console.log('Access Token:', response.data.data);
-      return response.data.data;
+      return response;
     } catch (error) {
       console.error('Error obtaining access token:', error);
+      return error;
     }
   }
+
+  const connectWebSocket = async (token) => {
+    try {
+      if (!token) {
+        throw new Error('Token is required to connect WebSocket');
+      }
+
+      await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice);
+    } catch (error) {
+      console.error('Error in authentication or setting up WebSocket:', error);
+    }
+  };
 
   const getAdvanceDecline = async () => {
     try {
@@ -330,6 +337,7 @@ export default function Header() {
               </button>
             )}
           </div>
+          {/* <div className="empty-div"></div> */}
           <div className="bank-nifty-div">
             <span className="heading-text">
               <span className="advance-text">
@@ -342,14 +350,10 @@ export default function Header() {
                 {data && data?.bank_nifty_decline ? data?.bank_nifty_decline : '...'}
               </span>
             </span>
-            <span className="heading-text">
+            <span className="bank-nifty-heading-text">
               <span className="heading-text">
                 Bank Nifty:
-                {data && data?.live_bank_nifty
-                  ? Math.trunc(data?.live_bank_nifty).toLocaleString('en-IN', {
-                      maximumFractionDigits: 0
-                    })
-                  : '...'}
+                {bankNiftyPrice ? bankNiftyPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '...'}
               </span>
               <br />
               <span className="heading-text">
@@ -434,11 +438,7 @@ export default function Header() {
               <span className="heading-text">
                 NIFTY:
                 <span className="heading-text">
-                  {data && data?.live_nifty
-                    ? Math.trunc(data?.live_nifty).toLocaleString('en-IN', {
-                        maximumFractionDigits: 0
-                      })
-                    : '...'}
+                  {niftyPrice ? niftyPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '...'}
                 </span>
               </span>
               <br />

@@ -357,57 +357,59 @@ export default function Page() {
       <div style={{ display: isLoading ? 'block' : 'none' }}>{loadingAnimation}</div>
       <div style={{ display: !isLoading && !isFilterData && !securityData ? 'block' : 'none' }}>{loadingAnimation}</div>
       <div style={{ display: !isLoading && isFilterData && securityData ? 'block' : 'none' }}>
-        <div className="main-label-div">
-          <div className="half-width">
-            <label>
-              {/* Date */}
-              <select
-                className="date-picker-modal"
-                onChange={async (event) => {
-                  const selectedDate = event.target.value;
-                  console.log('selectedDate', selectedDate);
-                  setPage(1);
-                  setChangeDate(true);
-                  await refreshData();
-                  setSelectedDate(selectedDate);
-                  // setCurrentSelectedDate(selectedDate);
-                  getSecurityData();
-                }}
-                value={selectedDate}
-              >
-                {uniqueDates?.map((itm, index) => (
-                  <option key={index} value={itm}>
-                    {itm}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {/* <input
+        {securityData && securityData?.length > 0 && (
+          <div className="main-label-div">
+            <div className="half-width">
+              <label>
+                {/* Date */}
+                <select
+                  className="date-picker-modal"
+                  onChange={async (event) => {
+                    const selectedDate = event.target.value;
+                    console.log('selectedDate', selectedDate);
+                    setPage(1);
+                    setChangeDate(true);
+                    await refreshData();
+                    setSelectedDate(selectedDate);
+                    // setCurrentSelectedDate(selectedDate);
+                    getSecurityData();
+                  }}
+                  value={selectedDate}
+                >
+                  {uniqueDates?.map((itm, index) => (
+                    <option key={index} value={itm}>
+                      {itm}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {/* <input
               value={''}
               placeholder="Enter Stock Symbol"
               //  onChange={(event) => filterByStockAndDate(event)}
             /> */}
+            </div>
+            <div className="half-last-width">
+              <label>
+                <input
+                  type="checkbox"
+                  className='className="checkbox-label"'
+                  onChange={async (event) => {
+                    console.log('!isShowNifty', !isShowNifty);
+                    setIsShowNifty(!isShowNifty);
+                    setPage(1); // set page to 1
+                    await refreshData();
+                    setTimeout(() => {
+                      console.log('page no', page);
+                      getSecurityData(1, !isShowNifty ? 1 : 0);
+                    }, 1000);
+                  }}
+                />
+                <span className="checkbox-text">NIFTY STOCKS</span>
+              </label>
+            </div>
           </div>
-          <div className="half-last-width">
-            <label>
-              <input
-                type="checkbox"
-                className='className="checkbox-label"'
-                onChange={async (event) => {
-                  console.log('!isShowNifty', !isShowNifty);
-                  setIsShowNifty(!isShowNifty);
-                  setPage(1); // set page to 1
-                  await refreshData();
-                  setTimeout(() => {
-                    console.log('page no', page);
-                    getSecurityData(1, !isShowNifty ? 1 : 0);
-                  }, 1000);
-                }}
-              />
-              <span className="checkbox-text">NIFTY STOCKS</span>
-            </label>
-          </div>
-        </div>
+        )}
 
         <div className="scrolling-tableData">
           <InfiniteScroll
@@ -431,6 +433,8 @@ export default function Page() {
                   {isLoading && <PropagateLoader color="#33a3e3" loading={true} size={15} />}
                 </div>
               }
+              // fixedHeader={true}
+              // fixedHeaderScrollHeight="100vh"
               className="sticky-header"
               keyField="uniqueKey"
             />
