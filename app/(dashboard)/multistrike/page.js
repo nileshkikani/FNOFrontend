@@ -21,7 +21,6 @@ const Page = () => {
   const [selectedPremiumDecay, setSelectedPremiumDecay] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // const [decayValue, setDecayValue] = useState();
   const [allPremiumDecayStrikes, setAllPremiumDecayStrikes] = useState([]);
 
   //--------PREMIUM DECAY STRIKE STATES--------
