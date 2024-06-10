@@ -1,83 +1,10 @@
-// 'use client';
-
-// // let socket;
-// let token = '';
-
-// let { SmartAPI, WebSocketClient, WebSocket } = require('smartapi-javascript');
-
-// const initializeWebSocket = async (feedToken) => {
-//   console.log('Initializing WebSocket with token:', feedToken);
-//   token = feedToken;
-
-//   if (typeof window !== 'undefined' && token) {
-//     const webSocketUrl = 'wss://smartapisocket.angelone.in/smart-stream';
-//     const clientCode = 'METD1460';
-//     const apiKey = 'mFDgvhuI';
-
-//     // let socket = new WebSocket({
-//     //   client_code: 'METD1460', // Your client code
-//     //   feed_token: token
-//     // });
-//     let socket = new WebSocketClient({
-//       clientcode: 'METD1460', // Your client code
-//       jwttoken: token,
-//       apikey: 'mFDgvhuI'
-//     });
-
-//     console.log('COnnecting socket-----', socket);
-//     await socket
-//       .connect()
-//       .then(async () => {
-//         console.log('socket connected');
-//         // socket.runScript('nse_cm|2885', 'mw'); // SCRIPT: nse_cm|2885, mcx_fo|222900  TASK: mw|sfi|dp
-//         // socket.fetchData('ACTION_TYPE', 'FEED_TYPE'); // ACTION_TYPE: subscribe | unsubscribe FEED_TYPE: order_feed
-//         // await socket.fetchData('subscribe', 'order_feed');
-//         // setTimeout(function () {
-//         //   socket.
-//         // }, 60000);
-//       })
-//       .catch(() => {
-//         console.log('socket connection error');
-//       });
-
-//     await socket.on('tick', receiveTick);
-//     function receiveTick(data) {
-//       console.log('receiveTick:::::', data);
-//     }
-//   }
-//   const subscribeToChannels = () => {
-//     // Define the subscription messages
-//     const subscriptions = [
-//       { channel: 'live_bank_nifty' },
-//       { channel: 'bank_nifty_adr' },
-//       { channel: 'bank_nifty_decline' },
-//       { channel: 'bank_nifty_advance' },
-//       { channel: 'nifty_advance' },
-//       { channel: 'nifty_decline' },
-//       { channel: 'live_nifty' },
-//       { channel: 'nifty_adr' }
-//     ];
-
-//     // Send the subscription messages
-//     subscriptions.forEach((subscription) => {
-//       socket.send(
-//         JSON.stringify({
-//           action: 'subscribe',
-//           channel: subscription.channel
-//         })
-//       );
-//     });
-//   };
-// };
-
-// export { initializeWebSocket };
 'use client';
 
 // let socket;
 let token = '';
 let isOpen = false;
 
-let { SmartAPI, WebSocketClient } = require('smartapi-javascript');
+// let { SmartAPI, WebSocketClient } = require('smartapi-javascript');
 
 const initializeWebSocket = (feedToken, setBankNiftyPrice, setNiftyPrice) => {
   console.log('Initializing WebSocket with token:', feedToken);

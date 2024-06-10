@@ -66,12 +66,12 @@ export default function Header() {
 
   // const { authenticator } = require('otplib');
   const { createDigest, keyDecoder, keyEncoder, authenticator } = require('@otplib/preset-default');
-  let { SmartAPI, WebSocket, WebSocketClient } = require('smartapi-javascript');
+  // let { SmartAPI, WebSocket, WebSocketClient } = require('smartapi-javascript');
   // const SmartAPI = require('smartapi-javascript');
 
-  const smart_api = new SmartAPI({
-    api_key: 'mFDgvhuI' // Replace with your API key
-  });
+  // const smart_api = new SmartAPI({
+  //   api_key: 'mFDgvhuI' // Replace with your API key
+  // });
 
   useEffect(() => {
     generateToken();
