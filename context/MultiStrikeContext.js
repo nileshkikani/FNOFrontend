@@ -11,7 +11,7 @@ export const MultiStrikeContext = createContext({});
 
 const initialState = {
   data: [],
-  isLoading: true,
+  multiIsLoading: true,
   strikes: [],
   strikePrice1: [],
   strikePrice2: [],
@@ -26,7 +26,7 @@ const reducer = (state, action) => {
     case 'SET_DATA':
       return { ...state, data: action.payload };
     case 'SET_IS_LOADING':
-      return { ...state, isLoading: action.payload };
+      return { ...state, multiIsLoading: action.payload };
     case 'SET_STRIKES':
       return { ...state, strikes: action.payload };
     case 'SET_STRIKE_1':
@@ -74,7 +74,7 @@ export const MultiStrikeProvider = ({ children }) => {
     strikePrice3,
     strikePrice4,
     strikePrice5,
-    selectedStrikePrices
+    selectedStrikePrices,multiIsLoading
   } = state;
 
   // ----------------API CALL-----------------
@@ -163,7 +163,8 @@ export const MultiStrikeProvider = ({ children }) => {
       strikePrice2,
       strikePrice3,
       strikePrice4,
-      strikePrice5
+      strikePrice5,
+      multiIsLoading
     }),
     [
       state,
@@ -177,7 +178,8 @@ export const MultiStrikeProvider = ({ children }) => {
       strikePrice2,
       strikePrice3,
       strikePrice4,
-      strikePrice5
+      strikePrice5,
+      multiIsLoading
     ]
   );
 

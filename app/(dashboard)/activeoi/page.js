@@ -106,7 +106,7 @@ export default function Page() {
           headers: { Authorization: `Bearer ${authState.access}` }
         }
       );
-      console.log('ytytyt', response);
+      // console.log('ytytyt', response);
       if (response.status === 200) {
         if (!niftyFuturesDate && !selectedNiftyFutureDates) {
           setNiftyFuturesDates(response?.data?.dates);
