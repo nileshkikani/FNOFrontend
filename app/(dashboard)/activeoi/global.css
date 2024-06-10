@@ -40,7 +40,7 @@
 }
 
 .table-header {
-  @apply bg-red-500;
+  @apply bg-red-500 sticky top-0;
 }
 
 .table-cell {

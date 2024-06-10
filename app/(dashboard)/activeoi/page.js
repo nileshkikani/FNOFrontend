@@ -14,6 +14,7 @@ import NiftyFuturesTable from '@/component/NiftyFutures/NiftyFuturesTable';
 import CoiDiffGraph from '@/component/ActiveOI/ActiveOi-Graphs/CoiDiff-Graph';
 import IntradayDiffGraph from '@/component/ActiveOI/ActiveOi-Graphs/IntradayDiff-Graph';
 import useAuth from '@/hooks/useAuth';
+import MacdIndicator from '@/component/ActiveOI/ActiveOi-Graphs/MacdIndicator-Graph';
 
 // ===========GRAPH COMPONENTS ===========
 const ChangeOIGraph = dynamic(() => import('@/component/ActiveOI/ActiveOi-Graphs/ChangeOI-Graph'));
@@ -221,6 +222,9 @@ export default function Page() {
           <div className="grand-div">
             <IntradayDiffGraph strikeAtm={strikeAtm} data={[...activeoiData].reverse()} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd} />
           </div>
+          <div>
+            {/* <MacdIndicator /> */}
+          </div>
           {/* -------------------ACTIVE OI SECTION------------------ */}
           <>
             <div className="active-oi-table">
@@ -251,7 +255,7 @@ export default function Page() {
               </div>
             ) : (
               <>
-                <div className="main-div">
+                <div>
                   <NiftyFuturesTable
                     selectedNiftyFuturesExpDates={selectedNiftyFuturesExpDates}
                     setSelectedNiftyFuturesExpDates={setSelectedNiftyFuturesExpDates}

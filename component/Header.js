@@ -342,12 +342,12 @@ export default function Header() {
             <span className="heading-text">
               <span className="advance-text">
                 Advance:
-                {data && data?.bank_nifty_advance ? data?.bank_nifty_advance : '...'}
+                {data ? data?.bank_nifty_advance : '...'}
               </span>
               <br />
               <span className="decline-text">
                 <span className="heading-text">Decline:</span>
-                {data && data?.bank_nifty_decline ? data?.bank_nifty_decline : '...'}
+                {data ? data?.bank_nifty_decline : '...'}
               </span>
             </span>
             <span className="bank-nifty-heading-text">
@@ -426,12 +426,12 @@ export default function Header() {
             <span className="heading-text">
               <span className="advance-text">
                 Advance:
-                <span className="heading-text">{data && data?.nifty_advance ? data?.nifty_advance : '...'}</span>
+                <span className="heading-text">{data ? data?.nifty_advance : '...'}</span>
               </span>
               <br />
               <span className="decline-text">
                 Decline:
-                {data && data?.nifty_advance ? data?.nifty_decline : '...'}
+                {data ? data?.nifty_decline : '...'}
               </span>
             </span>
             <span className="heading-text">

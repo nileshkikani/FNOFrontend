@@ -47,7 +47,7 @@ const ScatterPlotGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) 
           <Legend />
           {strikeAtm && strikeAtm == "15" ? (
             <>
-              <Line yAxisId="left" type="linear" dataKey="pcr" stroke="#545454" activeDot={{ r: 8 }} strokeWidth={2} />
+              <Line yAxisId="left" type="linear" dataKey="large_pcr" stroke="#545454" activeDot={{ r: 8 }} strokeWidth={2} />
             </>
           ) : (
             <>
@@ -55,7 +55,7 @@ const ScatterPlotGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) 
                 name="pcr"
                 yAxisId="left"
                 type="linear"
-                dataKey="large_pcr"
+                dataKey="pcr"
                 stroke="#545454"
                 activeDot={{ r: 8 }}
                 strokeWidth={2}

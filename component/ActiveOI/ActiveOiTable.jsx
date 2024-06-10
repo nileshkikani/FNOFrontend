@@ -1,9 +1,10 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
+import axios from 'axios';
 
 // ------HOOKS------
 
 const ActiveOiTable = ({strikeAtm,data}) => {
-
+ 
   const getClass = (value) => {
     return value < 0 ? 'red-oi-table' : 'green-oi-table';
   };
@@ -15,6 +16,7 @@ const ActiveOiTable = ({strikeAtm,data}) => {
           <thead className="table-header">
             <tr>
               <th className="table-header-cell">Live Nifty</th>
+              <th className="table-header-cell">Predicted Nifty</th>
               <th className="table-header-cell">Time</th>
               <th className="table-header-cell">CE OI</th>
               <th className="table-header-cell">PE OI</th>
@@ -32,6 +34,7 @@ const ActiveOiTable = ({strikeAtm,data}) => {
                 <td className="table-cell">
                   {Number(item?.live_nifty).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                 </td>
+                <td className="table-cell">{item.predicted_nifty}</td>
                 <td className="table-cell">
                   {new Date(item?.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </td>

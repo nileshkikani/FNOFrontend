@@ -1,8 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .checkbox-container {
-    margin-bottom: 10px;
+    @apply mb-10 p-4 border rounded-lg max-w-[1100px] ;
   }
 
+  /* .checkbox-container-mulistrike{
+    @apply mb-10 p-4 border rounded-lg max-w-[150px];
+  } */
+  /* .checkbox-div-multistrike{
+    @apply flex items-center;
+  }
+  .checkbox-div{
+  @apply flex items-center;
+
+} */
   #chart {
     max-width: auto;
     margin: 35px auto;
@@ -26,4 +39,12 @@
 
   .decay-labels{
     @apply flex items-center;
+  }
+
+  .checkboxes-itself{
+    @apply border w-4 h-4 rounded-full;
+  }
+
+  .checkboxes-itself:checked {
+    @apply accent-blue-300 border rounded text-white decoration-white; 
   }
