@@ -392,11 +392,12 @@ export default function Page() {
             <div className="half-last-width">
               <label>
                 <input
+                  checked={isShowNifty}
                   type="checkbox"
                   className='className="checkbox-label"'
                   onChange={async (event) => {
                     console.log('!isShowNifty', !isShowNifty);
-                    setIsShowNifty(!isShowNifty);
+                    setIsShowNifty(event.target.checked);
                     setPage(1); // set page to 1
                     await refreshData();
                     setTimeout(() => {
