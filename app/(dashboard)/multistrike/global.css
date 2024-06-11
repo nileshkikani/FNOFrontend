@@ -48,3 +48,18 @@
   .checkboxes-itself:checked {
     @apply accent-blue-300 border rounded text-white decoration-white; 
   }
+.table-container-premium{
+  @apply w-1/2 float-left;
+}
+
+table{
+  @apply w-full border-collapse float-left;
+}
+
+td{
+  @apply border;
+}
+
+.decay-main-div{
+  @apply flex;
+}

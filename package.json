@@ -17,6 +17,7 @@
     "address": "^2.0.2",
     "apexcharts": "^3.49.1",
     "axios": "^1.6.2",
+    "babel-plugin-styled-components": "^2.1.4",
     "chart.js": "^4.4.3",
     "fs": "^0.0.2",
     "https": "^1.0.0",
@@ -37,7 +38,7 @@
     "react-table-scroll": "^0.1.0",
     "recharts": "^2.12.2",
     "redux-persist": "^6.0.0",
-    "styled-components": "^4.4.1",
+    "styled-components": "^6.1.11",
     "totp-generator": "^1.0.0",
     "websocket": "^1.0.35"
   },

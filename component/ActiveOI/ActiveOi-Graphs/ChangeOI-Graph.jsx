@@ -13,9 +13,7 @@ import {
   ComposedChart
 } from 'recharts';
 
-
-const ChangeOIGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
-
+const ChangeOIGraph = ({ strikeAtm, data, adjustedNiftyStart, adjustedNiftyEnd }) => {
   return (
     <>
       <h1 className="table-title">Change in OI</h1>
@@ -31,7 +29,7 @@ const ChangeOIGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => 
               bottom: 20,
               left: 20
             }}
-            syncId="change_oi_brush"
+            // syncId="change_oi_brush"
           >
             <CartesianGrid stroke="#E5E5E5" />
             <XAxis
@@ -57,7 +55,7 @@ const ChangeOIGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => 
               }
             />
             <Legend />
-            {strikeAtm && strikeAtm == "15" ? (
+            {strikeAtm && strikeAtm == '15' ? (
               <>
                 <Bar yAxisId="left" name="coi difference" dataKey="large_call_oi_difference" fill="#E96767" />
                 <Bar yAxisId="left" name="poi difference " dataKey="large_put_oi_difference" fill="#63D168" />
@@ -77,12 +75,12 @@ const ChangeOIGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => 
               strokeWidth={2}
               dot={false}
             />
-            <Brush
+            {/* <Brush
               dataKey="created_at"
               height={40}
               stroke="#0A3D62"
               tickFormatter={(value) => new Date(value).toISOString().split('T')[0]}
-            />
+            /> */}
           </ComposedChart>
         </ResponsiveContainer>
       </div>

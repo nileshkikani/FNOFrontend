@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import './global.css';
+import dynamic from 'next/dynamic';
 // import axios from 'axios';
 import axiosInstance from '@/utils/axios';
 import { API_ROUTER } from '@/services/apiRouter';
@@ -11,14 +12,16 @@ import MultiStrikeChart from '@/component/MultiStrikeChart/MultiStrikeChart';
 import useMultiStrikeData from '@/hooks/useMultiStrikeData';
 import PremiumDecayChart from '@/component/PremiumDecay-Graphs/PremiumDecay';
 
+const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
+
 const Page = () => {
-  const { strikes, checkSelectedStrike, multiStrikeAPiCall, selectedStrikePrices } = useMultiStrikeData();
+  const { strikes, checkSelectedStrike, multiStrikeAPiCall, selectedStrikePrices, multiIsLoading } =
+    useMultiStrikeData();
   const authState = useAppSelector((state) => state.auth.authState);
   const [selectedPremiumDecay, setSelectedPremiumDecay] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [decayValue, setDecayValue] = useState();
   const [allPremiumDecayStrikes, setAllPremiumDecayStrikes] = useState([]);
-
 
   //--------PREMIUM DECAY STRIKE STATES--------
   const [strike1, setStrike1] = useState([]);
@@ -29,13 +32,15 @@ const Page = () => {
 
   // ---------PREMIUM DECAY API CALL-----------
   const premiumDecayApiCall = async () => {
+    setIsLoading(true);
     try {
       let apiUrl = API_ROUTER.PREMIUM_DECAY;
       const response = await axiosInstance.get(apiUrl, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
-      setDecayValue(response.data.data);
+      // setDecayValue(response.data.data);
       setAllPremiumDecayStrikes(response.data);
+      setIsLoading(false);
     } catch (error) {
       console.log('error calling premium decay api', error);
     }
@@ -44,9 +49,10 @@ const Page = () => {
   // console.log('erree', allPremiumDecayStrikes);
 
   const checkPremiumDecayStrike = (e, identifier) => {
+    // console.log('event is working');
     if (e.target.checked) {
       !selectedPremiumDecay.includes(+e.target.value) &&
-      setSelectedPremiumDecay([...selectedPremiumDecay, +e.target.value]);
+        setSelectedPremiumDecay([...selectedPremiumDecay, +e.target.value]);
     } else {
       setSelectedPremiumDecay(selectedPremiumDecay.filter((aItem) => +aItem != +e.target.value));
     }
@@ -110,66 +116,208 @@ const Page = () => {
 
   useEffect(() => {
     if (allPremiumDecayStrikes.length > 0) {
-      checkPremiumDecayStrike({ target: { value: allPremiumDecayStrikes[2].strike_price, checked: true } }, 3);
+      checkPremiumDecayStrike({ target: { value: allPremiumDecayStrikes[3].strike_price, checked: true } }, 3);
     }
   }, [allPremiumDecayStrikes]);
-  // console.log("selss",selectedStrikePrices)
-  // console.log("sskk",strikes)
+
   return (
     <>
       {/* -----------MULTISTRIKE SECTION--------- */}
-      <div className="checkbox-container-mulistrike">
-        {strikes.map((itm, index) => (
-          <div key={index} className='checkbox-div-multistrike'>
-            {/* {console.log("qw",itm,"reeerr",selectedStrikePrices)} */}
-            <input
-              type="checkbox"
-              id={`strike${index}`}
-              value={itm}
-              checked={selectedStrikePrices.includes(itm)}
-              onChange={(e) => checkSelectedStrike(e, index + 1)}
-              className='checkboxes-itself'
-            />
-            <label htmlFor={`strike${index}`}>{itm}</label>
-            <span className={`color-dot color-dot-${index}`}></span>
-            <br />
-          </div>
-        ))}
-      </div>
-      {/* -------MULTISTRIKE CHART--------- */}
-      <MultiStrikeChart />
-      {/* -----------PREMIUM DECAY SECTION--------- */}
-      <div className="checkbox-container">
-        {allPremiumDecayStrikes?.map((itm, index) => (
-          <div key={index} >
-            {/* {console.log("bsabcbsdbds==<><><>",itm,"ji",selectedPremiumDecay)} */}
-            <input
-              type="checkbox"
-              id={`decay${index}`}
-              value={itm.strike_price}
-              checked={selectedPremiumDecay.includes(itm.strike_price)}
-              onChange={(e) => checkPremiumDecayStrike(e, index + 1)}
-              className='checkboxes-itself' 
-            />
-            <label htmlFor={`strike${index}`}>{itm.strike_price}</label>
-            <span className={`color-dot color-dot-${index}`}></span>
-           &nbsp;&nbsp;
-            <label>call decay of last 45 minutes:<span className={itm.last_9_call_decay_sum<0?'last45mindecay-red':'last45mindecay-green'}>{itm.last_9_call_decay_sum}</span></label>|  
-            <label> put decay of last 45 minutes:<span className={itm.last_9_put_decay_sum<0?'last45mindecay-red':'last45mindecay-green'}>{itm.last_9_put_decay_sum}</span></label>|
-            <label> total call decay:<span className={itm.total_call_decay<0?'last45mindecay-red':'last45mindecay-green'}>{itm.total_call_decay}</span></label>|
-            <label> total put decay:<span className={itm.total_put_decay<0?'last45mindecay-red':'last45mindecay-green'}>{itm.total_put_decay}</span></label> 
-            <br />
-          </div>
-        ))}
-      </div>
-
-      {/* <div className="total-decay-values">
-          <label>total call decay: {allPremiumDecayStrikes?.total_call_decay}</label>
-          <label>total put decay: {allPremiumDecayStrikes?.total_put_decay}</label>
+      {multiIsLoading ? (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: '50px'
+          }}
+        >
+          <PropagateLoader color="#33a3e3" loading={multiIsLoading} size={15} />
         </div>
-      </div> */}
-      {/* -------PREMIUM DECAY CHART----------*/}
-      <PremiumDecayChart strike1={strike1} strike2={strike2} strike3={strike3} strike4={strike4} strike5={strike5} />
+      ) : (
+        <>
+          <div className="checkbox-container-mulistrike">
+            {strikes.map((itm, index) => (
+              <div key={index} className="checkbox-div-multistrike">
+                {console.log('qw', itm, 'reeerr', selectedStrikePrices)}
+                <input
+                  type="checkbox"
+                  id={`strike${index}`}
+                  value={itm}
+                  checked={selectedStrikePrices.includes(itm)}
+                  onChange={(e) => checkSelectedStrike(e, index + 1)}
+                  className="checkboxes-itself"
+                />
+                <label htmlFor={`strike${index}`}>{itm}</label>
+                <span className={`color-dot color-dot-${index}`}></span>
+                <br />
+              </div>
+            ))}
+          </div>
+          {/* -------MULTISTRIKE CHART--------- */}
+          <MultiStrikeChart />
+          {!isLoading && 
+          <div className="decay-main-div">
+            <div className="table-container-premium">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Strikes</th>
+                    <th>Last 45 min call decay</th>
+                    <th>Last 45 min put decay</th>
+                    <th>Total call decay</th>
+                    <th>Total put decay</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allPremiumDecayStrikes?.slice(1).map((itm, index) => (
+                    <tr key={index}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          id={`decay${index}`}
+                          value={itm.strike_price}
+                          checked={selectedPremiumDecay.includes(itm.strike_price)}
+                          onChange={(e) => checkPremiumDecayStrike(e, index + 1)}
+                          className="checkboxes-itself"
+                        />
+                        <label htmlFor={`decay${index}`}>{itm.strike_price}</label>
+                        <span className={`color-dot color-dot-${index}`}></span>
+                      </td>
+                      <td>
+                        <span className={itm.last_9_call_decay_sum < 0 ? 'last45mindecay-red' : 'last45mindecay-green'}>
+                          {itm.last_9_call_decay_sum}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={itm.last_9_put_decay_sum < 0 ? 'last45mindecay-red' : 'last45mindecay-green'}>
+                          {itm.last_9_put_decay_sum}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={itm.total_call_decay < 0 ? 'last45mindecay-red' : 'last45mindecay-green'}>
+                          {itm.total_call_decay}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={itm.total_put_decay < 0 ? 'last45mindecay-red' : 'last45mindecay-green'}>
+                          {itm.total_put_decay}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                  <tr className="font-bold">
+                    <td colSpan="3">Total decay</td>
+                    <td
+                      className={` ${
+                        parseFloat(
+                          allPremiumDecayStrikes.reduce((acc, itm) => {
+                            if (!isNaN(itm.total_call_decay)) {
+                              return acc + itm.total_call_decay;
+                            } else {
+                              return acc;
+                            }
+                          }, 0)
+                        ).toFixed(2) < 0
+                          ? 'last45mindecay-red'
+                          : 'last45mindecay-green'
+                      }`}
+                    >
+                      <span>
+                        {
+                          parseFloat(
+                            allPremiumDecayStrikes.reduce((acc, itm) => {
+                              if (!isNaN(itm.total_call_decay)) {
+                                return acc + itm.total_call_decay;
+                              } else {
+                                return acc;
+                              }
+                            }, 0)
+                          )
+                            .toFixed(2)
+                            .split('.')[0]
+                        }
+                      </span>
+                      <span>.</span>
+                      <span>
+                        {
+                          parseFloat(
+                            allPremiumDecayStrikes.reduce((acc, itm) => {
+                              if (!isNaN(itm.total_call_decay)) {
+                                return acc + itm.total_call_decay;
+                              } else {
+                                return acc;
+                              }
+                            }, 0)
+                          )
+                            .toFixed(2)
+                            .split('.')[1]
+                        }
+                      </span>
+                    </td>
+                    <td
+                      className={`${
+                        parseFloat(
+                          allPremiumDecayStrikes.reduce((acc, itm) => {
+                            if (!isNaN(itm.total_put_decay)) {
+                              return acc + itm.total_put_decay;
+                            } else {
+                              return acc;
+                            }
+                          }, 0)
+                        ).toFixed(2) < 0
+                          ? 'last45mindecay-red'
+                          : 'last45mindecay-green'
+                      }`}
+                    >
+                      <span>
+                        {
+                          parseFloat(
+                            allPremiumDecayStrikes.reduce((acc, itm) => {
+                              if (!isNaN(itm.total_put_decay)) {
+                                return acc + itm.total_put_decay;
+                              } else {
+                                return acc;
+                              }
+                            }, 0)
+                          )
+                            .toFixed(2)
+                            .split('.')[0]
+                        }
+                      </span>
+                      <span>.</span>
+                      <span>
+                        {
+                          parseFloat(
+                            allPremiumDecayStrikes.reduce((acc, itm) => {
+                              if (!isNaN(itm.total_put_decay)) {
+                                return acc + itm.total_put_decay;
+                              } else {
+                                return acc;
+                              }
+                            }, 0)
+                          )
+                            .toFixed(2)
+                            .split('.')[1]
+                        }
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+}
+          {/* -------PREMIUM DECAY CHART----------*/}
+          <PremiumDecayChart
+            strike1={strike1}
+            strike2={strike2}
+            strike3={strike3}
+            strike4={strike4}
+            strike5={strike5}
+          />
+        </>
+      )}
     </>
   );
 };
