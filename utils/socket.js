@@ -7,7 +7,6 @@ let isOpen = false;
 // let { SmartAPI, WebSocketClient } = require('smartapi-javascript');
 
 const initializeWebSocket = (feedToken, setBankNiftyPrice, setNiftyPrice) => {
-  console.log('Initializing WebSocket with token:', feedToken);
   token = feedToken;
 
   if (typeof window !== 'undefined' && token) {
@@ -16,17 +15,12 @@ const initializeWebSocket = (feedToken, setBankNiftyPrice, setNiftyPrice) => {
     const apiKey = 'mFDgvhuI';
 
     let socket = new WebSocket(`${webSocketUrl}?clientCode=${clientCode}&feedToken=${token}&apiKey=${apiKey}`);
-    console.log(
-      '`${webSocketUrl}?clientCode=${clientCode}&feedToken=${token}&apiKey=${apiKey}`',
-      `${webSocketUrl}?clientCode=${clientCode}&feedToken=${token}&apiKey=${apiKey}`
-    );
 
     socket.binaryType = 'arraybuffer';
 
     socket.onopen = (event) => {
       // console.log('WebSocket connection opened', event);
-      console.log('socket---', socket.CONNECTING);
-      console.log('socket---');
+
       const param = {
         correlationID: 'METD1460',
         action: 1,
@@ -41,7 +35,7 @@ const initializeWebSocket = (feedToken, setBankNiftyPrice, setNiftyPrice) => {
           ]
         }
       };
-      console.log('param', param);
+
       socket.send(JSON.stringify(param));
       // socket.
     };
@@ -167,7 +161,7 @@ const initializeWebSocket = (feedToken, setBankNiftyPrice, setNiftyPrice) => {
     };
 
     socket.onclose = (event) => {
-      console.log('WebSocket connection closed', event);
+      console.log('WebSocket connection closed');
     };
 
     socket.onerror = (error) => {

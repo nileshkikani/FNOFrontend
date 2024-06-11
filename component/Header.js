@@ -132,7 +132,7 @@ export default function Header() {
 
   async function generateToken() {
     const response = await getAccessToken();
-    console.log('RESPONSE---', response);
+    // console.log('RESPONSE---', response);
     if (response.status === 200) {
       const data = response?.data?.data;
       connectWebSocket(data);
