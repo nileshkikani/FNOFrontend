@@ -411,9 +411,17 @@ export default function Page() {
           </div>
         )}
 
-        <div className="scrolling-tableData">
+        <div
+          className="scrolling-tableData"
+          style={{
+            position: 'relative',
+            height: '100%',
+            overflow: 'auto',
+            overflowY: 'auto'
+          }}
+        >
           <InfiniteScroll
-            dataLength={data?.length}
+            dataLength={data?.length - 1}
             next={() => {
               console.log('Next page', page);
               if (isMoreData) {
@@ -424,6 +432,7 @@ export default function Page() {
             hasMore={isMoreData}
             height={1000}
             scrollableTarget="scrollableDiv"
+            endMessage={false}
           >
             <DataTable
               columns={column}
@@ -433,13 +442,22 @@ export default function Page() {
                   {isLoading && <PropagateLoader color="#33a3e3" loading={true} size={15} />}
                 </div>
               }
-              // fixedHeader={true}
+              // fixedHeader={{ top: 0, bottom: 0 }}
               // fixedHeaderScrollHeight="100vh"
               className="sticky-header"
               keyField="uniqueKey"
             />
           </InfiniteScroll>
         </div>
+        <style jsx>{`
+          .scrolling-tableData {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+          }
+        `}</style>
 
         {/* <div className="scrolling-table"> */}
         {/* <InfiniteScroll
