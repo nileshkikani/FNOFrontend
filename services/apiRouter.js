@@ -18,5 +18,6 @@ export const API_ROUTER = {
   CASH_FLOW_ALL:`moneyflow/cash-chart/`,
   ADR: `nifty/adr/`,
   MULTI_STRIKE: `multistrike-list/`,
-  PREMIUM_DECAY:`premium-decay-list/`
+  PREMIUM_DECAY:`premium-decay-list/`,
+  CANDLE_AND_MACD:`moneyflow/buy-sell-signals/`
 };

@@ -7,25 +7,7 @@ import dynamic from 'next/dynamic';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const CandleChart = () => {
-  const [data, setData] = useState([]);
-  const authState = useAppSelector((state) => state.auth.authState);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get('moneyflow/buy-sell-signals/',{
-          headers: { Authorization: `Bearer ${authState.access}` }
-        });
-        setData(response.data);
-  
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, []);
-
+const CandleChart = ({data}) => {
   const options = {
     chart: {
       type: 'candlestick',

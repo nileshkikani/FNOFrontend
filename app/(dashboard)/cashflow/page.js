@@ -3,9 +3,6 @@ import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import './global.css';
 
-//--------HOOKS---------------
-// import useCashflowData from '@/hooks/useCashflowData';
-
 //-----GRAPH COMPONENTS----------
 const MoneyFlowGraph = dynamic(() => import('@/component/MoneyFlow-Graphs/MoneyFlow-Graph'));
 import { useAppSelector } from '@/store';
@@ -14,6 +11,9 @@ import axiosInstance from '@/utils/axios';
 import ActiveMoneyFlow from '@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
+import CandleChart from '@/component/MoneyFlow-Graphs/CandleChart-Graph';
+import MacdIndicator from '@/component/MoneyFlow-Graphs/MacdIndicator-Graph';
+import axios from 'axios';
 
 //  ===========LOADING ANIMATION ===========
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
@@ -33,6 +33,12 @@ const Page = () => {
   const [data, setData] = useState('');
   const authState = useAppSelector((state) => state.auth.authState);
   const [selectedColors, setSelectedColors] = useState('');
+
+  // buy sell states-------
+  const [buySellData, setBuySellData] = useState([]);
+  const [macdData, setMacdData] = useState([]);
+  // const [minMacdh,setMinMACDh] =useState(0);
+  // const [maxMacdh,setMaxMACDh] =useState(0);
 
   const getModifyResponce = (aValue, aItem, aResponce) => {
     for (let i = 0; i < aResponce.length; i++) {
@@ -78,7 +84,10 @@ const Page = () => {
 
         getModifyResponce(selectedColorForMoneyFlow, 'money_flow', response?.data);
         getModifyResponce(selectedColorForNetMoneyFlow, 'net_money_flow', response?.data);
-        setSelectedColors({ moneyFlowColors: selectedColorForMoneyFlow.reverse(), netMoneyFlowColors: selectedColorForNetMoneyFlow.reverse() });
+        setSelectedColors({
+          moneyFlowColors: selectedColorForMoneyFlow.reverse(),
+          netMoneyFlowColors: selectedColorForNetMoneyFlow.reverse()
+        });
         setData(response?.data);
 
         setLoading(false);
@@ -108,9 +117,41 @@ const Page = () => {
       handleResponceError();
     }
   };
+  // -----------BUY SELL CALL FOR CANDLE AND MACD--------
+  const buySellCall = async () => {
+    try {
+      let apiUrl = `${API_ROUTER.CANDLE_AND_MACD}`;
+      const response = await axiosInstance.get(selectedScript ? (apiUrl += `?symbol=${selectedScript}`) : apiUrl, {
+        headers: { Authorization: `Bearer ${authState.access}` }
+      });
+      setBuySellData(response.data);
+
+      const processedData = response.data?.map((item) => ({
+        ...item,
+        bar_value: Math.abs(item.MACDh_12_26_9),
+        fill: item.MACDh_12_26_9 < 0 ? '#E96767' : '#63D168',
+        bar_value: item.MACDh_12_26_9
+      }));
+
+      // const min = Math.min(processedData.map((item) => item.MACDh_12_26_9));
+      // const max = Math.max(processedData.map((item) => item.MACDh_12_26_9));
+      // setMinMACDh(min);
+      // setMaxMACDh(max);
+
+      setMacdData(processedData);
+    } catch (error) {
+      console.log('error calling buy seel api',error)
+    }
+  };
   useEffect(() => {
     authState && getData();
+    // buySellCall();
   }, []);
+
+    useEffect(()=>{
+      buySellCall();
+    },[selectedScript])
+
 
   useEffect(() => {
     if (selectedScript) {
@@ -133,7 +174,6 @@ const Page = () => {
   const filterByStockAndDate = (event, isDateDropdown) => {
     isDateDropdown ? setSelectedDate(event.target.value) : setSelectedScript(event.target.value);
   };
-
   return (
     <>
       <div>
@@ -190,33 +230,35 @@ const Page = () => {
           </div>
         ) : (
           <>
+            <div className="grand-div">{macdData && <MacdIndicator macdData={macdData} />}</div>
+            <div className="grand-div">{buySellData && <CandleChart data={buySellData} />}</div>
             <div>
-                <div className="table-container1">
-                  <table className="table1">
-                    <thead className="table-header">
-                      <tr>
-                        <th className="table-header-cell">Time</th>
-                        <th className="table-header-cell">Close</th>
-                        <th className="table-header-cell">Open</th>
-                        <th className="table-header-cell">High</th>
-                        <th className="table-header-cell">Low</th>
-                        <th className="table-header-cell">Average</th>
-                        <th className="table-header-cell">
-                          Volume<span className="in-thousand1">in thousand</span>
-                        </th>
-                        <th className="table-header-cell">
-                          Money Flow<span className="in-thousand1">in thousand</span>
-                        </th>
-                        <th className="table-header-cell">
-                          Net Money Flow<span className="in-thousand1">in thousand</span>
-                        </th>
-                      </tr>
-                    </thead>
-              {data && (
+              <div className="table-container1">
+                <table className="table1">
+                  <thead className="table-header">
+                    <tr>
+                      <th className="table-header-cell">Time</th>
+                      <th className="table-header-cell">Close</th>
+                      <th className="table-header-cell">Open</th>
+                      <th className="table-header-cell">High</th>
+                      <th className="table-header-cell">Low</th>
+                      <th className="table-header-cell">Average</th>
+                      <th className="table-header-cell">
+                        Volume<span className="in-thousand1">in thousand</span>
+                      </th>
+                      <th className="table-header-cell">
+                        Money Flow<span className="in-thousand1">in thousand</span>
+                      </th>
+                      <th className="table-header-cell">
+                        Net Money Flow<span className="in-thousand1">in thousand</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  {data && (
                     <tbody className="bg-white divide-y divide-gray-200">
                       {data
-                      .slice()
-                      .reverse()
+                        .slice()
+                        .reverse()
                         .map((item, index) => {
                           return (
                             <tr key={item?.id}>
@@ -253,9 +295,9 @@ const Page = () => {
                           );
                         })}
                     </tbody>
-                )}
-                  </table>
-                </div>
+                  )}
+                </table>
+              </div>
             </div>
             <div className="graph-cash-bottom">
               <MoneyFlowGraph data={data} />

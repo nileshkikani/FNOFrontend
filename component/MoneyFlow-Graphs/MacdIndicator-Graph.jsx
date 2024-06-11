@@ -1,8 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import axiosInstance from '@/utils/axios';
-import { useAppSelector } from '@/store';
-// import axios from 'axios';
+import React from 'react';
 import {
   ComposedChart,
   Line,
@@ -16,46 +13,14 @@ import {
   ResponsiveContainer
 } from 'recharts';
 
-const MacdIndicator = () => {
-  const [data, setData] = useState([]);
-  const [minMACDh, setMinMACDh] = useState(0);
-  const [maxMACDh, setMaxMACDh] = useState(0);
-  const authState = useAppSelector((state) => state.auth.authState);
-
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get('moneyflow/buy-sell-signals/',{
-          headers: { Authorization: `Bearer ${authState.access}` }
-        });
-    
-        const processedData =
-        response.data?.map((item) => ({
-          ...item,
-          bar_value: Math.abs(item.MACDh_12_26_9),
-          fill: item.MACDh_12_26_9 < 0 ? '#E96767' : '#63D168',
-          bar_value: item.MACDh_12_26_9
-        }));
-
-        const min = Math.min(processedData.map((item) => item.MACDh_12_26_9));
-        const max = Math.max(processedData.map((item) => item.MACDh_12_26_9));
-        setMinMACDh(min);
-        setMaxMACDh(max);
-        setData(processedData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, []);
+const MacdIndicator = ({macdData}) => {
 
   return (
     <div style={{ width: '100%', height: '400px' }}>
       <h1 className="table-title">MACD indicator</h1>
       <ResponsiveContainer width="100%" height="100%">
-        {data && (
-          <ComposedChart width={800} height={400} data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+        {macdData && (
+          <ComposedChart width={800} height={400} data={macdData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid stroke="#E5E5E5" />
             <XAxis
               dataKey="Date"
