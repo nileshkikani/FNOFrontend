@@ -108,7 +108,9 @@ export default function Header() {
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (popoverShow && !popoverRef.current?.contains(event.target) && !btnRef.current?.contains(event.target)) {
-        setPopoverShow(false);
+        setTimeout(() => {
+          setPopoverShow(false);
+        }, 1000);
       }
       if (
         profilePopoverShow &&
@@ -117,7 +119,7 @@ export default function Header() {
       ) {
         setTimeout(() => {
           setProfilePopoverShow(false);
-        }, 100); // Adding a delay to ensure the state updates properly
+        }, 1000); // Adding a delay to ensure the state updates properly
       }
     };
 
@@ -227,6 +229,7 @@ export default function Header() {
   };
 
   const isActive = (path) => {
+    console.log('path', path);
     checkUserIsLoggedIn && router.push(path);
   };
 
@@ -535,8 +538,10 @@ export default function Header() {
                       key={item.title}
                       className="popover-li"
                       onClick={() => {
-                        closePopover();
                         isActive(item.path);
+                        setTimeout(() => {
+                          closePopover();
+                        }, 1000);
                       }}
                     >
                       {/* <Link onClick={() => closePopover()} href={item?.path} className="popover-li"> */}
