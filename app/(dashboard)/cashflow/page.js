@@ -126,19 +126,19 @@ const Page = () => {
       });
       setBuySellData(response.data);
 
-      const processedData = response.data?.map((item) => ({
-        ...item,
-        bar_value: Math.abs(item.MACDh_12_26_9),
-        fill: item.MACDh_12_26_9 < 0 ? '#E96767' : '#63D168',
-        bar_value: item.MACDh_12_26_9
-      }));
+      // const processedData = response.data?.map((item) => ({
+      //   ...item,
+      //   bar_value: Math.abs(item.MACDh_12_26_9),
+      //   fill: item.MACDh_12_26_9 < 0 ? '#E96767' : '#63D168',
+      //   bar_value: item.MACDh_12_26_9
+      // }));
 
       // const min = Math.min(processedData.map((item) => item.MACDh_12_26_9));
       // const max = Math.max(processedData.map((item) => item.MACDh_12_26_9));
       // setMinMACDh(min);
       // setMaxMACDh(max);
 
-      setMacdData(processedData);
+      setMacdData(response.data);
     } catch (error) {
       console.log('error calling buy seel api',error)
     }
@@ -151,7 +151,7 @@ const Page = () => {
     useEffect(()=>{
       buySellCall();
     },[selectedScript])
-
+    const categories = macdData.map(data => data.Date);
 
   useEffect(() => {
     if (selectedScript) {
@@ -230,8 +230,8 @@ const Page = () => {
           </div>
         ) : (
           <>
-            <div className="grand-div">{macdData && <MacdIndicator macdData={macdData} />}</div>
-            <div className="grand-div">{buySellData && <CandleChart data={buySellData} />}</div>
+            <div className="grand-div">{macdData && <MacdIndicator macdData={macdData} categories={categories} />}</div>
+            <div className="grand-div">{buySellData && <CandleChart candleData={buySellData} categories={categories} />}</div>
             <div>
               <div className="table-container1">
                 <table className="table1">

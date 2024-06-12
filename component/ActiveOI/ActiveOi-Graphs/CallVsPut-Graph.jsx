@@ -2,9 +2,7 @@
 import React from 'react';
 import { XAxis, ComposedChart, Line, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-
-const CallVsPutGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
-
+const CallVsPutGraph = ({ strikeAtm, data, adjustedNiftyStart, adjustedNiftyEnd }) => {
   return (
     <div style={{ width: '100%', height: '400px' }}>
       <h1 className="table-title">Call vs Put OI</h1>
@@ -45,7 +43,7 @@ const CallVsPutGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) =>
             }
           />
           <Legend />
-          {strikeAtm && strikeAtm == "15" ? (
+          {strikeAtm && strikeAtm == '15' ? (
             <>
               <Line
                 yAxisId="left"

@@ -19,5 +19,5 @@ export const API_ROUTER = {
   ADR: `nifty/adr/`,
   MULTI_STRIKE: `multistrike-list/`,
   PREMIUM_DECAY:`premium-decay-list/`,
-  CANDLE_AND_MACD:`moneyflow/buy-sell-signals/`
+  CANDLE_AND_MACD:`moneyflow/macd-list/`
 };
