@@ -61,6 +61,7 @@ export default function Header() {
   const { refreshToken, checkTimer } = useAuth();
   const [bankNiftyPrice, setBankNiftyPrice] = useState(null);
   const [niftyPrice, setNiftyPrice] = useState(null);
+  const [isClosed, setIsClosed] = useState(false);
 
   var http = require('http');
 
@@ -74,8 +75,18 @@ export default function Header() {
   // });
 
   useEffect(() => {
+    // setInterval(() => {
+    //   console.log('isClosed', isClosed);
     generateToken();
-  }, [router.asPath]);
+    // }, 1000 * 60 * 5);
+  }, []);
+
+  useEffect(() => {
+    console.log('isClosed', isClosed);
+    if (isClosed) {
+      generateToken();
+    }
+  }, [!isClosed]);
 
   useEffect(() => {
     // Check authentication status when component mounts
@@ -188,7 +199,7 @@ export default function Header() {
 
     try {
       const response = await axios(config);
-      console.log('Access Token:');
+      // console.log('Access Token:', response);
       return response;
     } catch (error) {
       console.error('Error obtaining access token:');
@@ -201,8 +212,9 @@ export default function Header() {
       if (!token) {
         throw new Error('Token is required to connect WebSocket');
       }
+      console.log('feedToken', token?.feedToken);
 
-      await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice);
+      await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed);
     } catch (error) {
       console.error('Error in authentication or setting up WebSocket:', error);
     }
@@ -544,7 +556,7 @@ export default function Header() {
         <div
           className="popover-container"
           ref={popoverRef}
-          style={{ position: 'fixed', top: `${window.innerHeight * 0.2}px`, right: 0 }}
+          style={{ position: 'fixed', top: `${window.innerHeight * 0.09}px`, right: 0 }}
         >
           <div>
             <div className="popover-content">
@@ -580,7 +592,7 @@ export default function Header() {
         <div
           className="profile-popover-container"
           ref={profilePopoverRef}
-          style={{ position: 'fixed', top: `${window.innerHeight * 0.1}px`, right: 0 }}
+          style={{ position: 'fixed', top: `${window.innerHeight * 0.09}px`, right: 0 }}
         >
           <div className="popover-content">
             <ul className="popover-ul">

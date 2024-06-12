@@ -1,13 +1,11 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
 import useSecurityWiseData from '@/hooks/useSecurityWiseData';
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import DataTable from 'react-data-table-component';
-import '../securitywise/global.css';
-import DeliveryChart from '@/component/SecurityWise/DeliveryChart';
 import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import DataTable from 'react-data-table-component';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import '../securitywise/global.css';
 
 //  ===========LOADING ANIMATION ===========
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
@@ -47,8 +45,10 @@ export default function Page() {
   const loader = useRef(null);
 
   useEffect(() => {
-    console.log('hello security');
-    getData();
+    // Check if the component is mounted to avoid the warning
+    if (typeof window !== 'undefined') {
+      getData();
+    }
   }, []);
 
   useEffect(() => {

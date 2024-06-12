@@ -1,18 +1,20 @@
 'use client';
 
-const initializeWebSocket = (feedToken, setBankNiftyPrice, setNiftyPrice) => {
+const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed) => {
   if (typeof window !== 'undefined' && feedToken) {
     const webSocketUrl = 'wss://smartapisocket.angelone.in/smart-stream';
     const clientCode = 'METD1460';
     const apiKey = 'mFDgvhuI';
 
-    let socket = new WebSocket(`${webSocketUrl}?clientCode=${clientCode}&feedToken=${feedToken}&apiKey=${apiKey}`);
+    let socket = await new WebSocket(
+      `${webSocketUrl}?clientCode=${clientCode}&feedToken=${feedToken}&apiKey=${apiKey}`
+    );
 
     socket.binaryType = 'arraybuffer';
 
     socket.onopen = (event) => {
       // console.log('WebSocket connection opened', event);
-
+      setIsClosed(false);
       const param = {
         correlationID: 'METD1460',
         action: 1,
@@ -73,10 +75,11 @@ const initializeWebSocket = (feedToken, setBankNiftyPrice, setNiftyPrice) => {
 
     socket.onclose = (event) => {
       console.log('WebSocket connection closed');
+      setIsClosed(true);
     };
 
     socket.onerror = (error) => {
-      console.error('WebSocket error:');
+      console.log('WebSocket error:');
     };
   }
 };
