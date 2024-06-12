@@ -75,7 +75,7 @@ export default function Header() {
 
   useEffect(() => {
     generateToken();
-  }, []);
+  }, [router.asPath]);
 
   useEffect(() => {
     // Check authentication status when component mounts
@@ -83,6 +83,25 @@ export default function Header() {
     setInterval(() => {
       getAdvanceDecline();
     }, 1000 * 60);
+  }, []);
+
+  useEffect(() => {
+    const handleContextMenu = (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault(); // Prevent the default context menu from showing
+        const link = e.target.closest('a');
+        if (link) {
+          window.open(link.href, '_blank');
+        }
+      }
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+    };
   }, []);
 
   useEffect(() => {
@@ -169,10 +188,10 @@ export default function Header() {
 
     try {
       const response = await axios(config);
-      console.log('Access Token:', response.data.data);
+      console.log('Access Token:');
       return response;
     } catch (error) {
-      console.error('Error obtaining access token:', error);
+      console.error('Error obtaining access token:');
       return error;
     }
   }
@@ -525,7 +544,7 @@ export default function Header() {
         <div
           className="popover-container"
           ref={popoverRef}
-          style={{ position: 'fixed', top: `${window.innerHeight * 0.1}px`, right: 0 }}
+          style={{ position: 'fixed', top: `${window.innerHeight * 0.2}px`, right: 0 }}
         >
           <div>
             <div className="popover-content">
@@ -534,20 +553,21 @@ export default function Header() {
                 {MenuItems.map((item) => {
                   const FaIcon = item?.icon;
                   return (
-                    <li
+                    <Link
                       key={item.title}
                       className="popover-li"
-                      onClick={() => {
-                        isActive(item.path);
+                      href={item.path}
+                      onClick={(e) => {
+                        console.log('eeeeee---', e);
+
+                        // isActive(item.path);
                         setTimeout(() => {
                           closePopover();
-                        }, 1000);
+                        }, 2000);
                       }}
                     >
-                      {/* <Link onClick={() => closePopover()} href={item?.path} className="popover-li"> */}
                       <FaIcon size={18} color="#344054" /> {item?.title}
-                      {/* </Link> */}
-                    </li>
+                    </Link>
                   );
                 })}
               </ul>
