@@ -1,29 +1,27 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 
-const MacdIndicator = ({ macdData, categories }) => {
-  // Function to determine colors based on MACD histogram values
+const MacdIndicator = ({ macdData }) => {
+
+  const parseDate = (dateString) => {
+    return new Date(dateString).getTime();
+  };
+
   const setBarColors = (histogramData) => {
-    return histogramData.map(value => value < 0 ? '#e06666' : '#8fce00');
+    return histogramData.map(value => value < 0 ? '#ff0000' : '#008000');
   };
 
   const options = {
-    colors:['#ffc000', '#674ea7','#8fce00'],
-    dataLabels: {
-      enabled: false
-    },
+    colors:['#ffc000', '#674ea7'],
     chart:{
-      type:'bar'
-    },
-    plotOptions: {
-      bar: {
-        colors: {
-          ranges: [{
-            from: 0,
-            to: 100,
-            color: '#8fce00'
-          }]
-        },
+      // id:'macd',
+      // group: "first",
+      type:'bar',
+      height: 350,
+      events: {
+        mounted: function(chartContext, config) {
+          chartContext.config.tooltip.followCursor = true;
+        }
       }
     },
     stroke: {
@@ -56,7 +54,7 @@ const MacdIndicator = ({ macdData, categories }) => {
     ],
     tooltip: {
       x: {
-        format: 'yyyy-MM-dd HH:mm'
+        format: 'HH:mm'
       }
     },
     legend: {
@@ -64,23 +62,29 @@ const MacdIndicator = ({ macdData, categories }) => {
     }
   };
 
+  const xData = macdData.map(item => (
+    item.Date.split('T')[0] + " " + item.Date.split('T')[1].split('.')[0].slice(0, 5)
+  ));
+
   const series = [
     {
       name: 'MACD slow',
       type: 'line',
-      data: macdData.map(data => data.MACDs_12_26_9)
+      data: macdData.map(data => [parseDate(data.Date), data.MACDs_12_26_9]),
+      x: xData
     },
     {
       name: 'MACD',
       type: 'line',
-      data: macdData.map(data => data.MACD_12_26_9)
+      data: macdData.map(data => [parseDate(data.Date), data.MACD_12_26_9]),
+      x: xData
     },
     {
       name: 'MACD histogram',
       type: 'bar',
-      data: macdData.map(data => data.MACDh_12_26_9),
-      // Set colors for each bar based on MACD histogram values
-      color: setBarColors(macdData.map(data => data.MACDh_12_26_9))
+      data: macdData.map(data => [parseDate(data.Date), data.MACDh_12_26_9]),
+      color: setBarColors(macdData.map(data => data.MACDh_12_26_9)),
+      x: xData
     }
   ];
 

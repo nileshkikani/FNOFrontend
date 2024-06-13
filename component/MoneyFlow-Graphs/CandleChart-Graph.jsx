@@ -1,16 +1,27 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
+import Chart from 'react-apexcharts';
+
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const CandleChart = ({ candleData, categories }) => {
+const CandleChart = ({ candleData }) => {
+  const categories = candleData.map(item => item.Date.split('T')[0] + " " + item.Date.split('T')[1].split('.')[0].slice(0, 5));
+
   const options = {
     chart: {
+      // id:'candle',
+      group: "first",
       type: 'candlestick',
-      height: 350
+      height: 350,
+      events: {
+        mounted: function(chartContext, config) {
+          chartContext.config.tooltip.followCursor = true;
+        }
+      }
     },
     xaxis: {
       type: 'category',
-      // categories: categories,
+      categories: categories,
       labels: {
         formatter: function(val) {
           return new Date(val).toLocaleTimeString([], {
@@ -21,7 +32,18 @@ const CandleChart = ({ candleData, categories }) => {
       }
     },
     tooltip: {
-      enabled: true
+      enabled: true,
+      x: {
+        show: false
+      },
+      y: {
+        formatter: function(val) {
+          return val.toFixed(2);
+        }
+      },
+      style: {
+        fontSize: '14px'
+      }
     },
     yaxis: {}
   };
@@ -40,7 +62,7 @@ const CandleChart = ({ candleData, categories }) => {
 
   return (
     <>
-    <h1 className="table-title">Candle stick chart</h1>
+      <h1 className="table-title">Candle stick chart</h1>
       <ApexCharts options={options} series={series} type="candlestick" height={450} />
     </>
   );

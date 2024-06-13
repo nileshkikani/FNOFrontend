@@ -1,22 +1,25 @@
-'use client';
+'use client'
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import './global.css';
 
 //-----GRAPH COMPONENTS----------
-const MoneyFlowGraph = dynamic(() => import('@/component/MoneyFlow-Graphs/MoneyFlow-Graph'));
+const MoneyFlowGraph = dynamic(() => import('@/component/MoneyFlow-Graphs/MoneyFlow-Graph'),{ssr:false});
 import { useAppSelector } from '@/store';
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
-import ActiveMoneyFlow from '@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph';
+// import ActiveMoneyFlow from '@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph';
+const ActiveMoneyFlow =dynamic(()=>import('@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph'),{ssr:false})
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import CandleChart from '@/component/MoneyFlow-Graphs/CandleChart-Graph';
-import MacdIndicator from '@/component/MoneyFlow-Graphs/MacdIndicator-Graph';
-import axios from 'axios';
+// import CandleChart from '@/component/MoneyFlow-Graphs/CandleChart-Graph';
+const CandleChart = dynamic(()=>import('@/component/MoneyFlow-Graphs/CandleChart-Graph'),{ssr:false})
+// import MacdIndicator from '@/component/MoneyFlow-Graphs/MacdIndicator-Graph';
+const MacdIndicator = dynamic(()=>import('@/component/MoneyFlow-Graphs/MacdIndicator-Graph'),{ssr:false})
+// import axios from 'axios';
 
 //  ===========LOADING ANIMATION ===========
-const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
+const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'),{ssr:false});
 
 const Page = () => {
   const selectedColorForMoneyFlow = [];
@@ -230,8 +233,8 @@ const Page = () => {
           </div>
         ) : (
           <>
-            <div className="grand-div">{macdData && <MacdIndicator macdData={macdData} categories={categories} />}</div>
-            <div className="grand-div">{buySellData && <CandleChart candleData={buySellData} categories={categories} />}</div>
+            <div className="grand-div">{macdData && <MacdIndicator macdData={macdData}  />}</div>
+            <div className="grand-div">{buySellData && <CandleChart candleData={buySellData}  />}</div>
             <div>
               <div className="table-container1">
                 <table className="table1">

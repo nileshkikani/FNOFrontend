@@ -34,7 +34,7 @@ const PremiumDecayChart = ({ strike1, strike2, strike3, strike4, strike5 }) => {
   }, [strike1, strike2, strike3, strike4, strike5]);
   
 
-  console.log('yup',data)
+  // console.log('yup',data)
 
   return (
     <ResponsiveContainer width="100%" height={350}>
