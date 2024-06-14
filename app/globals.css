@@ -541,7 +541,10 @@ input[type='radio']:checked + label {
   @apply sm:flex bg-white hidden md:mx-0 lg:mx-0 p-0  text-black34 font-Roboto  tracking-wide w-[22%] sm:w-[30%] justify-end;
 }
 .bank-nifty-heading-text {
-  @apply font-normal font-Roboto lg:text-[14px] text-[14px] sm:text-[12px] p-[1px] sm:w-[55%] xl:w-[35%];
+  @apply font-normal font-Roboto lg:text-[14px] text-[14px] sm:text-[12px] p-[1px] sm:w-[55%] lg:w-[35%] xl:w-[30%];
+}
+.nifty-heading-text {
+  @apply font-normal font-Roboto lg:text-[14px] text-[14px] sm:text-[12px] p-[1px] sm:w-[55%] lg:w-[35%] xl:w-[30%];
 }
 .nifty-div {
   @apply flex bg-white md:mx-0 lg:mx-0 p-2  text-black34 font-Roboto tracking-wide w-[22%];

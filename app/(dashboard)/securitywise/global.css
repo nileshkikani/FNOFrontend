@@ -95,11 +95,14 @@
   @apply ml-5;
 }
 .scrolling-tableData {
-  height: 100vh; /* Adjust based on your layout needs */
+  height: calc(100vh - 80px); /* Adjust the height based on your layout */
   overflow-y: auto;
   overflow-x: hidden;
+  padding-bottom: 5px; /* Add padding to prevent the last row from being hidden */
 }
-.sticky-header {
+
+/* Ensure the DataTable header stays visible */
+.sticky-header thead {
   position: sticky;
   top: 0;
   z-index: 100;

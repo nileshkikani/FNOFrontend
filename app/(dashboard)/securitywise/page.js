@@ -31,10 +31,12 @@ export default function Page() {
   const [securityData, setSecurityData] = useState([]);
   const [sData, setSData] = useState([]);
   let [page, setPage] = useState(1);
+  let [perPage, setPerPage] = useState(1);
   const [selectedDate, setSelectedDate] = useState('');
   const [isShowNifty, setIsShowNifty] = useState(false);
   const [isMoreData, setIsMoreData] = useState(true);
   const [isMore, setIsMore] = useState(true);
+  const tableRef = useRef(null);
 
   // const [currentSelectedDate, setCurrentSelectedDate] = useState('');
 
@@ -58,6 +60,8 @@ export default function Page() {
     if (data?.length > 0) {
       setIsMoreData(true);
       setIsMore(!isMore);
+    } else {
+      setIsMoreData(false);
     }
     setSData(data);
   }, [data]);
@@ -104,6 +108,47 @@ export default function Page() {
       refreshData();
     }
   };
+
+  useEffect(() => {
+    const dataTable = document.querySelector('.sticky-header');
+
+    const handleScroll = () => {
+      if (dataTable) {
+        const scrollTop = dataTable.scrollTop;
+        const scrollHeight = dataTable.scrollHeight;
+        const clientHeight = dataTable.clientHeight;
+
+        const scrollBottom = Math.floor(scrollHeight - (scrollTop + clientHeight));
+
+        console.log('scrollBottom:', scrollBottom);
+
+        if (scrollBottom === 0 && isMoreData) {
+          console.log('Scrolled to bottom, current page:', page);
+          getSecurityDataCall();
+        }
+      }
+    };
+
+    if (dataTable) {
+      dataTable.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (dataTable) {
+        dataTable.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [getSecurityData]);
+
+  const getSecurityDataCall = async () => {
+    console.log('getSecurityDataCall-=-=-', isMoreData);
+    if (!isMoreData) return;
+    getSecurityData();
+  };
+
+  useEffect(() => {
+    // getSecurityDataCall();
+  }, [page]);
 
   // useEffect(() => {
   //   const observer = new IntersectionObserver(
@@ -216,6 +261,17 @@ export default function Page() {
 
   const routerRedirect = (aPath) => {
     route.push(`/securitywise/${aPath}/`);
+  };
+
+  const handlePageChange = (page) => {
+    console.log('page', page);
+    setPage(page);
+  };
+
+  const handlePerRowsChange = async (newPerPage, page) => {
+    console.log('newPerPage', newPerPage);
+    setPerPage(newPerPage);
+    setPage(page);
   };
 
   const loadingAnimation = (
@@ -348,14 +404,17 @@ export default function Page() {
 
   return (
     <div
-      style={{
-        minHeight: '100vh',
-        overflow: 'hidden'
-      }}
+      style={
+        {
+          // minHeight: '100vh',
+          // overflow: 'hidden'
+        }
+      }
       className="div-main"
     >
       <div style={{ display: isLoading ? 'block' : 'none' }}>{loadingAnimation}</div>
       <div style={{ display: !isLoading && !isFilterData && !securityData ? 'block' : 'none' }}>{loadingAnimation}</div>
+
       <div style={{ display: !isLoading && isFilterData && securityData ? 'block' : 'none' }}>
         {securityData && securityData?.length > 0 && (
           <div className="main-label-div">
@@ -417,11 +476,43 @@ export default function Page() {
           style={{
             position: 'relative',
             height: '100%',
+            overflow: 'auto'
+            // overflowY: 'auto'
+          }}
+          ref={tableRef}
+        >
+          <DataTable
+            columns={column}
+            data={securityData}
+            noDataComponent={
+              <div ref={loader} style={{ height: '100px', margin: '10px 0' }}>
+                {isLoading && <PropagateLoader color="#33a3e3" loading={true} size={15} />}
+              </div>
+            }
+            fixedHeader
+            fixedHeaderScrollHeight="calc(100vh - 80px)"
+            className="sticky-header"
+            keyField="uniqueKey"
+
+            // pagination={isMoreData}
+            // paginationServer={isMoreData}
+            // paginationTotalRows={data?.length}
+            // onChangePage={handlePageChange}
+            // onChangeRowsPerPage={handlePerRowsChange}
+          />
+        </div>
+
+        {/* <div
+          className="scrolling-tableData"
+          style={{
+            position: 'relative',
+            height: '100%',
             overflow: 'auto',
             overflowY: 'auto'
           }}
-        >
-          <InfiniteScroll
+          // onScroll={(e) => handleScroll(e)}
+        > */}
+        {/* <InfiniteScroll
             dataLength={data?.length - 1}
             next={() => {
               console.log('Next page', page);
@@ -434,22 +525,23 @@ export default function Page() {
             height={1000}
             scrollableTarget="scrollableDiv"
             endMessage={false}
-          >
-            <DataTable
-              columns={column}
-              data={securityData}
-              noDataComponent={
-                <div ref={loader} style={{ height: '100px', margin: '10px 0' }}>
-                  {isLoading && <PropagateLoader color="#33a3e3" loading={true} size={15} />}
-                </div>
-              }
-              // fixedHeader={{ top: 0, bottom: 0 }}
-              // fixedHeaderScrollHeight="100vh"
-              className="sticky-header"
-              keyField="uniqueKey"
-            />
-          </InfiniteScroll>
-        </div>
+          > */}
+        {/* <DataTable
+            columns={column}
+            data={securityData}
+            noDataComponent={
+              <div ref={loader} style={{ height: '100px', margin: '10px 0' }}>
+                {isLoading && <PropagateLoader color="#33a3e3" loading={true} size={15} />}
+              </div>
+            }
+            fixedHeader={true}
+            // fixedHeader={{ top: 0, bottom: 0 }}
+            // fixedHeaderScrollHeight="100vh"
+            className="sticky-header"
+            keyField="uniqueKey"
+          /> */}
+        {/* </InfiniteScroll> */}
+        {/* </div> */}
         <style jsx>{`
           .scrolling-tableData {
             position: absolute;

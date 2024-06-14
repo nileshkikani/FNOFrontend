@@ -224,6 +224,7 @@ export default function Header() {
     try {
       const response = await axiosInstance.get(API_ROUTER.ADR);
       setData(response.data);
+      console.log('response.data-=- ', response.data);
     } catch (error) {
       console.error('Error fetching ADR data:', error);
     }
@@ -387,7 +388,11 @@ export default function Header() {
             <span className="bank-nifty-heading-text">
               <span className="heading-text">
                 Bank Nifty:
-                {bankNiftyPrice ? bankNiftyPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '...'}
+                {bankNiftyPrice
+                  ? bankNiftyPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })
+                  : data && data?.live_bank_nifty
+                  ? data?.live_bank_nifty.toLocaleString('en-IN', { maximumFractionDigits: 2 })
+                  : '...'}
               </span>
               <br />
               <span className="heading-text">
@@ -472,7 +477,11 @@ export default function Header() {
               <span className="heading-text">
                 NIFTY:
                 <span className="heading-text">
-                  {niftyPrice ? niftyPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '...'}
+                  {niftyPrice
+                    ? niftyPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })
+                    : data && data?.live_nifty
+                    ? data?.live_nifty.toLocaleString('en-IN', { maximumFractionDigits: 2 })
+                    : '...'}
                 </span>
               </span>
               <br />
