@@ -35,7 +35,7 @@ export default function Page() {
   let adjustedNiftyEnd;
   // const { getNiftyFuturesData, selectedOption } = useNiftyFutureData();
   const [selectedNiftyFutureDates, setSelectedNiftyFutureDates] = useState('');
-  const [strikeAtm, setStrikeAtm] = useState("15");
+  const [strikeAtm, setStrikeAtm] = useState('15');
   const { handleResponceError } = useAuth();
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);
@@ -92,12 +92,14 @@ export default function Page() {
   };
   useEffect(() => {
     if (selectedActiveoiDate) {
-      getActiveoiData();  
+      getActiveoiData();
     }
   }, [selectedActiveoiDate]);
   useEffect(() => {
-      authState && getActiveoiData();  
+    authState && getActiveoiData();
   }, []);
+
+  // console.log('gygygy', selectedActiveoiDate);
   // ----------NIFTRY FUTURES API CALL----------------
   const getNiftyFuturesData = async () => {
     try {
@@ -131,20 +133,23 @@ export default function Page() {
       // console.log('qwqw');
     }
   };
-// ---------------ACTIVE OI API CALL-------
+  // ---------------ACTIVE OI API CALL-------
   const getActiveoiData = async () => {
     let apiUrl = `${API_ROUTER.ACTIVE_OI}`;
     try {
-      const response = await axiosInstance.get(selectedActiveoiDate ? (apiUrl += `?date=${selectedActiveoiDate}`) : apiUrl, {
-        headers: { Authorization: `Bearer ${authState.access}` }
-      });
+      const response = await axiosInstance.get(
+        selectedActiveoiDate ? (apiUrl += `?date=${selectedActiveoiDate}`) : apiUrl,
+        {
+          headers: { Authorization: `Bearer ${authState.access}` }
+        }
+      );
       if (response.status === 200) {
         if (!activeoiDate && !selectedActiveoiDate) {
-        setActiveoiDate(response?.data?.dates)
-        setSelectedActiveoiDate(response.data.dates[0])
-        return
+          setActiveoiDate(response?.data?.dates);
+          setSelectedActiveoiDate(response.data.dates[0]);
+          return;
         }
-        setActiveoiData(response.data)
+        setActiveoiData(response.data);
         const maxLiveNifty = Math.max(response.data.map((item) => item?.live_nifty));
         const minLiveNifty = Math.min(response.data.map((item) => item?.live_nifty));
         const range = 10;
@@ -166,12 +171,6 @@ export default function Page() {
     getNiftyFuturesData();
   };
 
-
-  const isDateDisabled = (date) => {
-    const formattedDate = date.toISOString().split('T')[0];
-    return !activeoiDate.includes(formattedDate);
-};
-
   return (
     <div>
       <div>
@@ -187,26 +186,48 @@ export default function Page() {
       <div className="flex-container">
         <label>
           Strikes Above/Below ATM :
-          <select className="stock-dropdown" value={strikeAtm ? strikeAtm : ''} onChange={(e)=>setStrikeAtm(e.target.value)}>
+          <select
+            className="stock-dropdown"
+            value={strikeAtm ? strikeAtm : ''}
+            onChange={(e) => setStrikeAtm(e.target.value)}
+          >
             <option value="5">5</option>
-            <option value="15">
-              15
-            </option>
+            <option value="15">15</option>
           </select>
         </label>
-        <label>
-          Date :
-          <select className="stock-dropdown" value={selectedActiveoiDate ? selectedActiveoiDate : ''} onChange={(e)=>setSelectedActiveoiDate(e.target.value)}>
-            {activeoiDate && activeoiDate.map((date) => (
-              <option key={date} value={date}>
-                {date}
-              </option>
-            ))}
-          </select>
-          {/* <div className="stock-dropdown"> */}
-          {/* <DatePicker selected={selectedActiveoiDate} onChange={(date) => setSelectedActiveoiDate(date)} isDateDisabled={isDateDisabled} /> */}
-          {/* </div> */}
-        </label>
+        <div className="calender-dropdown">
+          <DatePicker
+            showIcon
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48">
+                <mask id="ipSApplication0">
+                  <g fill="none" stroke="#fff" strokeLinejoin="round" strokeWidth="4">
+                    <path strokeLinecap="round" d="M40.04 22v20h-32V22"></path>
+                    <path
+                      fill="#fff"
+                      d="M5.842 13.777C4.312 17.737 7.263 22 11.51 22c3.314 0 6.019-2.686 6.019-6a6 6 0 0 0 6 6h1.018a6 6 0 0 0 6-6c0 3.314 2.706 6 6.02 6c4.248 0 7.201-4.265 5.67-8.228L39.234 6H8.845l-3.003 7.777Z"
+                    ></path>
+                  </g>
+                </mask>
+                <path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipSApplication0)"></path>
+              </svg>
+            }
+            selected={selectedActiveoiDate}
+            dateFormat="yyyy-MM-dd"
+            onChange={(date) => {
+              const formattedDate = date.toISOString().split('T')[0];
+              setSelectedActiveoiDate(formattedDate);
+            }}
+            includeDates={activeoiDate}
+            placeholderText="Select a date"
+            customInput={
+              <input
+                readOnly
+              />
+            }
+            shouldCloseOnSelect
+          />
+        </div>
         <div>
           <button className="refresh-button2" onClick={() => refreshData()}>
             Refresh
@@ -229,29 +250,53 @@ export default function Page() {
         <>
           {/* ----------COI DIFFERENCE------------------- */}
           <div className="grand-div">
-            <CoiDiffGraph strikeAtm={strikeAtm} data={[...activeoiData].reverse()} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
+            <CoiDiffGraph
+              strikeAtm={strikeAtm}
+              data={[...activeoiData].reverse()}
+              adjustedNiftyStart={adjustedNiftyStart}
+              adjustedNiftyEnd={adjustedNiftyEnd}
+            />
           </div>
           <div className="grand-div">
-            <IntradayDiffGraph strikeAtm={strikeAtm} data={[...activeoiData].reverse()} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd} />
+            <IntradayDiffGraph
+              strikeAtm={strikeAtm}
+              data={[...activeoiData].reverse()}
+              adjustedNiftyStart={adjustedNiftyStart}
+              adjustedNiftyEnd={adjustedNiftyEnd}
+            />
           </div>
-          {/* <div className="grand-div">
-            <CandleChart />
-          </div>
-          <div className="grand-div">
-            <MacdIndicator />
-          </div> */}
           {/* -------------------ACTIVE OI SECTION------------------ */}
           <>
             <div className="active-oi-table">
-              <ActiveOiTable strikeAtm={strikeAtm} data={activeoiData} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd} />
+              <ActiveOiTable
+                strikeAtm={strikeAtm}
+                data={activeoiData}
+                adjustedNiftyStart={adjustedNiftyStart}
+                adjustedNiftyEnd={adjustedNiftyEnd}
+              />
               <div className="grand-div">
-                <ChangeOIGraph strikeAtm={strikeAtm} data={[...activeoiData].reverse()} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
+                <ChangeOIGraph
+                  strikeAtm={strikeAtm}
+                  data={[...activeoiData].reverse()}
+                  adjustedNiftyStart={adjustedNiftyStart}
+                  adjustedNiftyEnd={adjustedNiftyEnd}
+                />
               </div>
               <div className="grand-div">
-                <CallVsPutGraph strikeAtm={strikeAtm} data={[...activeoiData].reverse()} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
+                <CallVsPutGraph
+                  strikeAtm={strikeAtm}
+                  data={[...activeoiData].reverse()}
+                  adjustedNiftyStart={adjustedNiftyStart}
+                  adjustedNiftyEnd={adjustedNiftyEnd}
+                />
               </div>
               <div className="grand-div">
-                <ScatterPlotGraph strikeAtm={strikeAtm} data={[...activeoiData].reverse()} adjustedNiftyStart={adjustedNiftyStart} adjustedNiftyEnd={adjustedNiftyEnd}/>
+                <ScatterPlotGraph
+                  strikeAtm={strikeAtm}
+                  data={[...activeoiData].reverse()}
+                  adjustedNiftyStart={adjustedNiftyStart}
+                  adjustedNiftyEnd={adjustedNiftyEnd}
+                />
               </div>
             </div>
           </>

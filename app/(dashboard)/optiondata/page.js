@@ -2,7 +2,7 @@
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
 import { useEffect, useState } from 'react';
-// import axios from 'axios';
+import axios from 'axios';
 import { useAppSelector } from '@/store';
 import dynamic from 'next/dynamic';
 import useAuth from '@/hooks/useAuth';
@@ -17,35 +17,37 @@ export default function Page() {
   const [apiData, setApiData] = useState([]);
   const { handleResponceError } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
   const authState = useAppSelector((state) => state.auth.authState);
 
   const getData = async (page) => {
     setIsLoading(true);
-    await axiosInstance
-      .get(`${API_ROUTER.OPTIONDATA_LIST}?page=${page}`, {
+    await axios
+      .get(`${API_ROUTER.OPTIONDATA_LIST}?expiry=${expiryDate}`
+        , {
         headers: { Authorization: `Bearer ${authState.access}` }
-      })
+      }
+    )
       .then((response) => {
-        setApiData(response.data.results.reverse());
+        setApiData(response.data.reverse());
         setIsLoading(false);
       })
       .catch((err) => handleResponceError());
   };
 
   useEffect(() => {
-    authState && getData(currentPage);
-  }, [currentPage, authState]);
+    // authState && getData();
+  }, [authState]);
 
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  // const handlePrevious = () => {
+  //   if (currentPage > 1) {
+  //     setCurrentPage(currentPage - 1);
+  //   }
+  // };
 
-  const handleNext = () => {
-    setCurrentPage(currentPage + 1);
-  };
+  // const handleNext = () => {
+  //   setCurrentPage(currentPage + 1);
+  // };
 
   return (
     <div>
@@ -207,7 +209,7 @@ export default function Page() {
           </table>
         </div>
       )}
-      <div className="btndiv">
+      {/* <div className="btndiv">
         {currentPage === 1 ? (
           ''
         ) : (
@@ -218,7 +220,7 @@ export default function Page() {
         <button className="nextbtn" onClick={handleNext}>
           next
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -18,11 +18,11 @@ const MacdIndicator = ({ macdData }) => {
       // group: "first",
       type:'bar',
       height: 350,
-      events: {
-        mounted: function(chartContext, config) {
-          chartContext.config.tooltip.followCursor = true;
-        }
-      }
+      // events: {
+      //   mounted: function(chartContext, config) {
+      //     chartContext.config.tooltip.followCursor = true;
+      //   }
+      // }
     },
     stroke: {
       width: [2, 2, 4]
@@ -61,29 +61,31 @@ const MacdIndicator = ({ macdData }) => {
       position: 'top'
     }
   };
+  // const as = macdData.map(itm=>(itm.Date));
+  // console.log('qaaqa',as)
 
   const xData = macdData.map(item => (
-    item.Date.split('T')[0] + " " + item.Date.split('T')[1].split('.')[0].slice(0, 5)
+    item.created_at.split('T')[0] + " " + item.created_at.split('T')[1].split('.')[0].slice(0, 5)
   ));
 
   const series = [
     {
       name: 'MACD slow',
       type: 'line',
-      data: macdData.map(data => [parseDate(data.Date), data.MACDs_12_26_9]),
+      data: macdData.map(data => [parseDate(data.created_at), data.macd_slow]),
       x: xData
     },
     {
       name: 'MACD',
       type: 'line',
-      data: macdData.map(data => [parseDate(data.Date), data.MACD_12_26_9]),
+      data: macdData.map(data => [parseDate(data.created_at), data.macd]),
       x: xData
     },
     {
       name: 'MACD histogram',
       type: 'bar',
-      data: macdData.map(data => [parseDate(data.Date), data.MACDh_12_26_9]),
-      color: setBarColors(macdData.map(data => data.MACDh_12_26_9)),
+      data: macdData.map(data => [parseDate(data.created_at), data.macd_histogram]),
+      color: setBarColors(macdData.map(data => data.macd_histogram)),
       x: xData
     }
   ];

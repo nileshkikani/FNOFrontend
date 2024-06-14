@@ -1,25 +1,24 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import './global.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 //-----GRAPH COMPONENTS----------
-const MoneyFlowGraph = dynamic(() => import('@/component/MoneyFlow-Graphs/MoneyFlow-Graph'),{ssr:false});
+const MoneyFlowGraph = dynamic(() => import('@/component/MoneyFlow-Graphs/MoneyFlow-Graph'), { ssr: false });
+const ActiveMoneyFlow = dynamic(() => import('@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph'), { ssr: false });
+const CandleChart = dynamic(() => import('@/component/MoneyFlow-Graphs/CandleChart-Graph'), { ssr: false });
+const MacdIndicator = dynamic(() => import('@/component/MoneyFlow-Graphs/MacdIndicator-Graph'), { ssr: false });
 import { useAppSelector } from '@/store';
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
-// import ActiveMoneyFlow from '@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph';
-const ActiveMoneyFlow =dynamic(()=>import('@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph'),{ssr:false})
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-// import CandleChart from '@/component/MoneyFlow-Graphs/CandleChart-Graph';
-const CandleChart = dynamic(()=>import('@/component/MoneyFlow-Graphs/CandleChart-Graph'),{ssr:false})
-// import MacdIndicator from '@/component/MoneyFlow-Graphs/MacdIndicator-Graph';
-const MacdIndicator = dynamic(()=>import('@/component/MoneyFlow-Graphs/MacdIndicator-Graph'),{ssr:false})
 // import axios from 'axios';
 
 //  ===========LOADING ANIMATION ===========
-const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'),{ssr:false});
+const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'), { ssr: false });
 
 const Page = () => {
   const selectedColorForMoneyFlow = [];
@@ -143,23 +142,21 @@ const Page = () => {
 
       setMacdData(response.data);
     } catch (error) {
-      console.log('error calling buy seel api',error)
+      console.log('error calling buy seel api', error);
     }
   };
   useEffect(() => {
     authState && getData();
-    // buySellCall();
+    buySellCall();
   }, []);
 
-    useEffect(()=>{
-      buySellCall();
-    },[selectedScript])
-    const categories = macdData.map(data => data.Date);
+  useEffect(() => {
+    buySellCall();
+  }, [selectedScript]);
 
   useEffect(() => {
     if (selectedScript) {
       getData();
-      // getAllStocks();
     }
   }, [selectedScript]);
 
@@ -173,10 +170,14 @@ const Page = () => {
   const refreshData = () => {
     getData();
     getAllStocks();
+    buySellCall();
   };
   const filterByStockAndDate = (event, isDateDropdown) => {
-    isDateDropdown ? setSelectedDate(event.target.value) : setSelectedScript(event.target.value);
+    isDateDropdown ? setSelectedDate(event) : setSelectedScript(event.target.value);
   };
+
+  // console.log("esd",macdData)
+
   return (
     <>
       <div>
@@ -197,7 +198,7 @@ const Page = () => {
         <div className="flex-container">
           <div className="dropdown-container">
             <h1 className="table-title1">SELECT DATE :</h1>
-            <select
+            {/* <select
               onChange={(e) => filterByStockAndDate(e, true)}
               value={selectedDate ? selectedDate : ''}
               className="stock-dropdown"
@@ -208,7 +209,36 @@ const Page = () => {
                     {stockData}
                   </option>
                 ))}
-            </select>
+            </select> */}
+            <div className="calender-dropdown">
+              <DatePicker
+                showIcon
+                icon={
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48">
+                    <mask id="ipSApplication0">
+                      <g fill="none" stroke="#fff" strokeLinejoin="round" strokeWidth="4">
+                        <path strokeLinecap="round" d="M40.04 22v20h-32V22"></path>
+                        <path
+                          fill="#fff"
+                          d="M5.842 13.777C4.312 17.737 7.263 22 11.51 22c3.314 0 6.019-2.686 6.019-6a6 6 0 0 0 6 6h1.018a6 6 0 0 0 6-6c0 3.314 2.706 6 6.02 6c4.248 0 7.201-4.265 5.67-8.228L39.234 6H8.845l-3.003 7.777Z"
+                        ></path>
+                      </g>
+                    </mask>
+                    <path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipSApplication0)"></path>
+                  </svg>
+                }
+                selected={selectedDate}
+                dateFormat="yyyy-MM-dd"
+                onChange={(date) => {
+                  const formattedDate = date.toISOString().split('T')[0];
+                  filterByStockAndDate(formattedDate, true);
+                }}
+                includeDates={allDates}
+                placeholderText="Select a date"
+                customInput={<input readOnly />}
+                shouldCloseOnSelect
+              />
+            </div>
           </div>
 
           <div className="dropdown-container">
@@ -233,8 +263,8 @@ const Page = () => {
           </div>
         ) : (
           <>
-            <div className="grand-div">{macdData && <MacdIndicator macdData={macdData}  />}</div>
-            <div className="grand-div">{buySellData && <CandleChart candleData={buySellData}  />}</div>
+            <div className="grand-div">{macdData && <MacdIndicator macdData={macdData} />}</div>
+            <div className="grand-div">{buySellData && <CandleChart candleData={buySellData} />}</div>
             <div>
               <div className="table-container1">
                 <table className="table1">

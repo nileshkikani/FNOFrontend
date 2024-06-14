@@ -5,7 +5,7 @@ import Chart from 'react-apexcharts';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const CandleChart = ({ candleData }) => {
-  const categories = candleData.map(item => item.Date.split('T')[0] + " " + item.Date.split('T')[1].split('.')[0].slice(0, 5));
+  const categories = candleData.map(item => item.created_at.split('T')[0] + " " + item.created_at.split('T')[1].split('.')[0].slice(0, 5));
 
   const options = {
     chart: {
@@ -13,11 +13,11 @@ const CandleChart = ({ candleData }) => {
       group: "first",
       type: 'candlestick',
       height: 350,
-      events: {
-        mounted: function(chartContext, config) {
-          chartContext.config.tooltip.followCursor = true;
-        }
-      }
+      // events: {
+      //   mounted: function(chartContext, config) {
+      //     chartContext.config.tooltip.followCursor = true;
+      //   }
+      // }
     },
     xaxis: {
       type: 'category',
@@ -50,12 +50,12 @@ const CandleChart = ({ candleData }) => {
 
   const series = [{
     data: candleData.map(item => ({
-      x: item.Date.split('T')[0] + " " + item.Date.split('T')[1].split('.')[0].slice(0, 5),
-      y: [item.Open, item.High, item.Low, item.Close],
+      x: item.created_at.split('T')[0] + " " + item.created_at.split('T')[1].split('.')[0].slice(0, 5),
+      y: [item.open, item.high, item.low, item.close],
       markers: {
         size: 8,
         offsetY: 0,
-        fillColor: (item.MACD_Buy_Signal_price !== "null") ? '#00ff00' : (item.MACD_Sell_Signal_price !== "null") ? '#ff0000' : '#ffffff',
+        fillColor: (item.macd_buy_signal_price !== "null") ? '#00ff00' : (item.macd_sell_signal_price !== "null") ? '#ff0000' : '#ffffff',
       }
     }))
   }];
