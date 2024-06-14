@@ -1,38 +1,55 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-import axiosInstance from '@/utils/axios';
-import { useAppSelector } from '@/store';
-import dynamic from 'next/dynamic'; 
+import React from 'react';
+import dynamic from 'next/dynamic';
+import Chart from 'react-apexcharts';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const CandleChart = ({data}) => {
+const CandleChart = ({ candleData }) => {
+  const categories = candleData.map(item => item.Date.split('T')[0] + " " + item.Date.split('T')[1].split('.')[0].slice(0, 5));
+
   const options = {
     chart: {
+      // id:'candle',
+      group: "first",
       type: 'candlestick',
-      height: 350
-    },
-    title: {
-      text: 'Candlestick Chart',
-      align: 'left'
+      height: 350,
+      events: {
+        mounted: function(chartContext, config) {
+          chartContext.config.tooltip.followCursor = true;
+        }
+      }
     },
     xaxis: {
-      type: 'text',
-      tickAmount: 'dataPoints',
-      formatter: function (value) {
-        return value.split(' ')[1]; 
+      type: 'category',
+      categories: categories,
+      labels: {
+        formatter: function(val) {
+          return new Date(val).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        }
       }
     },
     tooltip: {
-      enabled: true
+      enabled: true,
+      x: {
+        show: false
+      },
+      y: {
+        formatter: function(val) {
+          return val.toFixed(2);
+        }
+      },
+      style: {
+        fontSize: '14px'
+      }
     },
     yaxis: {}
   };
-  
-  
+
   const series = [{
-    data: data.map(item => ({
+    data: candleData.map(item => ({
       x: item.Date.split('T')[0] + " " + item.Date.split('T')[1].split('.')[0].slice(0, 5),
       y: [item.Open, item.High, item.Low, item.Close],
       markers: {
@@ -42,9 +59,10 @@ const CandleChart = ({data}) => {
       }
     }))
   }];
-  
+
   return (
     <>
+      <h1 className="table-title">Candle stick chart</h1>
       <ApexCharts options={options} series={series} type="candlestick" height={450} />
     </>
   );

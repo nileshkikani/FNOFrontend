@@ -5,6 +5,8 @@ import dynamic from 'next/dynamic';
 import axiosInstance from '@/utils/axios';
 import { API_ROUTER } from '@/services/apiRouter';
 import './global.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 //  ===========HOOKS ===========
 // import useActiveOiData from '@/hooks/useActiveOiData';
@@ -129,7 +131,7 @@ export default function Page() {
       // console.log('qwqw');
     }
   };
-
+// ---------------ACTIVE OI API CALL-------
   const getActiveoiData = async () => {
     let apiUrl = `${API_ROUTER.ACTIVE_OI}`;
     try {
@@ -164,6 +166,12 @@ export default function Page() {
     getNiftyFuturesData();
   };
 
+
+  const isDateDisabled = (date) => {
+    const formattedDate = date.toISOString().split('T')[0];
+    return !activeoiDate.includes(formattedDate);
+};
+
   return (
     <div>
       <div>
@@ -195,6 +203,9 @@ export default function Page() {
               </option>
             ))}
           </select>
+          {/* <div className="stock-dropdown"> */}
+          {/* <DatePicker selected={selectedActiveoiDate} onChange={(date) => setSelectedActiveoiDate(date)} isDateDisabled={isDateDisabled} /> */}
+          {/* </div> */}
         </label>
         <div>
           <button className="refresh-button2" onClick={() => refreshData()}>

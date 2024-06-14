@@ -29,7 +29,7 @@ const ChangeOIGraph = ({ strikeAtm, data, adjustedNiftyStart, adjustedNiftyEnd }
               bottom: 20,
               left: 20
             }}
-            // syncId="change_oi_brush"
+            syncId="change_oi_brush"
           >
             <CartesianGrid stroke="#E5E5E5" />
             <XAxis

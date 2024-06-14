@@ -6,9 +6,9 @@
     @apply mb-10 p-4 border rounded-lg max-w-[1100px] ;
   }
 
-  /* .checkbox-container-mulistrike{
+  .checkbox-container-mulistrike{
     @apply mb-10 p-4 border rounded-lg max-w-[150px];
-  } */
+  }
   /* .checkbox-div-multistrike{
     @apply flex items-center;
   }
@@ -62,4 +62,8 @@ td{
 
 .decay-main-div{
   @apply flex;
+}
+
+.refresh-button2 {
+  @apply py-2 px-4 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300;
 }
