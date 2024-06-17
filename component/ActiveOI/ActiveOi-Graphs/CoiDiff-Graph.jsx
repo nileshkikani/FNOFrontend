@@ -9,12 +9,9 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  Brush
 } from 'recharts';
 
-
-const CoiDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
- 
+const CoiDiffGraph = ({ data, adjustedNiftyStart, adjustedNiftyEnd }) => {
   return (
     <div style={{ width: '100%', height: '400px' }}>
       <h1 className="table-title">COI Difference</h1>
@@ -29,7 +26,7 @@ const CoiDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
             left: 20,
             bottom: 5
           }}
-          //   syncId="change_oi_brush"
+            syncId="above_table"
         >
           <CartesianGrid stroke="#E5E5E5" />
           <XAxis
@@ -55,31 +52,15 @@ const CoiDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
             }
           />
           <Legend />
-          {strikeAtm && strikeAtm == "15" ? (
-            <>
-              <Line
-                yAxisId="left"
-                type="monotone"
-                name="call oi"
-                dataKey="large_coi_difference"
-                stroke="#63D168"
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
-              />
-            </>
-          ) : (
-            <>
-              <Line
-                yAxisId="left"
-                name="call oi "
-                type="monotone"
-                dataKey="coi_difference"
-                stroke="#63D168"
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
-              />
-            </>
-          )}
+          <Line
+            yAxisId="left"
+            name="call oi "
+            type="monotone"
+            dataKey="coi_difference"
+            stroke="#63D168"
+            activeDot={{ r: 8 }}
+            strokeWidth={2}
+          />
           <Line
             yAxisId="right"
             name="NIFTY"
@@ -89,12 +70,6 @@ const CoiDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
             strokeWidth={2}
             dot={false}
           />
-          {/* <Brush
-            dataKey="created_at"
-            height={40}
-            stroke="#0A3D62"
-            tickFormatter={(value) => new Date(value).toISOString().split('T')[0]}
-          /> */}
         </ComposedChart>
       </ResponsiveContainer>
     </div>

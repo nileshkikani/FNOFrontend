@@ -13,7 +13,6 @@ import {
   ReferenceLine
 } from 'recharts';
 
-import useNiftyFutureData from '@/hooks/useNiftyFutureData';
 
 const NiftyFuturesGraph = ({ niftyFuturesFilterData }) => {
   return (

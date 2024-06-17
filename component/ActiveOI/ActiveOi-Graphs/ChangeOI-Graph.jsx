@@ -13,7 +13,7 @@ import {
   ComposedChart
 } from 'recharts';
 
-const ChangeOIGraph = ({ strikeAtm, data, adjustedNiftyStart, adjustedNiftyEnd }) => {
+const ChangeOIGraph = ({ data, adjustedNiftyStart, adjustedNiftyEnd }) => {
   return (
     <>
       <h1 className="table-title">Change in OI</h1>
@@ -54,18 +54,8 @@ const ChangeOIGraph = ({ strikeAtm, data, adjustedNiftyStart, adjustedNiftyEnd }
                 })
               }
             />
-            <Legend />
-            {strikeAtm && strikeAtm == '15' ? (
-              <>
-                <Bar yAxisId="left" name="coi difference" dataKey="large_call_oi_difference" fill="#E96767" />
-                <Bar yAxisId="left" name="poi difference " dataKey="large_put_oi_difference" fill="#63D168" />
-              </>
-            ) : (
-              <>
-                <Bar yAxisId="left" name="coi difference" dataKey="call_oi_difference" fill="#E96767" />
-                <Bar yAxisId="left" name="poi difference " dataKey="put_oi_difference" fill="#63D168" />
-              </>
-            )}
+            <Bar yAxisId="left" name="coi difference" dataKey="call_oi_difference" fill="#E96767" />
+            <Bar yAxisId="left" name="poi difference " dataKey="put_oi_difference" fill="#63D168" />
             <Line
               name="NIFTY"
               yAxisId="right"
@@ -75,12 +65,6 @@ const ChangeOIGraph = ({ strikeAtm, data, adjustedNiftyStart, adjustedNiftyEnd }
               strokeWidth={2}
               dot={false}
             />
-            {/* <Brush
-              dataKey="created_at"
-              height={40}
-              stroke="#0A3D62"
-              tickFormatter={(value) => new Date(value).toISOString().split('T')[0]}
-            /> */}
           </ComposedChart>
         </ResponsiveContainer>
       </div>

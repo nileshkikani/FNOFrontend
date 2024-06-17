@@ -149,7 +149,7 @@ const Page = () => {
         </div>
         {strikes.map((itm, index) => (
           <div key={index} className="checkbox-div-multistrike">
-            {console.log('qw', itm, 'reeerr', selectedStrikePrices)}
+            {/* {console.log('qw', itm, 'reeerr', selectedStrikePrices)} */}
             <input
               type="checkbox"
               id={`strike${index}`}

@@ -2,7 +2,7 @@
 import React from 'react';
 import { XAxis, ComposedChart, Line, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-const CallVsPutGraph = ({ strikeAtm, data, adjustedNiftyStart, adjustedNiftyEnd }) => {
+const CallVsPutGraph = ({ data, adjustedNiftyStart, adjustedNiftyEnd }) => {
   return (
     <div style={{ width: '100%', height: '400px' }}>
       <h1 className="table-title">Call vs Put OI</h1>
@@ -43,49 +43,24 @@ const CallVsPutGraph = ({ strikeAtm, data, adjustedNiftyStart, adjustedNiftyEnd 
             }
           />
           <Legend />
-          {strikeAtm && strikeAtm == '15' ? (
-            <>
-              <Line
-                yAxisId="left"
-                type="monotone"
-                name="call oi"
-                dataKey="large_ce_oi"
-                stroke="#E96767"
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
-              />
-              <Line
-                yAxisId="left"
-                type="monotone"
-                name="put oi"
-                dataKey="large_pe_oi"
-                stroke="#63D168"
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
-              />
-            </>
-          ) : (
-            <>
-              <Line
-                yAxisId="left"
-                name="call oi "
-                type="monotone"
-                dataKey="ce_oi"
-                stroke="#63D168"
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
-              />
-              <Line
-                yAxisId="left"
-                name="put oi "
-                type="monotone"
-                dataKey="pe_oi"
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
-                stroke="#E96767"
-              />
-            </>
-          )}
+          <Line
+            yAxisId="left"
+            name="call oi "
+            type="monotone"
+            dataKey="ce_oi"
+            stroke="#63D168"
+            activeDot={{ r: 8 }}
+            strokeWidth={2}
+          />
+          <Line
+            yAxisId="left"
+            name="put oi "
+            type="monotone"
+            dataKey="pe_oi"
+            activeDot={{ r: 8 }}
+            strokeWidth={2}
+            stroke="#E96767"
+          />
           <Line
             yAxisId="right"
             name="NIFTY"

@@ -3,10 +3,6 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 
 //-------CONTEXTS------
-// import { ActiveOiProvider } from '@/context/ActiveOIContext';
-import { NiftyFutureProvider } from '@/context/NiftyFutureContext';
-// import { CashflowProvider } from '@/context/CashflowContext';
-// import { FiiDiiDataProvider } from '@/context/FiiDiiDataContext';
 import { SecurityWiseProvider } from '@/context/SecurityWiseContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { MultiStrikeProvider } from '@/context/MultiStrikeContext';
@@ -35,20 +31,12 @@ export default function RootLayout({ children }) {
       <body>
         <ReduxProvider>
           <AuthProvider>
-          <Toaster/>
+            <Toaster />
             <Header />
             {/* {middleware(router.asPath)} */}
             {
               <SecurityWiseProvider>
-                {/* <FiiDiiDataProvider> */}
-                  {/* <ActiveOiProvider> */}
-                    {/* <CashflowProvider> */}
-                      <MultiStrikeProvider>
-                        <NiftyFutureProvider>{children}</NiftyFutureProvider>
-                      </MultiStrikeProvider>
-                    {/* </CashflowProvider> */}
-                  {/* </ActiveOiProvider> */}
-                {/* </FiiDiiDataProvider> */}
+                <MultiStrikeProvider>{children}</MultiStrikeProvider>
               </SecurityWiseProvider>
             }
           </AuthProvider>

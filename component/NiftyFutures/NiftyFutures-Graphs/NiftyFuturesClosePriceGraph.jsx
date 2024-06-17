@@ -2,7 +2,6 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine } from 'recharts';
 
-import useNiftyFutureData from '@/hooks/useNiftyFutureData';
 
 const NiftyFuturesClosePrice = () => {
   const { filterByCreatedDate } = useNiftyFutureData();

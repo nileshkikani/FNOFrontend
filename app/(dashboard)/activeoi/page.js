@@ -3,10 +3,13 @@
 import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import axiosInstance from '@/utils/axios';
+import axios from 'axios';
 import { API_ROUTER } from '@/services/apiRouter';
 import './global.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useDispatch } from 'react-redux';
+import { setExpiryDates } from '@/store/userSlice';
 
 //  ===========HOOKS ===========
 // import useActiveOiData from '@/hooks/useActiveOiData';
@@ -35,7 +38,7 @@ export default function Page() {
   let adjustedNiftyEnd;
   // const { getNiftyFuturesData, selectedOption } = useNiftyFutureData();
   const [selectedNiftyFutureDates, setSelectedNiftyFutureDates] = useState('');
-  const [strikeAtm, setStrikeAtm] = useState('15');
+  const [strikeAtm, setStrikeAtm] = useState('5');
   const { handleResponceError } = useAuth();
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);
@@ -50,6 +53,10 @@ export default function Page() {
   const [selectedNiftyFuturesExpDates, setSelectedNiftyFuturesExpDates] = useState('');
   const [niftyFuturesFilterData, setNiftyFuturesFilterData] = useState('');
 
+  const storeDispatch = useDispatch();
+  const [allActiveOiExp, setAllActiveOiExp] = useState([]);
+  const [checkedExp, setCheckedExp] = useState('');
+  // console.log("hudh",checkedExp)
   const memoizedTimeLeft = useMemo(() => timeLeft, [timeLeft]);
 
   useEffect(() => {
@@ -90,17 +97,8 @@ export default function Page() {
   const getFilteredNiftyValue = (aDate, aValue) => {
     setNiftyFuturesFilterData(aValue?.filter((aItem) => aItem.expiration == aDate));
   };
-  useEffect(() => {
-    if (selectedActiveoiDate) {
-      getActiveoiData();
-    }
-  }, [selectedActiveoiDate]);
-  useEffect(() => {
-    authState && getActiveoiData();
-  }, []);
 
-  // console.log('gygygy', selectedActiveoiDate);
-  // ----------NIFTRY FUTURES API CALL----------------
+  // --------------------NIFTY FUTURES API CALL-----------------------------
   const getNiftyFuturesData = async () => {
     try {
       let apiUrl = `${API_ROUTER.NIFTY_FUTURE_DATA}`;
@@ -133,44 +131,83 @@ export default function Page() {
       // console.log('qwqw');
     }
   };
-  // ---------------ACTIVE OI API CALL-------
+  // -------------------------ACTIVE OI API CALL-------------------------------
   const getActiveoiData = async () => {
     let apiUrl = `${API_ROUTER.ACTIVE_OI}`;
     try {
-      const response = await axiosInstance.get(
-        selectedActiveoiDate ? (apiUrl += `?date=${selectedActiveoiDate}`) : apiUrl,
-        {
-          headers: { Authorization: `Bearer ${authState.access}` }
+      if (selectedActiveoiDate && checkedExp.length > 0) {
+        const expiriesParam = checkedExp.join(',');
+        const response = await axiosInstance.get(
+          `${apiUrl}?date=${selectedActiveoiDate}&expiries=${expiriesParam}&size=${strikeAtm}`,
+          {
+            headers: { Authorization: `Bearer ${authState.access}` }
+          }
+        );
+
+        if (response.status === 200) {
+          setActiveoiData(response.data);
+          const maxLiveNifty = Math.max(...response.data.map((item) => item?.live_nifty));
+          const minLiveNifty = Math.min(...response.data.map((item) => item?.live_nifty));
+          const range = 10;
+          adjustedNiftyStart = minLiveNifty - range;
+          adjustedNiftyEnd = maxLiveNifty + range;
+        } else {
+          router.push('/login');
         }
-      );
-      if (response.status === 200) {
-        if (!activeoiDate && !selectedActiveoiDate) {
-          setActiveoiDate(response?.data?.dates);
-          setSelectedActiveoiDate(response.data.dates[0]);
-          return;
-        }
-        setActiveoiData(response.data);
-        const maxLiveNifty = Math.max(response.data.map((item) => item?.live_nifty));
-        const minLiveNifty = Math.min(response.data.map((item) => item?.live_nifty));
-        const range = 10;
-        adjustedNiftyStart = minLiveNifty - range;
-        adjustedNiftyEnd = maxLiveNifty + range;
-      } else {
-        router.push('/login');
       }
     } catch (err) {
       handleResponceError();
     }
   };
+
+  // -----------------------EXPIRY+DATES API CALL-------------------------------------
+  const getExpiries = async () => {
+    const response = await axiosInstance.get(`${API_ROUTER.EXPIRIES}`);
+    setAllActiveOiExp(response.data.expiries);
+    setActiveoiDate(response.data.dates);
+
+    //storing expiries in store
+    storeDispatch(setExpiryDates(response.data.expiries));
+
+    // setCheckedExp(response.data.expiries[0]);
+    setSelectedActiveoiDate(response.data.dates[0]);
+  };
   useEffect(() => {
     getNiftyFuturesData();
   }, [selectedNiftyFutureDates]);
+
+  useEffect(() => {
+    if (selectedActiveoiDate) {
+      getActiveoiData();
+    }
+  }, [selectedActiveoiDate, checkedExp, strikeAtm]);
+
+  useEffect(() => {
+    if (authState) {
+      getActiveoiData();
+      getExpiries();
+    }
+  }, []);
 
   const refreshData = () => {
     getActiveoiData();
     getNiftyFuturesData();
   };
 
+  const isCheckedExp = (e) => {
+    const { checked, value } = e.target;
+    if (checked) {
+      if (!checkedExp.includes(value)) {
+        setCheckedExp((prevCheckedExp) => [...prevCheckedExp, value]);
+      }
+    } else {
+      if (checkedExp.includes(value)) {
+        setCheckedExp((prevCheckedExp) => prevCheckedExp.filter((item) => item !== value));
+      }
+    }
+  };
+
+  console.log('hhh', allActiveOiExp);
   return (
     <div>
       <div>
@@ -192,7 +229,9 @@ export default function Page() {
             onChange={(e) => setStrikeAtm(e.target.value)}
           >
             <option value="5">5</option>
+            <option value="10">10</option>
             <option value="15">15</option>
+            <option value="200">all</option>
           </select>
         </label>
         <div className="calender-dropdown">
@@ -220,13 +259,25 @@ export default function Page() {
             }}
             includeDates={activeoiDate}
             placeholderText="Select a date"
-            customInput={
-              <input
-                readOnly
-              />
-            }
+            customInput={<input readOnly />}
             shouldCloseOnSelect
           />
+        </div>
+        <div>
+          {allActiveOiExp?.map((itm, index) => (
+            <div key={index}>
+              <input
+                type="checkbox"
+                id={`expiry${index}`}
+                value={itm}
+                checked={checkedExp.includes(itm)}
+                onChange={(e) => isCheckedExp(e)}
+                className="checkboxes-itself"
+              />
+              <label htmlFor={`expiry${index}`}>{itm}</label>
+              <br />
+            </div>
+          ))}
         </div>
         <div>
           <button className="refresh-button2" onClick={() => refreshData()}>
@@ -252,7 +303,7 @@ export default function Page() {
           <div className="grand-div">
             <CoiDiffGraph
               strikeAtm={strikeAtm}
-              data={[...activeoiData].reverse()}
+              data={activeoiData}
               adjustedNiftyStart={adjustedNiftyStart}
               adjustedNiftyEnd={adjustedNiftyEnd}
             />
@@ -260,7 +311,7 @@ export default function Page() {
           <div className="grand-div">
             <IntradayDiffGraph
               strikeAtm={strikeAtm}
-              data={[...activeoiData].reverse()}
+              data={activeoiData}
               adjustedNiftyStart={adjustedNiftyStart}
               adjustedNiftyEnd={adjustedNiftyEnd}
             />
@@ -269,31 +320,27 @@ export default function Page() {
           <>
             <div className="active-oi-table">
               <ActiveOiTable
-                strikeAtm={strikeAtm}
-                data={activeoiData}
+                data={[...activeoiData].reverse()}
                 adjustedNiftyStart={adjustedNiftyStart}
                 adjustedNiftyEnd={adjustedNiftyEnd}
               />
               <div className="grand-div">
                 <ChangeOIGraph
-                  strikeAtm={strikeAtm}
-                  data={[...activeoiData].reverse()}
+                  data={activeoiData}
                   adjustedNiftyStart={adjustedNiftyStart}
                   adjustedNiftyEnd={adjustedNiftyEnd}
                 />
               </div>
               <div className="grand-div">
                 <CallVsPutGraph
-                  strikeAtm={strikeAtm}
-                  data={[...activeoiData].reverse()}
+                  data={activeoiData}
                   adjustedNiftyStart={adjustedNiftyStart}
                   adjustedNiftyEnd={adjustedNiftyEnd}
                 />
               </div>
               <div className="grand-div">
                 <ScatterPlotGraph
-                  strikeAtm={strikeAtm}
-                  data={[...activeoiData].reverse()}
+                  data={activeoiData}
                   adjustedNiftyStart={adjustedNiftyStart}
                   adjustedNiftyEnd={adjustedNiftyEnd}
                 />

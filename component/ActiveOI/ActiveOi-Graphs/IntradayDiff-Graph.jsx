@@ -9,12 +9,9 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  Brush
 } from 'recharts';
 
-
-const IntradayDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
-
+const IntradayDiffGraph = ({ data, adjustedNiftyStart, adjustedNiftyEnd }) => {
   return (
     <div style={{ width: '100%', height: '400px' }}>
       <h1 className="table-title">Intraday Difference</h1>
@@ -29,7 +26,7 @@ const IntradayDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd})
             left: 20,
             bottom: 5
           }}
-          //   syncId="change_oi_brush"
+           syncId="above_table"
         >
           <CartesianGrid stroke="#E5E5E5" />
           <XAxis
@@ -55,31 +52,15 @@ const IntradayDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd})
             }
           />
           <Legend />
-          {strikeAtm && strikeAtm == "15" ? (
-            <>
-              <Line
-                yAxisId="left"
-                type="monotone"
-                name="intraday difference"
-                dataKey="large_intraday_difference"
-                stroke="#63D168"
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
-              />
-            </>
-          ) : (
-            <>
-              <Line
-                yAxisId="left"
-                name="intraday difference"
-                type="monotone"
-                dataKey="intraday_difference"
-                stroke="#63D168"
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
-              />
-            </>
-          )}
+          <Line
+            yAxisId="left"
+            name="intraday difference"
+            type="monotone"
+            dataKey="intraday_difference"
+            stroke="#63D168"
+            activeDot={{ r: 8 }}
+            strokeWidth={2}
+          />
           <Line
             yAxisId="right"
             name="NIFTY"
@@ -89,12 +70,6 @@ const IntradayDiffGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd})
             strokeWidth={2}
             dot={false}
           />
-          {/* <Brush
-            dataKey="created_at"
-            height={40}
-            stroke="#0A3D62"
-            tickFormatter={(value) => new Date(value).toISOString().split('T')[0]}
-          /> */}
         </ComposedChart>
       </ResponsiveContainer>
     </div>

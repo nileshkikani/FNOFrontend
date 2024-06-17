@@ -2,8 +2,7 @@
 import React from 'react';
 import { Line, LineChart, XAxis, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-const ScatterPlotGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) => {
-
+const ScatterPlotGraph = ({ data, adjustedNiftyStart, adjustedNiftyEnd }) => {
   return (
     <div style={{ width: '100%', height: '400px' }}>
       <h1 className="table-title">PCR</h1>
@@ -45,23 +44,15 @@ const ScatterPlotGraph = ({strikeAtm,data,adjustedNiftyStart,adjustedNiftyEnd}) 
             }
           />
           <Legend />
-          {strikeAtm && strikeAtm == "15" ? (
-            <>
-              <Line yAxisId="left" type="linear" dataKey="large_pcr" stroke="#545454" activeDot={{ r: 8 }} strokeWidth={2} />
-            </>
-          ) : (
-            <>
-              <Line
-                name="pcr"
-                yAxisId="left"
-                type="linear"
-                dataKey="pcr"
-                stroke="#545454"
-                activeDot={{ r: 8 }}
-                strokeWidth={2}
-              />
-            </>
-          )}
+          <Line
+            name="pcr"
+            yAxisId="left"
+            type="linear"
+            dataKey="pcr"
+            stroke="#545454"
+            activeDot={{ r: 8 }}
+            strokeWidth={2}
+          />
           <Line
             name="NIFTY"
             yAxisId="right"
