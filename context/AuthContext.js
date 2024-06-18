@@ -2,7 +2,7 @@
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
 import React, { createContext, useReducer } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { setAuth, setUserStatus, setUserStatusInitially, setRememberMe } from '@/store/authSlice';

@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import axiosInstance from '@/utils/axios';
-import axios from 'axios';
+// import axios from 'axios';
 import { API_ROUTER } from '@/services/apiRouter';
 import './global.css';
 import DatePicker from 'react-datepicker';
@@ -12,15 +12,11 @@ import { useDispatch } from 'react-redux';
 import { setExpiryDates } from '@/store/userSlice';
 
 //  ===========HOOKS ===========
-// import useActiveOiData from '@/hooks/useActiveOiData';
 import { useAppSelector } from '@/store';
-// import useNiftyFutureData from '@/hooks/useNiftyFutureData';
 import NiftyFuturesTable from '@/component/NiftyFutures/NiftyFuturesTable';
 import CoiDiffGraph from '@/component/ActiveOI/ActiveOi-Graphs/CoiDiff-Graph';
 import IntradayDiffGraph from '@/component/ActiveOI/ActiveOi-Graphs/IntradayDiff-Graph';
 import useAuth from '@/hooks/useAuth';
-// import MacdIndicator from '@/component/ActiveOI/ActiveOi-Graphs/MacdIndicator-Graph';
-// import CandleChart from '@/component/ActiveOI/ActiveOi-Graphs/CandleChart-Graph';
 
 // ===========GRAPH COMPONENTS ===========
 const ChangeOIGraph = dynamic(() => import('@/component/ActiveOI/ActiveOi-Graphs/ChangeOI-Graph'));
@@ -33,10 +29,8 @@ const NiftyFuturesGraph = dynamic(() => import('@/component/NiftyFutures/NiftyFu
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
 export default function Page() {
-  // const { getData, dateDropDownChange, uniqueDates, isLoading, dropDownChange } = useActiveOiData();
   let adjustedNiftyStart;
   let adjustedNiftyEnd;
-  // const { getNiftyFuturesData, selectedOption } = useNiftyFutureData();
   const [selectedNiftyFutureDates, setSelectedNiftyFutureDates] = useState('');
   const [strikeAtm, setStrikeAtm] = useState('5');
   const { handleResponceError } = useAuth();
@@ -55,7 +49,7 @@ export default function Page() {
 
   const storeDispatch = useDispatch();
   const [allActiveOiExp, setAllActiveOiExp] = useState([]);
-  const [checkedExp, setCheckedExp] = useState('');
+  const [checkedExp, setCheckedExp] = useState([]);
   // console.log("hudh",checkedExp)
   const memoizedTimeLeft = useMemo(() => timeLeft, [timeLeft]);
 
@@ -133,21 +127,26 @@ export default function Page() {
   };
   // -------------------------ACTIVE OI API CALL-------------------------------
   const getActiveoiData = async () => {
-    let apiUrl = `${API_ROUTER.ACTIVE_OI}`;
     try {
-      if (selectedActiveoiDate && checkedExp.length > 0) {
-        const expiriesParam = checkedExp.join(',');
+      if (selectedActiveoiDate && checkedExp) {
+        let apiUrl = `${API_ROUTER.ACTIVE_OI}`;
+        let expiriesParam = '';
+        if (checkedExp.length > 1) {
+          expiriesParam = checkedExp.join(',');
+        } else if (checkedExp.length === 1) {
+          expiriesParam = checkedExp[0];
+        }
         const response = await axiosInstance.get(
-          `${apiUrl}?date=${selectedActiveoiDate}&expiries=${expiriesParam}&size=${strikeAtm}`,
-          {
+          `${apiUrl}?date=${selectedActiveoiDate}&expiries=${expiriesParam}&size=${strikeAtm}`
+          ,{
             headers: { Authorization: `Bearer ${authState.access}` }
           }
         );
 
         if (response.status === 200) {
           setActiveoiData(response.data);
-          const maxLiveNifty = Math.max(...response.data.map((item) => item?.live_nifty));
-          const minLiveNifty = Math.min(...response.data.map((item) => item?.live_nifty));
+          const maxLiveNifty = Math.max(...response.data.map((item) => item?.live_nifty || 0));
+          const minLiveNifty = Math.min(...response.data.map((item) => item?.live_nifty || 0));
           const range = 10;
           adjustedNiftyStart = minLiveNifty - range;
           adjustedNiftyEnd = maxLiveNifty + range;
@@ -162,22 +161,30 @@ export default function Page() {
 
   // -----------------------EXPIRY+DATES API CALL-------------------------------------
   const getExpiries = async () => {
-    const response = await axiosInstance.get(`${API_ROUTER.EXPIRIES}`);
-    setAllActiveOiExp(response.data.expiries);
-    setActiveoiDate(response.data.dates);
+    try {
+      const response = await axiosInstance.get(`${API_ROUTER.EXPIRIES}`
+        ,{
+          headers: { Authorization: `Bearer ${authState.access}` }
+        }
+      );
+      setAllActiveOiExp(response.data.expiries);
+      setActiveoiDate(response.data.dates);
 
-    //storing expiries in store
-    storeDispatch(setExpiryDates(response.data.expiries));
-
-    // setCheckedExp(response.data.expiries[0]);
-    setSelectedActiveoiDate(response.data.dates[0]);
+      //storing expiries in store
+      storeDispatch(setExpiryDates(response.data.expiries));
+      setCheckedExp([response.data.expiries[0]]);
+      // console.log('gh', response.data.expiries[0]);
+      setSelectedActiveoiDate(response.data.dates[0]);
+    } catch (e) {
+      console.log('error getting dates', e);
+    }
   };
   useEffect(() => {
     getNiftyFuturesData();
   }, [selectedNiftyFutureDates]);
 
   useEffect(() => {
-    if (selectedActiveoiDate) {
+    if (selectedActiveoiDate && checkedExp) {
       getActiveoiData();
     }
   }, [selectedActiveoiDate, checkedExp, strikeAtm]);
@@ -207,7 +214,13 @@ export default function Page() {
     }
   };
 
-  console.log('hhh', allActiveOiExp);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+    return `${day} ${month}`;
+  };
+  // console.log('hhh', allActiveOiExp);
   return (
     <div>
       <div>
@@ -220,23 +233,45 @@ export default function Page() {
           </h1>
         )}
       </div>
-      <div className="flex-container">
-        <label>
-          Strikes Above/Below ATM :
-          <select
-            className="stock-dropdown"
-            value={strikeAtm ? strikeAtm : ''}
-            onChange={(e) => setStrikeAtm(e.target.value)}
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="200">all</option>
-          </select>
-        </label>
+      <section className="main-section">
+        <div>
+          <label>select expiry</label>
+          {allActiveOiExp?.map((itm, index) => (
+            <div key={index} className="exp-date-div">
+              <input
+                type="checkbox"
+                id={`expiry${index}`}
+                value={itm}
+                checked={checkedExp.includes(itm)}
+                onChange={(e) => isCheckedExp(e)}
+                className="exp-checkbox"
+              />
+              <label htmlFor={`expiry${index}`} className="exp-date-label">
+                {formatDate(itm)}
+              </label>
+              <br />
+            </div>
+          ))}
+        </div>
+        <div className="date-container">
+          <label>
+            Strikes Above/Below ATM :
+            <select
+              className="stock-dropdown"
+              value={strikeAtm ? strikeAtm : ''}
+              onChange={(e) => setStrikeAtm(e.target.value)}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="200">all</option>
+            </select>
+          </label>
+        </div>
         <div className="calender-dropdown">
           <DatePicker
             showIcon
+            className="date-itself"
             icon={
               <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48">
                 <mask id="ipSApplication0">
@@ -261,30 +296,17 @@ export default function Page() {
             placeholderText="Select a date"
             customInput={<input readOnly />}
             shouldCloseOnSelect
+            onKeyDown={(e) => {
+              e.preventDefault();
+            }}
           />
-        </div>
-        <div>
-          {allActiveOiExp?.map((itm, index) => (
-            <div key={index}>
-              <input
-                type="checkbox"
-                id={`expiry${index}`}
-                value={itm}
-                checked={checkedExp.includes(itm)}
-                onChange={(e) => isCheckedExp(e)}
-                className="checkboxes-itself"
-              />
-              <label htmlFor={`expiry${index}`}>{itm}</label>
-              <br />
-            </div>
-          ))}
         </div>
         <div>
           <button className="refresh-button2" onClick={() => refreshData()}>
             Refresh
           </button>
         </div>
-      </div>
+      </section>
 
       {!selectedActiveoiDate ? (
         <div

@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
+.main-section{
+  @apply flex items-center gap-x-2;
+}
 .red-oi-table {
   @apply text-red-500;
 }
@@ -19,8 +21,8 @@
   @apply text-[#0A3D62] font-bold text-2xl;
 }
 
-.flex-container {
-  @apply flex items-center space-x-10 mt-10 mb-10;
+.date-container {
+  @apply flex-col items-center space-x-10 mt-10 mb-10;
 }
 
 .stock-dropdown {
@@ -60,5 +62,17 @@
 }
 
 .calender-dropdown{
-  @apply bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500;
+  @apply bg-white  w-80 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500;
+}
+
+.exp-checkbox{
+  @apply h-4 w-4 rounded-md;
+}
+
+.exp-date-label{
+  @apply mx-2.5;
+}
+
+.exp-date-div{
+  @apply flex items-center;
 }

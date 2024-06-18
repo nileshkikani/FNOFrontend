@@ -2,7 +2,7 @@
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { useAppSelector } from '@/store';
 import dynamic from 'next/dynamic';
 import useAuth from '@/hooks/useAuth';
@@ -18,9 +18,9 @@ export default function Page() {
   const { handleResponceError } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const authState = useAppSelector((state) => state.auth.authState);
-  const [selectedExp,setSelectedExp] = useState('');
-
   const expiryDropDown = useAppSelector((state) => state.user.expiries);
+  const [selectedExp, setSelectedExp] = useState(expiryDropDown[0]);
+
   //---------OPTION CHAIN CALL----------
   const getData = async () => {
     setIsLoading(true);
@@ -36,22 +36,17 @@ export default function Page() {
           })
           .catch((err) => handleResponceError());
       } else {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     } catch (error) {
       handleResponceError();
     }
   };
-  
 
   useEffect(() => {
     authState && getData();
-  }, [authState,selectedExp]);
+  }, [authState, selectedExp]);
 
-  const checkSelectedExp = (e) => {
-    console.log('ghghg', e);
-    setSelectedExp(e)
-  };
 
   return (
     <div>
@@ -59,11 +54,10 @@ export default function Page() {
       <div>
         <label>
           Expiry:
-          <select onChange={(e) => checkSelectedExp(e.target.value)} value={selectedExp}>
-            <option selected>select expiry</option>
-            {expiryDropDown.map((itm,index) => (
-              <option key={index} type="dropdown" value={itm}>
-                {itm}
+          <select onChange={(e) => setSelectedExp(e.target.value)} value={selectedExp}>
+            {expiryDropDown.map((item, index) => (
+              <option key={index} value={item}>
+                {item}
               </option>
             ))}
           </select>
