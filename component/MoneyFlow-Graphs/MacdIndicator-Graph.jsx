@@ -2,33 +2,46 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 
 const MacdIndicator = ({ macdData }) => {
+  const parseDate = (dateString) => new Date(dateString).getTime();
 
-  const parseDate = (dateString) => {
-    return new Date(dateString).getTime();
-  };
-
-  const setBarColors = (histogramData) => {
-    return histogramData.map(value => value < 0 ? '#ff0000' : '#008000');
-  };
+  const series = [
+    {
+      name: 'MACD slow',
+      type: 'line',
+      data: macdData.map(data => ({
+        x: parseDate(data.created_at),
+        y: data.macd_slow
+      }))
+    },
+    {
+      name: 'MACD',
+      type: 'line',
+      data: macdData.map(data => ({
+        x: parseDate(data.created_at),
+        y: data.macd
+      }))
+    },
+    {
+      name: 'MACD histogram',
+      type: 'bar',
+      data: macdData.map(data => ({
+        x: parseDate(data.created_at),
+        y: data.macd_histogram,
+        fillColor: data.macd_histogram >= 0 ? '#008000' : '#ff0000' // Green for positive, Red for negative
+      }))
+    }
+  ];
 
   const options = {
-    colors:['#ffc000', '#674ea7'],
-    chart:{
-      // id:'macd',
-      // group: "first",
-      type:'bar',
+    colors:['#ffc000', '#674ea7','#fdfdfd'],
+    chart: {
       height: 350,
-      // events: {
-      //   mounted: function(chartContext, config) {
-      //     chartContext.config.tooltip.followCursor = true;
-      //   }
-      // }
     },
     stroke: {
-      width: [2, 2, 4]
+      width: [2, 2, 0] // No stroke width for bars
     },
     xaxis: {
-      type: 'category',
+      type: 'datetime',
       labels: {
         formatter: function(val) {
           return new Date(val).toLocaleTimeString([], {
@@ -40,7 +53,7 @@ const MacdIndicator = ({ macdData }) => {
     },
     yaxis: [
       {
-        seriesName: 'MACD s',
+        seriesName: 'MACD slow',
         show: false
       },
       {
@@ -59,36 +72,28 @@ const MacdIndicator = ({ macdData }) => {
     },
     legend: {
       position: 'top'
+    },
+    plotOptions: {
+      bar: {
+        colors: {
+          ranges: [
+            {
+              from: 0,
+              to: Infinity,
+              color: '#008000' // Green for positive values
+            },
+            {
+              from: -Infinity,
+              to: 0,
+              color: '#ff0000' // Red for negative values
+            }
+          ]
+        },
+        borderRadius: 0,
+        borderWidth: 0 // Remove border
+      }
     }
   };
-  // const as = macdData.map(itm=>(itm.Date));
-  // console.log('qaaqa',as)
-
-  const xData = macdData.map(item => (
-    item.created_at.split('T')[0] + " " + item.created_at.split('T')[1].split('.')[0].slice(0, 5)
-  ));
-
-  const series = [
-    {
-      name: 'MACD slow',
-      type: 'line',
-      data: macdData.map(data => [parseDate(data.created_at), data.macd_slow]),
-      x: xData
-    },
-    {
-      name: 'MACD',
-      type: 'line',
-      data: macdData.map(data => [parseDate(data.created_at), data.macd]),
-      x: xData
-    },
-    {
-      name: 'MACD histogram',
-      type: 'bar',
-      data: macdData.map(data => [parseDate(data.created_at), data.macd_histogram]),
-      color: setBarColors(macdData.map(data => data.macd_histogram)),
-      x: xData
-    }
-  ];
 
   return (
     <div style={{ width: '100%', height: '400px' }}>

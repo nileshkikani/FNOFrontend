@@ -5,7 +5,6 @@ import moment from 'moment';
 // import axios from "axios";
 import axiosInstance from '@/utils/axios';
 import { API_ROUTER } from '@/services/apiRouter';
-// import useFiiDiiData from '@/hooks/useFiiDiiData';
 import { useAppSelector } from '@/store';
 import '../global.css';
 
@@ -50,7 +49,6 @@ export default function Page() {
       const response = await axiosInstance.get(apiUrl, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
-      // console.log('rrrs', response.data);
       setData(response.data);
       const firstLoadClient = response.data.filter((itm) => itm.client_type === selectedClientType);
       setfilteredByClient(firstLoadClient);
@@ -59,7 +57,6 @@ export default function Page() {
       console.log('error getting fii-dii daily data:', error);
     }
   };
-  // console.log('rtrtr', data);
   useEffect(() => {
     authState && getFiiDiiData();
   }, [monthFromDropdown, yearFromDropdown]);
@@ -68,7 +65,6 @@ export default function Page() {
   const handleMonthChange = (event) => {
     const selectedValue = event.target.value;
     const [year, month] = selectedValue.split('-');
-    // console.log("ttt",year,"yyy",month)
     setMonthFromDropdown(month);
     setYearFromDropdown(year);
   };
@@ -78,7 +74,6 @@ export default function Page() {
     const checkClient = e.target.value;
     const filteredClient = data.filter((item) => item?.client_type === checkClient);
     setfilteredByClient(filteredClient);
-    // console.log('jjjj', filteredClient);
   };
 
   return (

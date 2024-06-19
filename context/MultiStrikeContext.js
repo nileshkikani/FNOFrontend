@@ -1,6 +1,7 @@
 'use client';
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
+// import axios from 'axios';
 import React, { createContext, useReducer, useCallback, useMemo, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -49,22 +50,24 @@ const reducer = (state, action) => {
         ...state,
         selectedStrikePrices: state.selectedStrikePrices.filter((price) => price !== action.payload)
       };
-      case 'REMOVE_ALL':
-        return{
-          ...state,selectedStrikePrices:action.payload
-        }
+    case 'REMOVE_ALL':
+      return {
+        ...state,
+        selectedStrikePrices: action.payload
+      };
     default:
       return state;
   }
 };
 
-
 export const MultiStrikeProvider = ({ children }) => {
+  const expiryDropDown = useAppSelector((state) => state.user.expiries);
   const [state, dispatch] = useReducer(reducer, initialState);
   const { handleResponceError } = useAuth();
   const router = useRouter();
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
+  const [selectedExp, setSelectedExp] = useState(expiryDropDown[0]);
 
   const {
     strikes,
@@ -74,7 +77,8 @@ export const MultiStrikeProvider = ({ children }) => {
     strikePrice3,
     strikePrice4,
     strikePrice5,
-    selectedStrikePrices,multiIsLoading
+    selectedStrikePrices,
+    multiIsLoading
   } = state;
 
   // ----------------API CALL-----------------
@@ -84,7 +88,7 @@ export const MultiStrikeProvider = ({ children }) => {
       return router.push('/login');
     }
     try {
-      const apiUrl = API_ROUTER.MULTI_STRIKE;
+      const apiUrl = `${API_ROUTER.MULTI_STRIKE}?expiry=${selectedExp}`;
       const response = await axiosInstance.get(apiUrl, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
@@ -95,7 +99,7 @@ export const MultiStrikeProvider = ({ children }) => {
       } else {
         router.push('/login');
       }
-      console.log("eeew",response?.data )
+      console.log('eeew', response?.data);
     } catch (err) {
       handleResponceError();
     }
@@ -118,7 +122,7 @@ export const MultiStrikeProvider = ({ children }) => {
     } else {
       dispatch({ type: 'REMOVE_SELECTED_STRIKE', payload: +value });
     }
-    
+
     switch (identifier) {
       case 1:
         // setStrikePrice1(filteredData);
@@ -164,7 +168,9 @@ export const MultiStrikeProvider = ({ children }) => {
       strikePrice3,
       strikePrice4,
       strikePrice5,
-      multiIsLoading
+      multiIsLoading,
+      setSelectedExp,
+      selectedExp
     }),
     [
       state,

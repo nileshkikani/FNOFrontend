@@ -15,11 +15,14 @@ import PremiumDecayChart from '@/component/PremiumDecay-Graphs/PremiumDecay';
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
 const Page = () => {
-  const { strikes, checkSelectedStrike, multiStrikeAPiCall, selectedStrikePrices, multiIsLoading } =
+  const { strikes, checkSelectedStrike, multiStrikeAPiCall, selectedStrikePrices, multiIsLoading, selectedExp,setSelectedExp } =
     useMultiStrikeData();
   const authState = useAppSelector((state) => state.auth.authState);
   const [selectedPremiumDecay, setSelectedPremiumDecay] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const expiryDropDown = useAppSelector((state) => state.user.expiries);
+  const [selectedPremDEcayExp,setSelectedPremDecayExp] = useState(expiryDropDown[0]);
+
 
   const [allPremiumDecayStrikes, setAllPremiumDecayStrikes] = useState([]);
 
@@ -34,7 +37,7 @@ const Page = () => {
   const premiumDecayApiCall = async () => {
     setIsLoading(true);
     try {
-      let apiUrl = API_ROUTER.PREMIUM_DECAY;
+      let apiUrl = `${API_ROUTER.PREMIUM_DECAY}?expiry=${selectedPremDEcayExp}`;
       const response = await axiosInstance.get(apiUrl, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
@@ -110,9 +113,12 @@ const Page = () => {
   }, [strikes]);
 
   useEffect(() => {
-    premiumDecayApiCall();
     multiStrikeAPiCall();
-  }, []);
+  }, [selectedExp]);
+
+  useEffect(()=>{
+    premiumDecayApiCall();
+  },[selectedPremDEcayExp])
 
   useEffect(() => {
     if (allPremiumDecayStrikes.length > 0) {
@@ -122,7 +128,6 @@ const Page = () => {
 
   const refreshBtn = (param) => {
     param ? multiStrikeAPiCall() : premiumDecayApiCall();
-
   };
 
   return (
@@ -142,14 +147,25 @@ const Page = () => {
       ) : (
         <> */}
       <div className="checkbox-container-mulistrike">
-      <div>
+        <div>
           <button className="refresh-button2" onClick={() => refreshBtn(true)}>
             Refresh
           </button>
         </div>
+        <div>
+          <label>
+            Expiry:
+            <select onChange={(e) => setSelectedExp(e.target.value)} value={selectedExp}>
+              {expiryDropDown.map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
         {strikes.map((itm, index) => (
           <div key={index} className="checkbox-div-multistrike">
-            {/* {console.log('qw', itm, 'reeerr', selectedStrikePrices)} */}
             <input
               type="checkbox"
               id={`strike${index}`}
@@ -163,7 +179,6 @@ const Page = () => {
             <br />
           </div>
         ))}
-
       </div>
       {/* -------MULTISTRIKE CHART--------- */}
       {multiIsLoading ? (
@@ -173,7 +188,7 @@ const Page = () => {
             justifyContent: 'center',
             alignItems: 'center',
             marginTop: '50px',
-            minHeight:'350px'
+            minHeight: '350px'
           }}
         >
           <PropagateLoader color="#33a3e3" loading={multiIsLoading} size={15} />
@@ -334,11 +349,22 @@ const Page = () => {
             </table>
           </div>
           <div>
-
-<button className="refresh-button2" onClick={() => refreshBtn()}>
-  Refresh
-</button>
-</div>
+            <button className="refresh-button2" onClick={() => refreshBtn()}>
+              Refresh
+            </button>
+          </div>
+          <div>
+          <label>
+            Expiry:
+            <select onChange={(e) => setSelectedPremDecayExp(e.target.value)} value={selectedPremDEcayExp}>
+              {expiryDropDown.map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
         </div>
       )}
       {/* -------PREMIUM DECAY CHART----------*/}

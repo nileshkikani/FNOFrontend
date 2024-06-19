@@ -34,6 +34,7 @@ import axios from 'axios';
 // import SmartAPI from 'smartapi-javascript';
 import { TOTP } from 'totp-generator';
 import { initializeWebSocket, socket } from '@/utils/socket';
+import { setSocketToken } from '@/store/userSlice';
 
 export default function Header() {
   const router = useRouter();
@@ -166,6 +167,9 @@ export default function Header() {
     if (response.status === 200) {
       const data = response?.data?.data;
       connectWebSocket(data);
+      //---storing date in store so can use in orders page
+      // console.log('erqs',data)
+      storeDispatch(setSocketToken(data));
     }
   }
 
@@ -456,7 +460,7 @@ export default function Header() {
                   <li className="nav-li" onClick={() => router.push('/cashflow')}>
                     Money Flow
                   </li>
-                  <li className="nav-li">Orders</li>
+                  <li className="nav-li" onClick={() => router.push('/orders')} >Orders</li>
                 </div>
               ) : null}
             </ul>
