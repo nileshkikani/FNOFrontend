@@ -324,7 +324,7 @@ export default function Header() {
       icon: FaDatabase
     },
     {
-      path: '/multistrike',
+      path: '/multistrike/most-active',
       title: 'Multi Strike OI',
       icon: FaArrowsAltV
     }

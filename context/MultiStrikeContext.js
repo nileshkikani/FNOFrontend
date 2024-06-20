@@ -88,18 +88,18 @@ export const MultiStrikeProvider = ({ children }) => {
       return router.push('/login');
     }
     try {
-      const apiUrl = `${API_ROUTER.MULTI_STRIKE}?expiry=${selectedExp}`;
+      const apiUrl = `${API_ROUTER.MULTI_STRIKE}?expiry=${selectedExp}&strikes=23550,23500`;
       const response = await axiosInstance.get(apiUrl, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
-
+      console.log("gtgg",response.data)
       if (response.status === 200) {
         dispatch({ type: 'SET_DATA', payload: response?.data });
         dispatch({ type: 'SET_IS_LOADING', payload: false });
       } else {
         router.push('/login');
       }
-      console.log('eeew', response?.data);
+      // console.log('eeew', response?.data);
     } catch (err) {
       handleResponceError();
     }

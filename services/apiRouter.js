@@ -23,5 +23,6 @@ export const API_ROUTER = {
   ADR: `nifty/adr/`,
   MULTI_STRIKE: `multistrike-list/`,
   PREMIUM_DECAY: `premium-decay-list/`,
-  EXPIRIES: `dates-expiries-list/`
+  EXPIRIES: `dates-expiries-list/`,
+  MOST_ACTIVE:`most-active-strikes/`
 };

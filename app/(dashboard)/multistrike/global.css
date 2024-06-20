@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+.green-text {
+  @apply text-[#0A8B3D] ;
+}
+
+.red-text {
+  @apply text-red-600  ;
+}
+
 .checkbox-container {
     @apply mb-10 p-4 border rounded-lg max-w-[1100px] ;
   }
@@ -9,61 +19,90 @@
   .checkbox-container-mulistrike{
     @apply mb-10 p-4 border rounded-lg max-w-[150px];
   }
-  /* .checkbox-div-multistrike{
-    @apply flex items-center;
-  }
-  .checkbox-div{
-  @apply flex items-center;
 
-} */
-  #chart {
-    max-width: auto;
-    margin: 35px auto;
-  }
+.div-parent {
+  @apply bg-[#F4F4F4];
+}
+.decay-main-div{
+    @apply flex ;
+}
 
-  .strike-dropdown{
-    @apply flex items-center space-x-4 p-4 bg-gray-100 rounded-md;
-  }
 
-  .dropdown-container{
-    @apply flex items-center space-x-2;
-  } 
-
-  .last45mindecay-green{
-    @apply text-green-500;
-  }
-
-  .last45mindecay-red{
-    @apply text-red-400;
-  }
-
-  .decay-labels{
-    @apply flex items-center;
-  }
-
-  .checkboxes-itself{
+.checkboxes-itself{
     @apply border w-4 h-4 rounded-full;
   }
 
   .checkboxes-itself:checked {
     @apply accent-blue-300 border rounded text-white decoration-white; 
-  }
+  } 
+
 .table-container-premium{
-  @apply w-1/2 float-left;
+    @apply w-1/2 float-left;
+  }
+
+/* .data-table {
+  @apply border-slate-200 rounded-xl  border;
 }
 
-table{
-  @apply w-full border-collapse float-left;
+.fii-dii-chart-div {
+  @apply bg-white p-10;
 }
 
-td{
-  @apply border;
+.cash-market-dd{
+  @apply flex justify-between items-center py-10;
+} */
+
+/* .table-div {
+  @apply px-10 bg-white py-10;
+} */
+
+/* .table-title {
+  @apply text-[#344054];
+} */
+.multistrike-header {
+  @apply bg-[rgb(249,249,249)] flex h-14 items-start gap-4 sticky top-0 z-[1] pt-4 pb-0 px-8 border-b-[rgb(216,220,227)] border-b border-solid;
+  -webkit-box-pack: justify;
 }
 
-.decay-main-div{
-  @apply flex;
+.multistrike-header-active {
+  @apply font-medium text-blue-500 flex relative h-10;
 }
 
-.refresh-button2 {
-  @apply py-2 px-4 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300;
+.multistrike-header-active::after {
+  @apply content-[""] w-full  absolute bg-blue-500 bottom-0 h-1 rounded-[0.5rem_0.5rem_0rem_0rem] mt-4;
+}
+
+.multistrike-header-deactive {
+  @apply text-[#808284];
+}
+/* 
+.client-month-flex{
+  @apply flex justify-between;
+} */
+
+.time-checkbox-div{
+  @apply flex items-center gap-2 ;
+}
+.size-div{
+  @apply flex items-center m-3 gap-2 ;
+}
+
+.size-div-itself{
+  @apply border-blue-500 border-2 m-2 rounded-md;
+}
+
+.checked-radio{
+  @apply rounded-md px-4 border border-blue-600 text-blue-600 bg-blue-100 text-sm py-1;
+}
+
+.normal-radio{
+  @apply border-neutral-400 border rounded-md text-black text-sm px-4 py-1;
+}
+
+.expiry-div{
+  @apply border-neutral-400 border rounded-md px-2 max-w-48;
+}
+
+.expiry-flex{
+  @apply flex place-items-end;
 }

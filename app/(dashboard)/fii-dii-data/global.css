@@ -11,6 +11,15 @@
 .red-text {
   @apply text-red-600  ;
 }
+.radio-button-group {
+  @apply flex p-6 border-solid;
+}
+.radio-button {
+  @apply rounded cursor-pointer px-4 py-2  border-[#ccc];
+}
+.radio-button-nested {
+  @apply border border-solid border-[#ccc] p-2 rounded;
+}
 
 .div-parent {
   @apply bg-[#F4F4F4];
