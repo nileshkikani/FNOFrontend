@@ -1,110 +1,58 @@
-
 'use client';
-import React, { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
-import useMultiStrikeData from '@/hooks/useMultiStrikeData';
+import React from 'react';
+import ApexCharts from 'react-apexcharts'; 
 
-const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const MultiStrikeChart = () => {
-  const { strikePrice1, strikePrice2, strikePrice3, strikePrice4, strikePrice5,whenComponentUnmount } = useMultiStrikeData();
+const MultiStrikeChart = ({ data }) => {
 
-  const [options, setOptions] = useState({});
-  const [series, setSeries] = useState([]);
+  const seriesData = data.map(point => ({
+    x: new Date(point.created_at).getTime(),
+    y1: point.call_net_oi,
+    y2: point.put_net_oi
+  }));
 
-  useEffect(() => {
-    const extractTimes = (items) => (items && items.length ? items.map((item) => item.created_at).filter(Boolean) : []);
-
-    const allCreatedAts = [
-      ...extractTimes(strikePrice1),
-      ...extractTimes(strikePrice2),
-      ...extractTimes(strikePrice3),
-      ...extractTimes(strikePrice4),
-      ...extractTimes(strikePrice5)
-    ];
-
-    const uniqueCreatedAts = [...new Set(allCreatedAts)];
-
-    const formattedTimes = uniqueCreatedAts.map((datetime) => {
-      if (datetime) {
-        const timePart = datetime.split('T')[1];
-        if (timePart) {
-          const [hours, minutes] = timePart.split(':');
-          if (hours !== undefined && minutes !== undefined) {
-            return `${hours}:${minutes}`;
-          }
+  const options = {
+    chart: {
+      type: 'line',
+      height: 350,
+      toolbar: {
+        show: false
+      }
+    },
+    series: [
+      { name: 'Call Net OI', data: seriesData.map(point => ({ x: point.x, y: point.y1 })) },
+      { name: 'Put Net OI', data: seriesData.map(point => ({ x: point.x, y: point.y2 })) }
+    ],
+    xaxis: {
+      type: 'datetime',
+      labels: {
+        formatter: function(val) {
+          return new Date(val).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
         }
       }
-      return 'Invalid Time';
-    });
-
-    const getData = (items, key) => (items ? items.map((item) => item[key] || 0) : []);
-
-    const shouldAddSeries = (strikePrice) => strikePrice && strikePrice.length >= 1;
-
-    const createSeries = (strikePrice, prefix) => {
-      const call_net_oi = getData(strikePrice, 'call_net_oi');
-      const put_net_oi = getData(strikePrice, 'put_net_oi');
-      return [
-        { name: `${prefix} CALL`, data: call_net_oi },
-        { name: `${prefix} PUT`, data: put_net_oi }
-      ];  
-    };
-
-    let finalSeries = [];
-    if (shouldAddSeries(strikePrice1)) {
-      const strikeValue = [...new Set(strikePrice1.map(item => item.strike_price))];
-      finalSeries.push(...createSeries(strikePrice1,strikeValue ));
-    }
-    if (shouldAddSeries(strikePrice2)) {
-      const strikeValue = [...new Set(strikePrice2.map(item => item.strike_price))];
-      finalSeries.push(...createSeries(strikePrice2, strikeValue ));
-    }
-    if (shouldAddSeries(strikePrice3)) {
-      const strikeValue = [...new Set(strikePrice3.map(item => item.strike_price))];
-      finalSeries.push(...createSeries(strikePrice3, strikeValue));
-    }
-    if (shouldAddSeries(strikePrice4)) {
-      const strikeValue = [...new Set(strikePrice4.map(item => item.strike_price))];
-      finalSeries.push(...createSeries(strikePrice4, strikeValue));
-    }
-    if (shouldAddSeries(strikePrice5)) {
-      const strikeValue = [...new Set(strikePrice5.map(item => item.strike_price))];
-      finalSeries.push(...createSeries(strikePrice5, strikeValue));
-    }
-
-    setOptions({
-      chart: {
-        // height: 350,
-        type: 'line',
-        zoom: { enabled: false }
+    },
+    yaxis: [
+      {
+        title: {
+          text: 'Call Net OI'
+        }
       },
-      dataLabels: { enabled: false },
+      {
+        opposite: true,
+        title: {
+          text: 'Put Call OI'
+        }
+      }
+    ],
       stroke: {
-        width: 2,
-        curve: 'straight',
-        dashArray: [0, 8, 5]
-      },
-      title: { text: 'Multistrike Statistics', align: 'left' },
-      markers: {
-        size: 0,
-        hover: { sizeOffset: 6 }
-      },
-      xaxis: { categories: formattedTimes },
-      grid: { borderColor: '#f1f1f1' }
-    });
-
-    setSeries(finalSeries);
-  }, [strikePrice1, strikePrice2, strikePrice3, strikePrice4, strikePrice5]);
-
-  useEffect(()=>{
-    return ()=>{
-      whenComponentUnmount();
-    }
-  },[])
+        width: 2 
+      }
+  };
 
   return (
-    <div id="chart">{options.title && series && <ApexCharts options={options} series={series} height={350} />}</div>
+    <div id="chart">
+      <ApexCharts options={options} series={options.series} type={options.chart.type} height={options.chart.height} />
+    </div>
   );
 };
 

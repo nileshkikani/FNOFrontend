@@ -5,7 +5,7 @@ import './globals.css';
 //-------CONTEXTS------
 import { SecurityWiseProvider } from '@/context/SecurityWiseContext';
 import { AuthProvider } from '@/context/AuthContext';
-import { MultiStrikeProvider } from '@/context/MultiStrikeContext';
+// import { MultiStrikeProvider } from '@/context/MultiStrikeContext';
 
 //--------COMPONENTS-----------
 import dynamic from 'next/dynamic';
@@ -36,7 +36,9 @@ export default function RootLayout({ children }) {
             {/* {middleware(router.asPath)} */}
             {
               <SecurityWiseProvider>
-                <MultiStrikeProvider>{children}</MultiStrikeProvider>
+                {/* <MultiStrikeProvider> */}
+                  {children}
+                  {/* </MultiStrikeProvider> */}
               </SecurityWiseProvider>
             }
           </AuthProvider>

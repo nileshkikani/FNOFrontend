@@ -40,25 +40,7 @@
     @apply w-1/2 float-left;
   }
 
-/* .data-table {
-  @apply border-slate-200 rounded-xl  border;
-}
 
-.fii-dii-chart-div {
-  @apply bg-white p-10;
-}
-
-.cash-market-dd{
-  @apply flex justify-between items-center py-10;
-} */
-
-/* .table-div {
-  @apply px-10 bg-white py-10;
-} */
-
-/* .table-title {
-  @apply text-[#344054];
-} */
 .multistrike-header {
   @apply bg-[rgb(249,249,249)] flex h-14 items-start gap-4 sticky top-0 z-[1] pt-4 pb-0 px-8 border-b-[rgb(216,220,227)] border-b border-solid;
   -webkit-box-pack: justify;
@@ -92,11 +74,11 @@
 }
 
 .checked-radio{
-  @apply rounded-md px-4 border border-blue-600 text-blue-600 bg-blue-100 text-sm py-1;
+  @apply rounded-md px-4 border border-blue-600 text-blue-600 bg-blue-100 text-sm py-2;
 }
 
 .normal-radio{
-  @apply border-neutral-400 border rounded-md text-black text-sm px-4 py-1;
+  @apply border-neutral-400 border rounded-md text-black text-sm px-4 py-2 hover:bg-[#f4f4f4];
 }
 
 .expiry-div{
@@ -105,4 +87,15 @@
 
 .expiry-flex{
   @apply flex place-items-end;
+}
+.loading-container {
+  @apply flex justify-center items-center h-80;
+}
+
+.refresh-button2 {
+  @apply py-2 px-4 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300;
+}
+
+.main-premium-div{
+  @apply flex;
 }

@@ -7,167 +7,148 @@ import axiosInstance from '@/utils/axios';
 import { API_ROUTER } from '@/services/apiRouter';
 import { useAppSelector } from '@/store';
 
-//---------CHARTS-----------
-import MultiStrikeChart from '@/component/MultiStrikeChart/MultiStrikeChart';
-import useMultiStrikeData from '@/hooks/useMultiStrikeData';
-import PremiumDecayChart from '@/component/PremiumDecay-Graphs/PremiumDecay';
+//--------------------------CHARTS-------------------------
+const MultiStrikeChart = dynamic(() => import('@/component/MultiStrikeChart/MultiStrikeChart'), { ssr: false });
+const PremiumDecayChart = dynamic(() => import('@/component/PremiumDecay-Graphs/PremiumDecay'), { ssr: false });
 
-const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
+const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'), { ssr: false });
 
 const Page = () => {
-  const {
-    strikes,
-    checkSelectedStrike,
-    multiStrikeAPiCall,
-    selectedStrikePrices,
-    multiIsLoading,
-    selectedExp,
-    setSelectedExp
-  } = useMultiStrikeData();
   const authState = useAppSelector((state) => state.auth.authState);
-  const [selectedPremiumDecay, setSelectedPremiumDecay] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const expiryDropDown = useAppSelector((state) => state.user.expiries);
+  const [allStrikes, setAllStrikes] = useState([]);
+
+  // --------------------MULTISTRIKE STATES------------------
+  const [selectedMsStrikePrices, setSelectedMsStrikePrices] = useState([]);
+  const [multiStrikeLoading, setMultistrikeLoading] = useState(false);
+  const [selectedExp, setSelectedExp] = useState(expiryDropDown[0]);
+  const [msChartData, setMsChartData] = useState([]);
+
+  // ---------------------PREMIUM DECAY STATES----------------
+  const [selectedPdStrikePrices, setSelectedPdStrikePrices] = useState([]);
+  const [PremiumDecayIsLoading, setPremiumdecayIsLoading] = useState(false);
   const [selectedPremDEcayExp, setSelectedPremDecayExp] = useState(expiryDropDown[0]);
-
-  const [allStrikes,setAllStrikes] = useState([]);
-  const [selectedStrikes, setSelectedStrikes] =useState([])
-
-  const [allPremiumDecayStrikes, setAllPremiumDecayStrikes] = useState([]);
+  const [pdChartData, setPdChartData] = useState([]);
+  const [forTableOnly,setForTableOnly] = useState({});
 
   //--------PREMIUM DECAY STRIKE STATES--------
-  const [strike1, setStrike1] = useState([]);
-  const [strike2, setStrike2] = useState([]);
-  const [strike3, setStrike3] = useState([]);
-  const [strike4, setStrike4] = useState([]);
-  const [strike5, setStrike5] = useState([]);
+  // const [strike1, setStrike1] = useState([]);
+  // const [strike2, setStrike2] = useState([]);
+  // const [strike3, setStrike3] = useState([]);
+  // const [strike4, setStrike4] = useState([]);
+  // const [strike5, setStrike5] = useState([]);
 
-  // ---------PREMIUM DECAY API CALL-----------
-  const premiumDecayApiCall = async () => {
-    setIsLoading(true);
+  // -----------------MULTISTRIKE API CALL------------------
+  const multiStrikeAPiCall = async () => {
+    setMultistrikeLoading(true);
+    if (!authState && checkUserIsLoggedIn) {
+      return router.push('/login');
+    }
     try {
-      let apiUrl = `${API_ROUTER.PREMIUM_DECAY}?expiry=${selectedPremDEcayExp}`;
-      const response = await axiosInstance.get(apiUrl, {
-        headers: { Authorization: `Bearer ${authState.access}` }
-      });
-      // setDecayValue(response.data.data);
-      setAllPremiumDecayStrikes(response.data);
-      // console.log('sdcdds',response.data)
-      setIsLoading(false);
+      let strikeParam = '';
+      if (selectedMsStrikePrices.length > 1) {
+        strikeParam = selectedMsStrikePrices.join(',');
+      } else if (selectedMsStrikePrices.length === 1) {
+        strikeParam = selectedMsStrikePrices[0];
+      }
+      if (strikeParam && selectedExp) {
+        const apiUrl = `${API_ROUTER.MULTI_STRIKE}?expiry=${selectedExp}&strikes=${strikeParam}`;
+        const response = await axiosInstance.get(apiUrl, {
+          headers: { Authorization: `Bearer ${authState.access}` }
+        });
+        setMsChartData(response?.data);
+      }
+      setMultistrikeLoading(false);
+    } catch (err) {
+      console.log('error calling Multistrike', err);
+      handleResponceError();
+    }
+  };
+
+  // --------------------PREMIUM DECAY API CALL----------------
+  const premiumDecayApiCall = async () => {
+    setPremiumdecayIsLoading(true);
+    try {
+      let strikeParam = '';
+      if (selectedPdStrikePrices.length > 1) {
+        strikeParam = selectedPdStrikePrices.join(',');
+      } else if (selectedPdStrikePrices.length === 1) {
+        strikeParam = selectedPdStrikePrices[0];
+      }
+      if (strikeParam && selectedPremDEcayExp) {
+        let apiUrl = `${API_ROUTER.PREMIUM_DECAY}?expiry=${selectedPremDEcayExp}&strikes=${strikeParam}`;
+        const response = await axiosInstance.get(apiUrl, {
+          headers: { Authorization: `Bearer ${authState.access}` }
+        });
+        setPdChartData(response.data);
+        setPremiumdecayIsLoading(false);
+        // setForTableOnly(response.data)
+      }
     } catch (error) {
       console.log('error calling premium decay api', error);
     }
   };
 
-
-  const checkPremiumDecayStrike = (e, identifier) => {
-    // console.log('event is working');
-    if (e.target.checked) {
-      !selectedPremiumDecay.includes(+e.target.value) &&
-        setSelectedPremiumDecay([...selectedPremiumDecay, +e.target.value]);
-    } else {
-      setSelectedPremiumDecay(selectedPremiumDecay.filter((aItem) => +aItem != +e.target.value));
-    }
-
-    switch (identifier) {
-      case 1:
-        if (e.target.checked) {
-          const filteredStrikeData1 = allPremiumDecayStrikes.filter((itm) => itm.strike_price == e.target.value);
-          setStrike1(filteredStrikeData1[0]?.data);
-          return;
-        }
-        setStrike1([]);
-        break;
-      case 2:
-        if (e.target.checked) {
-          const filteredStrikeData2 = allPremiumDecayStrikes.filter((itm) => itm.strike_price == e.target.value);
-          setStrike2(filteredStrikeData2[0]?.data);
-          return;
-        }
-        setStrike2([]);
-        break;
-      case 3:
-        if (e.target.checked) {
-          const filteredStrikeData3 = allPremiumDecayStrikes.filter((itm) => itm.strike_price == e.target.value);
-          setStrike3(filteredStrikeData3[0]?.data);
-          return;
-        }
-        setStrike3([]);
-        break;
-      case 4:
-        if (e.target.checked) {
-          const filteredStrikeData4 = allPremiumDecayStrikes.filter((itm) => itm.strike_price == e.target.value);
-          setStrike4(filteredStrikeData4[0]?.data);
-          return;
-        }
-        setStrike4([]);
-        break;
-      case 5:
-        if (e.target.checked) {
-          const filteredStrikeData5 = allPremiumDecayStrikes.filter((itm) => itm.strike_price == e.target.value);
-          setStrike5(filteredStrikeData5[0]?.data);
-          return;
-        }
-        setStrike5([]);
-        break;
-      default:
-        break;
-    }
-  };
-
-  //----------API CALL FOR STRIKES API------------
+  //--------------------API CALL FOR STRIKES----------------
   const getStrikes = async () => {
     try {
       const response = await axiosInstance.get('strikes-list/', {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
-      setAllStrikes(response.data?.strikes)
+      setAllStrikes(response.data?.strikes);
+      setSelectedMsStrikePrices([String(response.data?.strikes[2])]);
+      setSelectedPdStrikePrices([String(response.data?.strikes[2])]);
     } catch (error) {
-      console.log("error calling strikes api",error)
+      console.log('error calling strikes api', error);
+    }
+  };
+
+  const checkSelectedMsStrikePrice = (e) => {
+    const { checked, value } = e.target;
+    if (checked) {
+      if (!selectedMsStrikePrices.includes(value)) {
+        setSelectedMsStrikePrices((prevCheckedExp) => [...prevCheckedExp, value]);
+      }
+    } else {
+      if (selectedMsStrikePrices.includes(value)) {
+        setSelectedMsStrikePrices((prevCheckedExp) => prevCheckedExp.filter((item) => item !== value));
+      }
+    }
+  };
+
+  const checkSelectedPdStrikePrice = (e) => {
+    const { checked, value } = e.target;
+    if (checked) {
+      if (!selectedPdStrikePrices.includes(value)) {
+        setSelectedPdStrikePrices((prevCheckedExp) => [...prevCheckedExp, value]);
+      }
+    } else {
+      if (selectedPdStrikePrices.includes(value)) {
+        setSelectedPdStrikePrices((prevCheckedExp) => prevCheckedExp.filter((item) => item !== value));
+      }
     }
   };
 
   useEffect(() => {
-    if (strikes.length > 0) {
-      checkSelectedStrike({ target: { value: strikes[2], checked: true } }, 3);
-    }
-  }, [strikes]);
-
-  useEffect(() => {
     getStrikes();
+  }, []);
+
+  useEffect(() => {
     multiStrikeAPiCall();
-  }, [selectedExp]);
+  }, [selectedExp, selectedMsStrikePrices]);
 
   useEffect(() => {
-    // premiumDecayApiCall();
-  }, [selectedPremDEcayExp]);
+    premiumDecayApiCall();
+  }, [selectedPremDEcayExp, selectedPdStrikePrices]);
 
-  useEffect(() => {
-    if (allPremiumDecayStrikes.length > 0) {
-      checkPremiumDecayStrike({ target: { value: allPremiumDecayStrikes[3].strike_price, checked: true } }, 3);
-    }
-  }, [allPremiumDecayStrikes]);
+  const refreshBtn = (param) => {
+    param ? multiStrikeAPiCall() : premiumDecayApiCall();
+  };
 
-  // const refreshBtn = (param) => {
-  //   param ? multiStrikeAPiCall() : premiumDecayApiCall();
-  // };
-console.log('reddd',allStrikes)
+    console.log("edded",pdChartData);
   return (
     <>
       {/* -----------MULTISTRIKE SECTION--------- */}
-      {/* {multiIsLoading ? (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: '50px'
-          }}
-        >
-          <PropagateLoader color="#33a3e3" loading={multiIsLoading} size={15} />
-        </div>
-      ) : (
-        <> */}
       <div className="checkbox-container-mulistrike">
         <div>
           <button className="refresh-button2" onClick={() => refreshBtn(true)}>
@@ -186,14 +167,14 @@ console.log('reddd',allStrikes)
             </select>
           </label>
         </div>
-        {strikes.map((itm, index) => (
+        {allStrikes.map((itm, index) => (
           <div key={index} className="checkbox-div-multistrike">
             <input
               type="checkbox"
               id={`strike${index}`}
               value={itm}
-              checked={selectedStrikePrices.includes(itm)}
-              onChange={(e) => checkSelectedStrike(e, index + 1)}
+              checked={selectedMsStrikePrices.includes(String(itm))}
+              onChange={(e) => checkSelectedMsStrikePrice(e)}
               className="checkboxes-itself"
             />
             <label htmlFor={`strike${index}`}>{itm}</label>
@@ -202,8 +183,8 @@ console.log('reddd',allStrikes)
           </div>
         ))}
       </div>
-      {/* -------MULTISTRIKE CHART--------- */}
-      {multiIsLoading ? (
+      {/* -------------MULTISTRIKE CHART--------- */}
+      {multiStrikeLoading ? (
         <div
           style={{
             display: 'flex',
@@ -213,163 +194,16 @@ console.log('reddd',allStrikes)
             minHeight: '350px'
           }}
         >
-          <PropagateLoader color="#33a3e3" loading={multiIsLoading} size={15} />
+          <PropagateLoader color="#33a3e3" loading={multiStrikeLoading} size={15} />
         </div>
       ) : (
         <>
-          <MultiStrikeChart />
+          <MultiStrikeChart data={msChartData} />
         </>
       )}
-      {!isLoading && (
-        <div className="decay-main-div">
-          <div className="table-container-premium">
-            <table>
-              <thead>
-                <tr>
-                  <th>Strikes</th>
-                  <th>Last 45 min call decay</th>
-                  <th>Last 45 min put decay</th>
-                  <th>Total call decay</th>
-                  <th>Total put decay</th>
-                </tr>
-              </thead>
-              <tbody>
-                {allPremiumDecayStrikes?.slice(1).map((itm, index) => (
-                  <tr key={index}>
-                    <td>
-                      <input
-                        type="checkbox"
-                        id={`decay${index}`}
-                        value={itm.strike_price}
-                        checked={selectedPremiumDecay.includes(itm.strike_price)}
-                        onChange={(e) => checkPremiumDecayStrike(e, index + 1)}
-                        className="checkboxes-itself"
-                      />
-                      <label htmlFor={`decay${index}`}>{itm.strike_price}</label>
-                      <span className={`color-dot color-dot-${index}`}></span>
-                    </td>
-                    <td>
-                      <span className={itm.last_9_call_decay_sum < 0 ? 'red-text' : 'green-text'}>
-                        {itm.last_9_call_decay_sum}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={itm.last_9_put_decay_sum < 0 ? 'red-text' : 'green-text'}>
-                        {itm.last_9_put_decay_sum}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={itm.total_call_decay < 0 ? 'red-text' : 'green-text'}>
-                        {itm.total_call_decay}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={itm.total_put_decay < 0 ? 'red-text' : 'last45mindecay-green'}>
-                        {itm.total_put_decay}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-                <tr className="font-bold">
-                  <td colSpan="3">Total decay</td>
-                  <td
-                    className={` ${
-                      parseFloat(
-                        allPremiumDecayStrikes.reduce((acc, itm) => {
-                          if (!isNaN(itm.total_call_decay)) {
-                            return acc + itm.total_call_decay;
-                          } else {
-                            return acc;
-                          }
-                        }, 0)
-                      ).toFixed(2) < 0
-                        ? 'red-text'
-                        : 'green-text'
-                    }`}
-                  >
-                    <span>
-                      {
-                        parseFloat(
-                          allPremiumDecayStrikes.reduce((acc, itm) => {
-                            if (!isNaN(itm.total_call_decay)) {
-                              return acc + itm.total_call_decay;
-                            } else {
-                              return acc;
-                            }
-                          }, 0)
-                        )
-                          .toFixed(2)
-                          .split('.')[0]
-                      }
-                    </span>
-                    <span>.</span>
-                    <span>
-                      {
-                        parseFloat(
-                          allPremiumDecayStrikes.reduce((acc, itm) => {
-                            if (!isNaN(itm.total_call_decay)) {
-                              return acc + itm.total_call_decay;
-                            } else {
-                              return acc;
-                            }
-                          }, 0)
-                        )
-                          .toFixed(2)
-                          .split('.')[1]
-                      }
-                    </span>
-                  </td>
-                  <td
-                    className={`${
-                      parseFloat(
-                        allPremiumDecayStrikes.reduce((acc, itm) => {
-                          if (!isNaN(itm.total_put_decay)) {
-                            return acc + itm.total_put_decay;
-                          } else {
-                            return acc;
-                          }
-                        }, 0)
-                      ).toFixed(2) < 0
-                        ? 'red-text'
-                        : 'green-text'
-                    }`}
-                  >
-                    <span>
-                      {
-                        parseFloat(
-                          allPremiumDecayStrikes.reduce((acc, itm) => {
-                            if (!isNaN(itm.total_put_decay)) {
-                              return acc + itm.total_put_decay;
-                            } else {
-                              return acc;
-                            }
-                          }, 0)
-                        )
-                          .toFixed(2)
-                          .split('.')[0]
-                      }
-                    </span>
-                    <span>.</span>
-                    <span>
-                      {
-                        parseFloat(
-                          allPremiumDecayStrikes.reduce((acc, itm) => {
-                            if (!isNaN(itm.total_put_decay)) {
-                              return acc + itm.total_put_decay;
-                            } else {
-                              return acc;
-                            }
-                          }, 0)
-                        )
-                          .toFixed(2)
-                          .split('.')[1]
-                      }
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+      {/* --------------------PREMIUM DECAY SECTION------------ */}
+      <div className="main-premium-div">
+        <div className="checkbox-container-mulistrike">
           <div>
             <button className="refresh-button2" onClick={() => refreshBtn()}>
               Refresh
@@ -387,10 +221,62 @@ console.log('reddd',allStrikes)
               </select>
             </label>
           </div>
+          <div>
+            {allStrikes.map((itm, index) => (
+              <div key={index} className="checkbox-div-multistrike">
+                <input
+                  type="checkbox"
+                  id={`pd${index}`}
+                  value={itm}
+                  checked={selectedPdStrikePrices.includes(String(itm))}
+                  onChange={(e) => checkSelectedPdStrikePrice(e)}
+                  className="checkboxes-itself"
+                />
+                <label htmlFor={`pd${index}`}>{itm}</label>
+                <span className={`color-dot color-dot-${index}`}></span>
+                <br />
+              </div>
+            ))}
+          </div>
         </div>
-      )}
+        {/* <table>
+          <thead>
+            <th>strike price</th>
+            <th>total call decay</th>
+            <th>total put decay</th>
+            <th>last 9 call decay</th>
+            <th>last 9 put decay</th>
+          </thead>
+          {pdChartData.map((itm) => (
+            <tr>
+              <td>{itm.strike_price}</td>
+              <td>{itm.total_call_decay}</td>
+              <td>{itm.total_put_decay}</td>
+              <td>{itm.last_9_call_decay_sum}</td>
+              <td>{itm.last_9_put_decay_sum}</td>
+            </tr>
+          ))}
+        </table> */}
+      </div>
+
       {/* -------PREMIUM DECAY CHART----------*/}
-      <PremiumDecayChart strike1={strike1} strike2={strike2} strike3={strike3} strike4={strike4} strike5={strike5} />
+      {PremiumDecayIsLoading ? (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: '50px',
+            minHeight: '350px'
+          }}
+        >
+          <PropagateLoader color="#33a3e3" loading={PremiumDecayIsLoading} size={15} />
+        </div>
+      ) : (
+        <>
+          <PremiumDecayChart data={pdChartData} />
+        </>
+      )}
     </>
   );
 };
