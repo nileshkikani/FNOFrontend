@@ -198,7 +198,7 @@ const Page = () => {
         </div>
       ) : (
         <>
-          <MultiStrikeChart data={msChartData} />
+          <MultiStrikeChart msChartData={msChartData} />
         </>
       )}
       {/* --------------------PREMIUM DECAY SECTION------------ */}
