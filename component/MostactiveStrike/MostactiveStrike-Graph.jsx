@@ -6,7 +6,8 @@ import {
     YAxis,
     CartesianGrid,
     Tooltip,
-    ComposedChart
+    ComposedChart,
+    // Brush
   } from 'recharts';
 
 const MostactiveStrike = ({data}) => {
@@ -35,6 +36,7 @@ const MostactiveStrike = ({data}) => {
           />
           <Bar yAxisId="left" name="call oi chnage" dataKey="call_oi_change" fill="#E96767" />
           <Bar yAxisId="left" name="put oi change" dataKey="put_oi_change" fill="#63D168" />
+          {/* <Brush dataKey="strike_price" height={30} stroke="#8884d8" /> */}
         </ComposedChart>
       </ResponsiveContainer>
     </div>

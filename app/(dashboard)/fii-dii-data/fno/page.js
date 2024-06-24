@@ -92,7 +92,7 @@ export default function Page() {
               }}
               checked={selectedClientType === 'FII'}
             />
-            <label htmlFor="FII" className="radio-button">
+            <label htmlFor="FII" className={selectedClientType === 'FII' ? 'radio-button-checked':'radio-button'}>
               FII
             </label>
             <input
@@ -106,7 +106,7 @@ export default function Page() {
               }}
               checked={selectedClientType === 'DII'}
             />
-            <label htmlFor="DII" className="radio-button">
+            <label htmlFor="DII" className={selectedClientType === 'DII' ? 'radio-button-checked':'radio-button'}>
               DII
             </label>
 
@@ -121,7 +121,7 @@ export default function Page() {
               }}
               checked={selectedClientType === 'Pro'}
             />
-            <label htmlFor="Pro" className="radio-button">
+            <label htmlFor="Pro" className={selectedClientType === 'Pro' ? 'radio-button-checked':'radio-button'}>
               Pro
             </label>
 
@@ -136,7 +136,7 @@ export default function Page() {
               }}
               checked={selectedClientType === 'Client'}
             />
-            <label htmlFor="Client" className="radio-button">
+            <label htmlFor="Client" className={selectedClientType === 'Client' ? 'radio-button-checked':'radio-button'}>
               Client
             </label>
           </div>

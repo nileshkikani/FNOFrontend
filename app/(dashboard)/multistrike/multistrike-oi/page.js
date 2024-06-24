@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import '../global.css';
 import dynamic from 'next/dynamic';
-// import axios from 'axios';
 import axiosInstance from '@/utils/axios';
 import { API_ROUTER } from '@/services/apiRouter';
 import { useAppSelector } from '@/store';
@@ -29,14 +28,32 @@ const Page = () => {
   const [PremiumDecayIsLoading, setPremiumdecayIsLoading] = useState(false);
   const [selectedPremDEcayExp, setSelectedPremDecayExp] = useState(expiryDropDown[0]);
   const [pdChartData, setPdChartData] = useState([]);
-  const [forTableOnly,setForTableOnly] = useState({});
 
-  //--------PREMIUM DECAY STRIKE STATES--------
-  // const [strike1, setStrike1] = useState([]);
-  // const [strike2, setStrike2] = useState([]);
-  // const [strike3, setStrike3] = useState([]);
-  // const [strike4, setStrike4] = useState([]);
-  // const [strike5, setStrike5] = useState([]);
+  useEffect(() => {
+    getStrikes();
+  }, []);
+
+  useEffect(() => {
+    multiStrikeAPiCall();
+  }, [selectedExp, selectedMsStrikePrices]);
+
+  useEffect(() => {
+    premiumDecayApiCall();
+  }, [selectedPremDEcayExp, selectedPdStrikePrices]);
+
+  // --------------------API CALL FOR STRIKES----------------
+  const getStrikes = async () => {
+    try {
+      const response = await axiosInstance.get('strikes-list/', {
+        headers: { Authorization: `Bearer ${authState.access}` }
+      });
+      setAllStrikes(response.data?.strikes);
+      setSelectedMsStrikePrices([String(response.data?.strikes[2])]);
+      setSelectedPdStrikePrices([String(response.data?.strikes[2])]);
+    } catch (error) {
+      console.log('error calling strikes api', error);
+    }
+  };
 
   // -----------------MULTISTRIKE API CALL------------------
   const multiStrikeAPiCall = async () => {
@@ -82,25 +99,14 @@ const Page = () => {
         });
         setPdChartData(response.data);
         setPremiumdecayIsLoading(false);
-        // setForTableOnly(response.data)
       }
     } catch (error) {
       console.log('error calling premium decay api', error);
     }
   };
 
-  //--------------------API CALL FOR STRIKES----------------
-  const getStrikes = async () => {
-    try {
-      const response = await axiosInstance.get('strikes-list/', {
-        headers: { Authorization: `Bearer ${authState.access}` }
-      });
-      setAllStrikes(response.data?.strikes);
-      setSelectedMsStrikePrices([String(response.data?.strikes[2])]);
-      setSelectedPdStrikePrices([String(response.data?.strikes[2])]);
-    } catch (error) {
-      console.log('error calling strikes api', error);
-    }
+  const refreshBtn = (param) => {
+    param ? multiStrikeAPiCall() : premiumDecayApiCall();
   };
 
   const checkSelectedMsStrikePrice = (e) => {
@@ -129,23 +135,6 @@ const Page = () => {
     }
   };
 
-  useEffect(() => {
-    getStrikes();
-  }, []);
-
-  useEffect(() => {
-    multiStrikeAPiCall();
-  }, [selectedExp, selectedMsStrikePrices]);
-
-  useEffect(() => {
-    premiumDecayApiCall();
-  }, [selectedPremDEcayExp, selectedPdStrikePrices]);
-
-  const refreshBtn = (param) => {
-    param ? multiStrikeAPiCall() : premiumDecayApiCall();
-  };
-
-    console.log("edded",pdChartData);
   return (
     <>
       {/* -----------MULTISTRIKE SECTION--------- */}
@@ -239,24 +228,38 @@ const Page = () => {
             ))}
           </div>
         </div>
-        {/* <table>
-          <thead>
-            <th>strike price</th>
-            <th>total call decay</th>
-            <th>total put decay</th>
-            <th>last 9 call decay</th>
-            <th>last 9 put decay</th>
-          </thead>
-          {pdChartData.map((itm) => (
-            <tr>
-              <td>{itm.strike_price}</td>
-              <td>{itm.total_call_decay}</td>
-              <td>{itm.total_put_decay}</td>
-              <td>{itm.last_9_call_decay_sum}</td>
-              <td>{itm.last_9_put_decay_sum}</td>
-            </tr>
-          ))}
-        </table> */}
+        {/* -------------PREMIUM DECAY TABLE--------- */}
+        <div>
+          {pdChartData?.length > 1 && (
+            <table>
+              <thead>
+                <tr>
+                  <th>strike price</th>
+                  <th>total call decay</th>
+                  <th>total put decay</th>
+                  <th>last 9 call decay</th>
+                  <th>last 9 put decay</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pdChartData.slice(1).map((itm,index) => (
+                  <tr key={index}>
+                    <td>{itm.strike_price}</td>
+                    <td className={itm.total_call_decay < 0 ? 'red-text' : 'green-text'}>{itm.total_call_decay}</td>
+                    <td className={itm.total_put_decay < 0 ? 'red-text' : 'green-text'}>{itm.total_put_decay}</td>
+                    <td className={itm.last_9_call_decay_sum < 0 ? 'red-text' : 'green-text'}>
+                      {itm.last_9_call_decay_sum}
+                    </td>
+                    <td className={itm.last_9_put_decay_sum < 0 ? 'red-text' : 'green-text'}>
+                      {itm.last_9_put_decay_sum}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          {pdChartData?.length === 0 && <p>Loading data...</p>}
+        </div>
       </div>
 
       {/* -------PREMIUM DECAY CHART----------*/}
