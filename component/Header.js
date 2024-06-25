@@ -216,9 +216,9 @@ export default function Header() {
       if (!token) {
         throw new Error('Token is required to connect WebSocket');
       }
-      console.log('feedToken', token?.feedToken);
+      // console.log('feedToken', token?.feedToken);
 
-      await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed);
+      // await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed);
     } catch (error) {
       console.error('Error in authentication or setting up WebSocket:', error);
     }

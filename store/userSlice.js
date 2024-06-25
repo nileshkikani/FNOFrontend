@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     userEmail:'',
     expiries:[],
-    socketToken:''
+    socketToken:'',
+    hello:''
   };
 
   export const userSlice = createSlice({
@@ -18,9 +19,13 @@ const initialState = {
       },
       setSocketToken:(state,action)=>{
         state.socketToken = action.payload;
+      },
+      setHello:(state,action)=>{
+        console.log('asasassa',action.payload)
+        state.hello = action.payload;
       }
     },
   });
 
-export const { setEmail,setExpiryDates,setSocketToken } = userSlice.actions;
+export const { setEmail,setExpiryDates,setSocketToken,setHello } = userSlice.actions;
 export const userReducer = userSlice.reducer;
