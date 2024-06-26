@@ -1,0 +1,11 @@
+.parent-div{
+    @apply rounded-md p-5;
+}
+
+th{
+    @apply text-lg;
+}
+
+.title{
+    @apply text-2xl text-indigo-900;
+}

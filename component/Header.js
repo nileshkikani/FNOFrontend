@@ -83,7 +83,7 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    console.log('isClosed', isClosed);
+    // console.log('isClosed', isClosed);
     if (isClosed) {
       generateToken();
     }
@@ -218,7 +218,7 @@ export default function Header() {
       }
       // console.log('feedToken', token?.feedToken);
 
-      // await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed);
+      await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed);
     } catch (error) {
       console.error('Error in authentication or setting up WebSocket:', error);
     }
@@ -228,7 +228,7 @@ export default function Header() {
     try {
       const response = await axiosInstance.get(API_ROUTER.ADR);
       setData(response.data);
-      console.log('response.data-=- ', response.data);
+      // console.log('response.data-=- ', response.data);
     } catch (error) {
       console.error('Error fetching ADR data:', error);
     }
@@ -583,7 +583,7 @@ export default function Header() {
                       className="popover-li"
                       href={item.path}
                       onClick={(e) => {
-                        console.log('eeeeee---', e);
+                        // console.log('eeeeee---', e);
 
                         // isActive(item.path);
                         setTimeout(() => {
