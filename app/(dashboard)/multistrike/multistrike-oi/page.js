@@ -237,8 +237,8 @@ const Page = () => {
                   <th>strike price</th>
                   <th>total call decay</th>
                   <th>total put decay</th>
-                  <th>last 9 call decay</th>
-                  <th>last 9 put decay</th>
+                  <th>last 45 min call decay</th>
+                  <th>last 45 min put decay</th>
                 </tr>
               </thead>
               <tbody>

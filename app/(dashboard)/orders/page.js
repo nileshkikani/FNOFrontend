@@ -11,7 +11,8 @@ const Page = () => {
   const socketToken = useAppSelector((state) => state.user.socketToken);
   const [data, setData] = useState([]);
   const [closedOrders, setClosedOrders] = useState([]);
-  const [selectedScript, setSelectedScript] = useState('HDFC BANK');
+  const [openOrders, setOpenOrders] = useState([]);
+  const [selectedScript, setSelectedScript] = useState('HDFCBANK');
   const [HDFC, setHDFC] = useState(null);
   const [NIFTY, setNIFTY] = useState(null);
 
@@ -53,6 +54,19 @@ const Page = () => {
     }
   };
 
+  // -------------------get open orders--------
+  const getOpenOrders = async () => {
+    try {
+      let url = `signal/orderupdate/?status=open`;
+      const response = await axiosInstance.get(url, {
+        headers: { Authorization: `Bearer ${authState.access}` }
+      });
+      setOpenOrders(response.data);
+    } catch (err) {
+      console.log('error getting closed orders', err);
+    }
+  };
+
   useEffect(() => {
     if (socketToken) {
       connectWebSocket(socketToken);
@@ -65,6 +79,7 @@ const Page = () => {
 
   useEffect(() => {
     getClosedOrders();
+    getOpenOrders();
   }, []);
 
   useEffect(() => {
@@ -83,13 +98,14 @@ const Page = () => {
             const response = axiosInstance.patch(url, price, {
               headers: { Authorization: `Bearer ${authState.access}` }
             });
+            console.log('patchcall');
           } catch (error) {
             console.log('error in patch req.', error);
           }
         }
       });
     }
-  }, [HDFC, NIFTY, data]);
+  }, [data]);
 
   const handleScriptChange = (e) => {
     setSelectedScript(e.target.value);
@@ -97,49 +113,63 @@ const Page = () => {
 
   return (
     <div className="parent-div">
-      <div>
+      {/* <div>
         <p>Select Script</p>
         <select value={selectedScript} onChange={handleScriptChange}>
-          <option value="HDFC BANK">HDFCBANK</option>
+          <option value="HDFCBANK">HDFCBANK</option>
           <option value="NIFTY 50">NIFTY 50</option>
         </select>
         <div>
           <label>Live HDFC is: {HDFC !== null ? HDFC : 'Loading...'}</label> <br />
           <label>Live NIFTY is: {NIFTY !== null ? NIFTY : 'Loading...'}</label>
         </div>
-      </div>
-      {/* <table>
-        <tr>
-          <th colspan="2">Positions</th>
-        </tr>
-        <tr>
-          <td>Position 1</td>
-          <td>Details 1</td>
-        </tr>
-        <tr>
-          <td>Position 2</td>
-          <td>Details 2</td>
-        </tr>
-        <tr>
-          <td>Position 3</td>
-          <td>Details 3</td>
-        </tr>
-      </table> */}
+      </div> */}
+      {openOrders && <label className='title'>{`Open order's(${openOrders.length})`}</label>}
+      <table>
+        <thead>
+          <tr>
+            <th>Stock</th>
+            <th>Buy Price</th>
+            <th>Sell Price</th>
+            <th>Status</th>
+            <th>Type</th>
+            <th>P/L</th>
+          </tr>
+        </thead>
+        <tbody>
+          {openOrders.map((item) => (
+            <tr key={item.id}>
+              <td>{item.symbol}</td>
+              <td>{item.buy_price}</td>
+              <td>{item.sell_price?.toFixed(2)}</td>
+              <td>{item.status}</td>
+              <td>{item.type}</td>
+              <td>{item.outcome}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       {closedOrders && <label className='title'>{`Day's history (${closedOrders.length})`}</label>}
       <table>
         <thead>
           <tr>
             <th>Stock</th>
+            <th>Buy Price</th>
             <th>Sell Price</th>
             <th>Status</th>
+            <th>Type</th>
+            <th>P/L</th>
           </tr>
         </thead>
         <tbody>
           {closedOrders.map((item) => (
             <tr key={item.id}>
               <td>{item.symbol}</td>
-              <td>{item.sell_price.toFixed(2)}</td>
+              <td>{item.buy_price?.toFixed(2)}</td>
+              <td>{item.sell_price?.toFixed(2)}</td>
               <td>{item.status}</td>
+              <td>{item.type}</td>
+              <td>{item.outcome}</td>
             </tr>
           ))}
         </tbody>

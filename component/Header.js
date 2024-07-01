@@ -583,9 +583,6 @@ export default function Header() {
                       className="popover-li"
                       href={item.path}
                       onClick={(e) => {
-                        // console.log('eeeeee---', e);
-
-                        // isActive(item.path);
                         setTimeout(() => {
                           closePopover();
                         }, 2000);

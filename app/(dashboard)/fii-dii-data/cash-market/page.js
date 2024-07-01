@@ -1,6 +1,6 @@
 'use client';
 import { API_ROUTER } from '@/services/apiRouter';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback,useMemo } from 'react';
 import axiosInstance from '@/utils/axios';
 // import axios from 'axios';
 import moment from 'moment';
@@ -117,7 +117,7 @@ const Page = () => {
   }
   dropdownOptions.reverse();
 
-  const getDailyFiiDiiData = async () => {
+  const getDailyFiiDiiData = useCallback( async () => {
     try {
       let apiUrl = `${API_ROUTER.DAILY_FII_DII_DATA}?month=${monthFromDropdown}&year=${yearFromDropdown}`;
       const response = await axiosInstance.get(apiUrl, {
@@ -128,7 +128,7 @@ const Page = () => {
     } catch (error) {
       console.log('error getting fii-dii daily data:', error);
     }
-  };
+  },[monthFromDropdown,yearFromDropdown]);
 
   // -------dropdown handler--------
   const handleMonthChange = (event) => {
@@ -138,11 +138,11 @@ const Page = () => {
     setYearFromDropdown(year);
   };
 
-  let maxFiiNet = Math.max(...data.map((item) => item.fii_net));
-  let maxDiiNet = Math.max(...data.map((item) => item.dii_net));
-
-  let minFiiNet = Math.min(...data.map((item) => item.fii_net));
-  let minDiiNet = Math.min(...data.map((item) => item.dii_net));
+  const maxFiiNet = useMemo(() => Math.max(...data.map((item) => item.fii_net)), [data]);
+  const maxDiiNet = useMemo(() => Math.max(...data.map((item) => item.dii_net)), [data]);
+  
+  const minFiiNet = useMemo(() => Math.min(...data.map((item) => item.fii_net)), [data]);
+  const minDiiNet = useMemo(() => Math.min(...data.map((item) => item.dii_net)), [data]);
 
   let startRange = 0;
   let endRange = 0;

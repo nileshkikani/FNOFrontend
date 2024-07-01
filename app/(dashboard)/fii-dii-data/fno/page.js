@@ -1,8 +1,7 @@
-'use client';
-import React, { useEffect, useState } from 'react';
+'use client'
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import moment from 'moment';
-// import axios from "axios";
 import axiosInstance from '@/utils/axios';
 import { API_ROUTER } from '@/services/apiRouter';
 import { useAppSelector } from '@/store';
@@ -15,144 +14,97 @@ import OptionsDataGraph from '@/component/FII-DII-Graphs/OptionsData-Graph';
 import FuturesDataGraph from '@/component/FII-DII-Graphs/FuturesData-Graph';
 
 export default function Page() {
-  const dropdownOptions = [];
-  const currentDate = new Date();
-  const [data, setData] = useState();
+  const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  // const { checkClientType, handleFetch, isLoading } = useFiiDiiData();
   const authState = useAppSelector((state) => state.auth.authState);
   const [selectedClientType, setSelectedClientType] = useState('FII');
+  const currentDate = new Date();
+  const [monthFromDropdown, setMonthFromDropdown] = useState(currentDate.getMonth() + 1);
+  const [yearFromDropdown, setYearFromDropdown] = useState(currentDate.getFullYear());
+  const [filteredByClient, setFilteredByClient] = useState(null);
 
-  const currentMonth = currentDate.getMonth() + 1;
-  const currentYear = currentDate.getFullYear();
+  const dropdownOptions = useMemo(() => {
+    const options = [];
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentYear = currentDate.getFullYear();
 
-  const [monthFromDropdown, setMonthFromDropdown] = useState(currentMonth);
-  const [yearFromDropdown, setYearFromDropdown] = useState(currentYear);
-  const [filteredByClient, setfilteredByClient] = useState();
-
-  // ----------last 6 month loop--------------
-  for (let i = 5; i >= 0; i--) {
-    let month = currentMonth - i;
-    let year = currentYear;
-    if (month <= 0) {
-      month = 12 + month;
-      year = currentYear - 1;
+    for (let i = 5; i >= 0; i--) {
+      let month = currentMonth - i;
+      let year = currentYear;
+      if (month <= 0) {
+        month = 12 + month;
+        year = currentYear - 1;
+      }
+      options.push({ year, month });
     }
-    dropdownOptions.push({ year, month });
-  }
-  dropdownOptions.reverse();
+    return options;
+  }, [currentDate]);
 
-  const getFiiDiiData = async () => {
+  const getFiiDiiData = useCallback(async () => {
     setIsLoading(true);
     try {
-      let apiUrl = `${API_ROUTER.LIST_MARKET_DATAL}?month=${monthFromDropdown}&year=${yearFromDropdown}`;
+      const apiUrl = `${API_ROUTER.LIST_MARKET_DATAL}?month=${monthFromDropdown}&year=${yearFromDropdown}`;
       const response = await axiosInstance.get(apiUrl, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       setData(response.data);
       const firstLoadClient = response.data.filter((itm) => itm.client_type === selectedClientType);
-      setfilteredByClient(firstLoadClient);
+      setFilteredByClient(firstLoadClient);
       setIsLoading(false);
     } catch (error) {
-      console.log('error getting fii-dii daily data:', error);
+      console.log('Error getting fii-dii daily data:', error);
     }
-  };
+  }, [monthFromDropdown, yearFromDropdown, data]);
+
   useEffect(() => {
-    authState && getFiiDiiData();
+    if (authState) {
+      getFiiDiiData();
+    }
   }, [monthFromDropdown, yearFromDropdown]);
 
-  // --------month dropdown handle------
   const handleMonthChange = (event) => {
     const selectedValue = event.target.value;
     const [year, month] = selectedValue.split('-');
-    setMonthFromDropdown(month);
-    setYearFromDropdown(year);
-  };
+    setMonthFromDropdown(Number(month));
+    setYearFromDropdown(Number(year));
+  }
 
-  // ---------client checkbox handle------  
   const checkClientType = (e) => {
     const checkClient = e.target.value;
-    const filteredClient = data.filter((item) => item?.client_type === checkClient);
-    setfilteredByClient(filteredClient);
-  };
+    const filteredClient = data?.filter((item) => item?.client_type === checkClient);
+    setFilteredByClient(filteredClient);
+    setSelectedClientType(checkClient);
+  }
 
   return (
     <div className="div-parent">
       <div className="fii-dii-chart-div">
         <div className="radio-button-group client-month-flex">
           <div className="radio-button-nested">
-            <input
-              type="radio"
-              id="FII"
-              name="clientType"
-              value="FII"
-              onChange={(e) => {
-                checkClientType(e);
-                setSelectedClientType('FII');
-              }}
-              checked={selectedClientType === 'FII'}
-            />
-            <label htmlFor="FII" className={selectedClientType === 'FII' ? 'radio-button-checked':'radio-button'}>
-              FII
-            </label>
-            <input
-              type="radio"
-              id="DII"
-              name="clientType"
-              value="DII"
-              onChange={(e) => {
-                checkClientType(e);
-                setSelectedClientType('DII');
-              }}
-              checked={selectedClientType === 'DII'}
-            />
-            <label htmlFor="DII" className={selectedClientType === 'DII' ? 'radio-button-checked':'radio-button'}>
-              DII
-            </label>
-
-            <input
-              type="radio"
-              id="Pro"
-              name="clientType"
-              value="Pro"
-              onChange={(e) => {
-                checkClientType(e);
-                setSelectedClientType('Pro');
-              }}
-              checked={selectedClientType === 'Pro'}
-            />
-            <label htmlFor="Pro" className={selectedClientType === 'Pro' ? 'radio-button-checked':'radio-button'}>
-              Pro
-            </label>
-
-            <input
-              type="radio"
-              id="Client"
-              name="clientType"
-              value="Client"
-              onChange={(e) => {
-                checkClientType(e);
-                setSelectedClientType('Client');
-              }}
-              checked={selectedClientType === 'Client'}
-            />
-            <label htmlFor="Client" className={selectedClientType === 'Client' ? 'radio-button-checked':'radio-button'}>
-              Client
-            </label>
+            {['FII', 'DII', 'Pro', 'Client'].map((item) => (
+              <React.Fragment key={item}>
+                <input
+                  type="radio"
+                  id={item}
+                  name="clientType"
+                  value={item}
+                  onChange={checkClientType}
+                  checked={selectedClientType === item}
+                />
+                <label htmlFor={item} className={selectedClientType === item ? 'radio-button-checked' : 'radio-button'}>
+                  {item}
+                </label>
+              </React.Fragment>
+            ))}
           </div>
           <div>
             <label>
               <select className="stock-dropdown" onChange={handleMonthChange}>
-                {dropdownOptions.map((option, index) => {
-                  const year = option.year;
-                  const month = option.month;
-                  const monthName = moment(`${year}-${month}`, 'YYYY-MM').format('MMMM');
-                  return (
-                    <option key={index} value={`${year}-${month}`}>
-                      {`${monthName} ${year}`}
-                    </option>
-                  );
-                })}
+                {dropdownOptions.reverse().map(({ year, month }, index) => (
+                  <option key={index} value={`${year}-${month}`}>
+                    {moment(`${year}-${month}`, 'YYYY-MM').format('MMMM YYYY')}
+                  </option>
+                ))}
               </select>
             </label>
           </div>

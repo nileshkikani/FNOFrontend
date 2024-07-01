@@ -27,7 +27,7 @@ const MacdIndicator = ({ macdData }) => {
       data: macdData.map(data => ({
         x: parseDate(data.created_at),
         y: data.macd_histogram,
-        fillColor: data.macd_histogram >= 0 ? '#008000' : '#ff0000' // Green for positive, Red for negative
+        fillColor: data.macd_histogram >= 0 ? '#008000' : '#ff0000' 
       }))
     }
   ];
@@ -38,7 +38,7 @@ const MacdIndicator = ({ macdData }) => {
       height: 350,
     },
     stroke: {
-      width: [2, 2, 0] // No stroke width for bars
+      width: [2, 2, 0] 
     },
     xaxis: {
       type: 'datetime',
@@ -80,17 +80,17 @@ const MacdIndicator = ({ macdData }) => {
             {
               from: 0,
               to: Infinity,
-              color: '#008000' // Green for positive values
+              color: '#008000' 
             },
             {
               from: -Infinity,
               to: 0,
-              color: '#ff0000' // Red for negative values
+              color: '#ff0000' 
             }
           ]
         },
         borderRadius: 0,
-        borderWidth: 0 // Remove border
+        borderWidth: 0 
       }
     }
   };

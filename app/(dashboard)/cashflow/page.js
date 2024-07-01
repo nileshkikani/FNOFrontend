@@ -13,6 +13,7 @@ const MacdIndicator = dynamic(() => import('@/component/MoneyFlow-Graphs/MacdInd
 import { useAppSelector } from '@/store';
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
+import axios from 'axios';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 // import axios from 'axios';
@@ -103,9 +104,8 @@ const Page = () => {
   const getAllStocks = async () => {
     try {
       setAllStockLoading(true);
-      let apiUrl = `${API_ROUTER.CASH_FLOW_ALL}`;
-
-      const response = await axiosInstance.get((apiUrl += `?date=${selectedDate}`), {
+      let apiUrl = `http://192.168.0.179:8000/${API_ROUTER.CASH_FLOW_ALL}`;
+      const response = await axios.get((apiUrl += `?date=${selectedDate}`), {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       if (response.status == 200) {
@@ -127,18 +127,6 @@ const Page = () => {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       setBuySellData(response.data);
-
-      // const processedData = response.data?.map((item) => ({
-      //   ...item,
-      //   bar_value: Math.abs(item.MACDh_12_26_9),
-      //   fill: item.MACDh_12_26_9 < 0 ? '#E96767' : '#63D168',
-      //   bar_value: item.MACDh_12_26_9
-      // }));
-
-      // const min = Math.min(processedData.map((item) => item.MACDh_12_26_9));
-      // const max = Math.max(processedData.map((item) => item.MACDh_12_26_9));
-      // setMinMACDh(min);
-      // setMaxMACDh(max);
 
       setMacdData(response.data);
     } catch (error) {
@@ -188,10 +176,10 @@ const Page = () => {
         ) : (
           <div className="graph-container">
             <div className="graph-div-cashFlow">
-              {allData?.stock_data && <ActiveMoneyFlow title={'Stock'} data={allData?.stock_data} />}
+              {allData?.stock_data && <ActiveMoneyFlow title={'Stock'} data={allData?.stock_data} layout="vertical" />}
             </div>
             <div className="graph-div-cashFlow">
-              {allData?.fno_data && <ActiveMoneyFlow title={'FNO'} data={allData?.fno_data} />}
+              {allData?.fno_data && <ActiveMoneyFlow title={'FNO'} data={allData?.fno_data} layout='horizontal' />}
             </div>
           </div>
         )}
@@ -240,7 +228,6 @@ const Page = () => {
               />
             </div>
           </div>
-
           <div className="dropdown-container">
             <h1 className="table-title1">SELECT SCRIPT :</h1>
             <select value={selectedScript} onChange={(e) => filterByStockAndDate(e, false)} className="stock-dropdown">
@@ -252,7 +239,6 @@ const Page = () => {
                 ))}
             </select>
           </div>
-
           <button className="refresh-button2" onClick={() => refreshData()}>
             Refresh
           </button>
