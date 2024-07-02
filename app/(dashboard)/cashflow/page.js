@@ -104,7 +104,7 @@ const Page = () => {
   const getAllStocks = async () => {
     try {
       setAllStockLoading(true);
-      let apiUrl = `http://192.168.0.179:8000/${API_ROUTER.CASH_FLOW_ALL}`;
+      let apiUrl = `https://api.satvikacart.com/${API_ROUTER.CASH_FLOW_ALL}`;
       const response = await axios.get((apiUrl += `?date=${selectedDate}`), {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
