@@ -9,3 +9,19 @@ th{
 .title{
     @apply text-2xl text-indigo-900;
 }
+
+.refresh-button {
+    @apply py-2 px-4 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300;
+  }
+
+  .green-text {
+    @apply text-[#0A8B3D];
+  }
+  
+  .red-text {
+    @apply text-red-600;
+  }
+
+  .total{
+    @apply text-xl;
+  }

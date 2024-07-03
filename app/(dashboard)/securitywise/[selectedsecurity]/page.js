@@ -20,8 +20,10 @@ const Page = () => {
   const [responseData, setResponseData] = useState([]);
   const authState = useAppSelector((state) => state.auth.authState);
   const router = useRouter();
-  const [deliveryChartData, setDeliveryChartData] = useState([]);
+  // const [deliveryChartData, setDeliveryChartData] = useState([]);
   const [monthlyData, setMonthlyData] = useState([]);
+  // const [reversedData,setReversedData] = useState([]);
+  const [reversedCData, setReversedCData] = useState({ dates: [], tradedVolume: [], deliveryVolume: [], deliveryVolumePercentage: [] });
   // const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
   const getSelectedStockData = async () => {
@@ -29,9 +31,19 @@ const Page = () => {
       const response = await axiosInstance.get(`${API_ROUTER.LIST_SECWISE_DATE}?symbol=${selectedsecurity}`, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
-      setResponseData(response.data);
-      console.log('response.data', response.data);
+      setResponseData(response?.data);
+      // console.log('response.data', response.data);
       const cData = processData(response?.data?.results);
+
+      console.log('bh',cData)
+
+      const reversedCData = { 
+        dates: cData.dates.slice().reverse(),
+        tradedVolume: cData.tradedVolume.slice().reverse(),
+        deliveryVolume: cData.deliveryVolume.slice().reverse(),
+        deliveryVolumePercentage: cData.deliveryVolumePercentage.slice().reverse(),
+        close_price:cData.close_price.slice().reverse()
+      };
       const last30Days = response?.data?.results;
       const monthlyData = await Promise.all(
         last30Days.map(async (item, index) => {
@@ -48,12 +60,9 @@ const Page = () => {
         })
       );
 
-      console.log('monthlyData----', monthlyData);
-      // const insights = await calculateInsights(monthlyData);
-      // console.log('insights', insights);
-
+      setReversedCData(reversedCData);
       setMonthlyData(monthlyData);
-      setDeliveryChartData(cData);
+      // setDeliveryChartData(cData);
     } catch (err) {
       console.log('error getting selected stock data', err);
     }
@@ -241,18 +250,21 @@ const Page = () => {
     }
   ];
 
+  
   const processData = (data) => {
     const last30Days = data;
-    const sortedData = last30Days.sort((a, b) => new Date(a.date) - new Date(b.date));
+    const sortedData = last30Days.sort((a, b) => new Date(b.date) - new Date(a.date));
     const dates = sortedData.map((item) => moment(item.date).format('DD-MMM'));
     const tradedVolume = sortedData.map((item) => item.total_traded_quantity);
     const deliveryVolume = sortedData.map((item) => item.deliverable_qty);
     const deliveryVolumePercentage = sortedData.map((item) =>
       parseFloat((item.deliverable_qty / item.total_traded_quantity) * 100)
     );
-
-    return { dates, tradedVolume, deliveryVolume, deliveryVolumePercentage };
+    const close_price =  sortedData.map((item)=> item.close_price);
+  
+    return { dates, tradedVolume, deliveryVolume, deliveryVolumePercentage,close_price };
   };
+  
 
   const handleBack = () => {
     router.push('/securitywise');
@@ -287,7 +299,7 @@ const Page = () => {
         </h1>
       </div>
       <div className="chart-div">
-        <DeliveryChart data={deliveryChartData} />
+        <DeliveryChart data={reversedCData} />
       </div>
       <div className="main-div">
         <div className="table-main-div">

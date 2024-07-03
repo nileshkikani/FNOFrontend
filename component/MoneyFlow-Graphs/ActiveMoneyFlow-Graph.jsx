@@ -53,6 +53,8 @@ const ActiveMoneyFlow = ({ data, title, layout }) => {
               formatter={(value, name, props) => {
                 if (name === 'Net Money Flow') {
                   return [props.payload.original_net_money_flow, name];
+                } else if (name === ' Previous Day Last 45 Minutes') {
+                  return [props.payload.previous_net_money_flow, name]; // Display previous_net_money_flow in tooltip
                 }
                 return [value, name];
               }}
@@ -100,3 +102,4 @@ const ActiveMoneyFlow = ({ data, title, layout }) => {
 };
 
 export default ActiveMoneyFlow;
+

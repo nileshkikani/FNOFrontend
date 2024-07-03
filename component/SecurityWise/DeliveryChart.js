@@ -1,16 +1,13 @@
-// components/DeliveryChart.js
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, Filler } from 'chart.js';
-import moment from 'moment';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, Filler);
 
 const DeliveryChart = ({ data }) => {
-  // const formattedDates = data.dates.map((date) => moment(date).format('DD-MMM'));
 
-  const chartData = {
-    labels: data.dates,
+  const reversedData = {
+    labels: data?.dates,
     datasets: [
       {
         label: 'Traded Volume',
@@ -35,10 +32,8 @@ const DeliveryChart = ({ data }) => {
         data: data.deliveryVolumePercentage,
         borderColor: 'rgba(250, 80, 169, 0.5)',
         backgroundColor: 'rgba(250, 80, 169, 0.7)',
-        // type: 'line',
         yAxisID: 'y1',
         maxBarThickness: 10,
-
         fill: true,
         order: 0
       }
@@ -74,14 +69,29 @@ const DeliveryChart = ({ data }) => {
       },
       tooltip: {
         mode: 'index',
-        intersect: false
+        intersect: false,
+        callbacks: {
+          label: function(tooltipItem) {
+            let label = tooltipItem.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            label += tooltipItem.formattedValue;
+            const index = tooltipItem.dataIndex;
+
+            if (tooltipItem.datasetIndex === 1 && data.close_price && data.close_price[index]) {
+              label += ` (Close Price: ${data.close_price[index]})`;
+            }
+            return label;
+          }
+        }
       }
     }
   };
 
   return (
     <div style={{ height: '500px', width: '100%' }}>
-      <Bar data={chartData} options={options} />
+      <Bar data={reversedData} options={options} />
     </div>
   );
 };
