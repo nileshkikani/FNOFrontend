@@ -32,7 +32,7 @@ export default function Page() {
   let adjustedNiftyStart;
   let adjustedNiftyEnd;
   const [selectedNiftyFutureDates, setSelectedNiftyFutureDates] = useState('');
-  const [strikeAtm, setStrikeAtm] = useState('5');
+  const [strikeAtm, setStrikeAtm] = useState('15');
   const { handleResponceError } = useAuth();
   const [timeLeft, setTimeLeft] = useState(300); // 300 seconds == 5 minutes
   const [marketClosed, setMarketClosed] = useState(false);

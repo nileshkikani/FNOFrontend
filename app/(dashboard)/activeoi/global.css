@@ -46,7 +46,7 @@
 }
 
 .table-cell {
-  @apply px-6 py-4 whitespace-nowrap;
+  @apply px-6 py-4 whitespace-nowrap !important;
 }
 
 .table-header-cell {
@@ -75,4 +75,9 @@
 
 .exp-date-div{
   @apply flex items-center;
+}
+
+td {
+  text-align: center ;
+  border: solid 2px lightgrey ;
 }

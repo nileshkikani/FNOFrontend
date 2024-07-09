@@ -13,7 +13,6 @@ import {
 } from 'recharts';
 
 const ActiveMoneyFlow = ({ data, title, layout }) => {
-  // Preprocess the data to add the necessary display properties
   const processedData =
     data && layout === 'vertical'
       ? data.map((item) => ({
@@ -21,10 +20,6 @@ const ActiveMoneyFlow = ({ data, title, layout }) => {
           display_net_money_flow: Math.abs(item.net_money_flow),
           fill: item.net_money_flow < 0 ? '#E96767' : '#63D168',
           original_net_money_flow: item.net_money_flow
-
-          // display_previous_net_money_flow: Math.abs(item.previous_net_money_flow),
-          // fill_previous: item.previous_net_money_flow < 0 ? '#E96767' : '#63D168',
-          // previous_net_money_flow: item.previous_net_money_flow,
         }))
       : data.map((item) => ({
           ...item,
@@ -38,10 +33,10 @@ const ActiveMoneyFlow = ({ data, title, layout }) => {
             item.previous_net_money_flow !== undefined ? item.previous_net_money_flow : 0
         }));
 
-  console.log('Processed Data:', processedData); // Debugging: Check processed data
+  // console.log('Processed Data:', processedData); 
 
   return (
-    <div style={{ width: '100%', height: '580px' }}>
+    <div style={{ width: '100%', height: '780px' }}>
       <h1 className="table-title">{`${title} MONEY-FLOW`}</h1>
       <ResponsiveContainer width="100%" height="100%">
         {layout === 'vertical' ? (
@@ -54,7 +49,7 @@ const ActiveMoneyFlow = ({ data, title, layout }) => {
                 if (name === 'Net Money Flow') {
                   return [props.payload.original_net_money_flow, name];
                 } else if (name === ' Previous Day Last 45 Minutes') {
-                  return [props.payload.previous_net_money_flow, name]; // Display previous_net_money_flow in tooltip
+                  return [props.payload.previous_net_money_flow, name]; 
                 }
                 return [value, name];
               }}

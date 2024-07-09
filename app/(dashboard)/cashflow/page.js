@@ -186,18 +186,6 @@ const Page = () => {
         <div className="flex-container">
           <div className="dropdown-container">
             <h1 className="table-title1">SELECT DATE :</h1>
-            {/* <select
-              onChange={(e) => filterByStockAndDate(e, true)}
-              value={selectedDate ? selectedDate : ''}
-              className="stock-dropdown"
-            >
-              {allDates &&
-                allDates.map((stockData, index) => (
-                  <option key={index} value={stockData}>
-                    {stockData}
-                  </option>
-                ))}
-            </select> */}
             <div className="calender-dropdown">
               <DatePicker
                 showIcon

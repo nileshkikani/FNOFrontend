@@ -61,10 +61,10 @@ th {
 }
 
 
-td {
+/* td {
   text-align: center;
-  border: solid 2px lightgrey;
-}
+  border: solid 2px lightgrey ;
+} */
 
 
 .scrolling-table {

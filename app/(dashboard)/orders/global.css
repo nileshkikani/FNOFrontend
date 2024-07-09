@@ -25,3 +25,21 @@ th{
   .total{
     @apply text-xl;
   }
+
+  .td-cell{
+    @apply border-none py-4 text-center ;
+  }
+
+  .order-icon{
+    @apply flex justify-center items-center gap-2;
+  }
+
+  .row-light-color {
+    background-color: #f9f9f9 ;
+    border:'none' 
+  }
+  
+  .row-dark-color {
+    background-color: #f0f0f0 ; 
+    border:'none'
+  }

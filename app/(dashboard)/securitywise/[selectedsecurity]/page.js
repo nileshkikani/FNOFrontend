@@ -62,7 +62,6 @@ const Page = () => {
 
       setReversedCData(reversedCData);
       setMonthlyData(monthlyData);
-      // setDeliveryChartData(cData);
     } catch (err) {
       console.log('error getting selected stock data', err);
     }
