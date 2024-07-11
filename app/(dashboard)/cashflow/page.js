@@ -13,7 +13,7 @@ const MacdIndicator = dynamic(() => import('@/component/MoneyFlow-Graphs/MacdInd
 import { useAppSelector } from '@/store';
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
-import axios from 'axios';
+// import axios from 'axios';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 // import axios from 'axios';
@@ -104,8 +104,8 @@ const Page = () => {
   const getAllStocks = async () => {
     try {
       setAllStockLoading(true);
-      let apiUrl = `https://api.satvikacart.com/${API_ROUTER.CASH_FLOW_ALL}`;
-      const response = await axios.get((apiUrl += `?date=${selectedDate}`), {
+      let apiUrl = `${API_ROUTER.CASH_FLOW_ALL}`;
+      const response = await axiosInstance.get((apiUrl += `?date=${selectedDate}`), {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       if (response.status == 200) {
@@ -122,15 +122,21 @@ const Page = () => {
   // -----------BUY SELL CALL FOR CANDLE AND MACD--------
   const buySellCall = async () => {
     try {
+      if (!selectedDate) {
+        return;
+      }
       let apiUrl = `${API_ROUTER.CANDLE_AND_MACD}`;
-      const response = await axiosInstance.get(selectedScript ? (apiUrl += `?symbol=${selectedScript}`) : apiUrl, {
+      const response = await axiosInstance.get(apiUrl, {
+        params: {
+          symbol: selectedScript,
+          date: selectedDate
+        },
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       setBuySellData(response.data);
-
       setMacdData(response.data);
     } catch (error) {
-      console.log('error calling buy seel api', error);
+      console.log('Error calling buy sell API:', error);
     }
   };
   useEffect(() => {

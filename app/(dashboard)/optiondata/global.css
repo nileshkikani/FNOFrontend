@@ -7,11 +7,11 @@
 }
 
 tbody {
-  @apply border-collapse border border-gray-800;
+  @apply border-collapse border-gray-800 text-center;
 }
 
 td {
-  @apply border text-xs ;
+  @apply border ;
 }
 
 .inside-cell {

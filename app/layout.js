@@ -9,7 +9,7 @@ import { AuthProvider } from '@/context/AuthContext';
 
 //--------COMPONENTS-----------
 import dynamic from 'next/dynamic';
-import Navbar from '@/component/Header/Navbar';
+// import Navbar from '@/component/Header/Navbar';
 import Header from '@/component/Header';
 import { Toaster } from 'react-hot-toast';
 // import Navbar from "@/component/Navbar";

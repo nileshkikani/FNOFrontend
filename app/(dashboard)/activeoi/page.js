@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import axiosInstance from '@/utils/axios';
-// import axios from 'axios';
+import axios from 'axios';
 import { API_ROUTER } from '@/services/apiRouter';
 import './global.css';
 import DatePicker from 'react-datepicker';
@@ -138,11 +138,11 @@ export default function Page() {
         }
         const response = await axiosInstance.get(
           `${apiUrl}?date=${selectedActiveoiDate}&expiries=${expiriesParam}&size=${strikeAtm}`
-          ,{
+          ,
+          {
             headers: { Authorization: `Bearer ${authState.access}` }
           }
         );
-
         if (response.status === 200) {
           setActiveoiData(response.data);
           const maxLiveNifty = Math.max(...response.data.map((item) => item?.live_nifty || 0));

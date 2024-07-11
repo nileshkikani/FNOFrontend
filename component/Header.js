@@ -30,7 +30,7 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/store';
 import { useCallback } from 'react';
 import { setAuth, setRememberMe, setUserStatus, setUserStatusInitially } from '@/store/authSlice';
-import axios from 'axios';
+// import axios from 'axios';
 // import SmartAPI from 'smartapi-javascript';
 import { TOTP } from 'totp-generator';
 import { initializeWebSocket, socket } from '@/utils/socket';

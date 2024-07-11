@@ -8,7 +8,7 @@ const MacdIndicator = ({ macdData }) => {
     {
       name: 'MACD slow',
       type: 'line',
-      data: macdData.map(data => ({
+      data: macdData?.map(data => ({
         x: parseDate(data.created_at),
         y: data.macd_slow
       }))
