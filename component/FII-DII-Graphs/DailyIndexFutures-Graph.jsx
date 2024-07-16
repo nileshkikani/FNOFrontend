@@ -6,7 +6,7 @@ const DailyIndexFutures = ({filteredByClient}) => {
   // const { filteredClientData } = useFiiDiiData();
   const [yAxisDomain, setYAxisDomain] = useState([0, 100]);
 
-  console.log("Az",filteredByClient)
+  // console.log("Az",filteredByClient)
   useEffect(() => {
     const values = filteredByClient?.map((item) => item?.daily_dif_future_index);
     const minValue = Math.min(...values);

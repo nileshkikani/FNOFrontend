@@ -5,6 +5,7 @@ import moment from 'moment';
 import axiosInstance from '@/utils/axios';
 import { API_ROUTER } from '@/services/apiRouter';
 import { useAppSelector } from '@/store';
+import useAuth from '@/hooks/useAuth';
 import '../global.css';
 
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
@@ -22,6 +23,7 @@ export default function Page() {
   const [monthFromDropdown, setMonthFromDropdown] = useState(currentDate.getMonth() + 1);
   const [yearFromDropdown, setYearFromDropdown] = useState(currentDate.getFullYear());
   const [filteredByClient, setFilteredByClient] = useState(null);
+  const { handleResponceError } = useAuth();
 
   const dropdownOptions = useMemo(() => {
     const options = [];
@@ -52,7 +54,8 @@ export default function Page() {
       setFilteredByClient(firstLoadClient);
       setIsLoading(false);
     } catch (error) {
-      console.log('Error getting fii-dii daily data:', error);
+      handleResponceError();
+      // console.log('Error getting fii-dii daily data:', error);
     }
   }, [monthFromDropdown, yearFromDropdown, data]);
 

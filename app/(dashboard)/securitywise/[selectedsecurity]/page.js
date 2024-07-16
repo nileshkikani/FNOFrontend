@@ -8,7 +8,7 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useRouter } from 'next/navigation';
 import DeliveryChart from '@/component/SecurityWise/DeliveryChart';
 import DataTable from 'react-data-table-component';
-
+import useAuth from '@/hooks/useAuth';
 import '../../securitywise/global.css';
 import moment from 'moment';
 import dynamic from 'next/dynamic';
@@ -18,6 +18,7 @@ const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 const Page = () => {
   const { selectedsecurity } = useParams();
   const [responseData, setResponseData] = useState([]);
+  const { handleResponceError } = useAuth();
   const authState = useAppSelector((state) => state.auth.authState);
   const router = useRouter();
   // const [deliveryChartData, setDeliveryChartData] = useState([]);
@@ -35,7 +36,7 @@ const Page = () => {
       // console.log('response.data', response.data);
       const cData = processData(response?.data?.results);
 
-      console.log('bh',cData)
+      // console.log('bh',cData)
 
       const reversedCData = { 
         dates: cData.dates.slice().reverse(),
@@ -63,6 +64,7 @@ const Page = () => {
       setReversedCData(reversedCData);
       setMonthlyData(monthlyData);
     } catch (err) {
+      handleResponceError()
       console.log('error getting selected stock data', err);
     }
   };

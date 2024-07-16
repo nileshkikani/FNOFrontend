@@ -6,6 +6,7 @@ import axiosInstance from '@/utils/axios';
 import moment from 'moment';
 import { useAppSelector } from '@/store';
 import DataTable from 'react-data-table-component';
+import useAuth from '@/hooks/useAuth';
 import { XAxis, ComposedChart, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend, Bar } from 'recharts';
 import '../global.css';
 
@@ -20,6 +21,7 @@ const Page = () => {
   const [reversedFilteredData, setReversedFilteredData] = useState([]);
   const [monthFromDropdown, setMonthFromDropdown] = useState(currentMonth);
   const [yearFromDropdown, setYearFromDropdown] = useState(currentYear);
+  const { handleResponceError } = useAuth();
 
   const column = [
     {
@@ -126,7 +128,8 @@ const Page = () => {
       // console.log('rrrs', response.data);
       setData(response.data);
     } catch (error) {
-      console.log('error getting fii-dii daily data:', error);
+      handleResponceError();
+      // console.log('error getting fii-dii daily data:', error);
     }
   },[monthFromDropdown,yearFromDropdown]);
 

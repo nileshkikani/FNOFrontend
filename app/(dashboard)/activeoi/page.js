@@ -176,7 +176,9 @@ export default function Page() {
       // console.log('gh', response.data.expiries[0]);
       setSelectedActiveoiDate(response.data.dates[0]);
     } catch (e) {
-      console.log('error getting dates', e);
+      // console.log('error getting dates', e);
+      handleResponceError();
+      
     }
   };
   useEffect(() => {

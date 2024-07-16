@@ -5,6 +5,7 @@ import './global.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
+
 //-----GRAPH COMPONENTS----------
 const MoneyFlowGraph = dynamic(() => import('@/component/MoneyFlow-Graphs/MoneyFlow-Graph'), { ssr: false });
 const ActiveMoneyFlow = dynamic(() => import('@/component/MoneyFlow-Graphs/ActiveMoneyFlow-Graph'), { ssr: false });
@@ -13,7 +14,7 @@ const MacdIndicator = dynamic(() => import('@/component/MoneyFlow-Graphs/MacdInd
 import { useAppSelector } from '@/store';
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
-// import axios from 'axios';
+import axios from 'axios';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 
@@ -35,6 +36,8 @@ const Page = () => {
   const [data, setData] = useState('');
   const authState = useAppSelector((state) => state.auth.authState);
   const [selectedColors, setSelectedColors] = useState('');
+  const [stockCallPremiumDecay, setStockCallPremiumDecay] = useState([]);
+  const [stockPutPremiumDecay, setStockPutPremiumDecay] = useState([]);
 
   // buy sell states-------
   const [buySellData, setBuySellData] = useState([]);
@@ -123,7 +126,7 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
       handleResponceError();
     }
   };
-  // -----------BUY SELL CALL FOR CANDLE AND MACD--------
+  // -----------BUY SELL CALL FOR CANDLE AND MACD----------------
   const buySellCall = async () => {
     try {
       if (!selectedDate) {
@@ -140,21 +143,46 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
       setBuySellData(response.data);
       setMacdData(response.data);
     } catch (error) {
-      console.log('Error calling buy sell API:', error);
+      // console.log('Error calling buy sell API:', error);
+      handleResponceError();
     }
   };
+
+  // -----------------------STOCK PREMIUMDECAY TABLE---------------
+  const getStockPremiumDecay = async () => {
+    if (!selectedScript) {
+      return;
+    }
+    try {
+      let apiUrl = `${API_ROUTER.STOCK_PREMIUMDECAY}`;
+      const response = await axiosInstance.get(apiUrl += `?symbol=${selectedScript}`
+        , {
+          headers: { Authorization: `Bearer ${authState.access}` }
+        }
+      );
+      setStockCallPremiumDecay(response.data?.call_premium_decay);
+      setStockPutPremiumDecay(response.data?.put_premium_decay);
+      // console.log('ghghghgh', response.data)
+    } catch (err) {
+
+    }
+
+  }
+
   useEffect(() => {
     authState && getData();
     buySellCall();
+    getStockPremiumDecay();
   }, []);
 
   useEffect(() => {
     buySellCall();
-  }, [selectedScript]);
+  }, [selectedScript, selectedDate]);
 
   useEffect(() => {
     if (selectedScript) {
       getData();
+      getStockPremiumDecay();
     }
   }, [selectedScript]);
 
@@ -250,6 +278,90 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
             <div className="grand-div">{macdData && <MacdIndicator macdData={macdData} />}</div>
             <div className="grand-div">{buySellData && <CandleChart candleData={buySellData} />}</div>
             <div>
+              <div>
+                <h1 className="table-title1">CALL PREMIUM DECAY</h1>
+                <table className="table1">
+                  <thead className="table-header">
+                    <tr>
+                      <th className="table-header-cell">OI CHANGE</th>
+                      <th className="table-header-cell">PRICE CHANGE</th>
+                      <th className="table-header-cell">EXPIRY DATE</th>
+                      <th className="table-header-cell">IV</th>
+                      <th className="table-header-cell">OI</th>
+                      <th className="table-header-cell">OI CHANGE %</th>
+                      <th className="table-header-cell">STRIKE PRICE</th>
+                      <th className="table-header-cell">PRICE CHANGE %</th>
+                      <th className="table-header-cell">PRICE</th>
+                      <th className="table-header-cell">TOTAL BUY QUANTITY</th>
+                      <th className="table-header-cell">TOTAL SELL QUANTITY</th>
+                      <th className="table-header-cell">TOTAL TRADE VOLUME</th>
+                      <th className="table-header-cell">UNDERLYING VALUE</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {stockCallPremiumDecay.map((item, index) => (
+                      <tr key={index}>
+                        <td className={item.change_in_oi < 0 ? 'text-red-500' : 'text-green-500'} >{item.change_in_oi}</td>
+                        <td className={item.change_in_price < 0 ? 'text-red-500' : 'text-green-500'} >{item.change_in_price}</td>
+                        <td >{item.expiry_date}</td>
+                        <td >{item.iv}</td>
+                        <td >{item.oi}</td>
+                        <td className={item.percentage_change_in_oi < 0 ? 'text-red-500' : 'text-green-500'} >{item.percentage_change_in_oi}</td>
+                        <td >{item.strike_price}</td>
+                        <td className={item.percentage_change_in_price < 0 ? 'text-red-500' : 'text-green-500'} >{item.percentage_change_in_price}%</td>
+                        <td >{item.price}</td>
+                        <td >{item.total_buy_quantity.toLocaleString('en-IN')}</td>
+                        <td >{item.total_sell_quantity.toLocaleString('en-IN')}</td>
+                        <td >{item.total_trade_volume.toLocaleString('en-IN')}</td>
+                        <td >{item.underlying_value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div>
+                <h1 className="table-title1">PUT PREMIUM DECAY</h1>
+                <table className="table1">
+                  <thead className="table-header">
+                    <tr>
+                      <th className="table-header-cell">OI CHANGE</th>
+                      <th className="table-header-cell">PRICE CHANGE</th>
+                      <th className="table-header-cell">EXPIRY DATE</th>
+                      <th className="table-header-cell">IV</th>
+                      <th className="table-header-cell">OI</th>
+                      <th className="table-header-cell">OI CHANGE %</th>
+                      <th className="table-header-cell">STRIKE PRICE</th>
+                      <th className="table-header-cell">PRICE CHANGE %</th>
+                      <th className="table-header-cell">PRICE</th>
+                      <th className="table-header-cell">TOTAL BUY QUANTITY</th>
+                      <th className="table-header-cell">TOTAL SELL QUANTITY</th>
+                      <th className="table-header-cell">TOTAL TRADE VOLUME</th>
+                      <th className="table-header-cell">UNDERLYING VALUE</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {stockPutPremiumDecay.map((item, index) => (
+                      <tr key={index}>
+                        <td className={item.change_in_oi < 0 ? 'text-red-500' : 'text-green-500'}>{item.change_in_oi}</td>
+                        <td className={item.change_in_price < 0 ? 'text-red-500' : 'text-green-500'}>{item.change_in_price}</td>
+                        <td>{item.expiry_date}</td>
+                        <td>{item.iv}</td>
+                        <td>{item.oi}</td>
+                        <td className={item.percentage_change_in_oi < 0 ? 'text-red-500' : 'text-green-500'}>{item.percentage_change_in_oi}</td>
+                        <td>{item.strike_price}</td>
+                        <td className={item.percentage_change_in_price < 0 ? 'text-red-500' : 'text-green-500'}>{item.percentage_change_in_price}%</td>
+                        <td>{item.price}</td>
+                        <td >
+                          {item.total_buy_quantity.toLocaleString('en-IN')}
+                        </td>
+                        <td >{item.total_sell_quantity.toLocaleString('en-IN')}</td>
+                        <td >{item.total_trade_volume.toLocaleString('en-IN')}</td>
+                        <td>{item.underlying_value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               <div className="table-container1">
                 <table className="table1">
                   <thead className="table-header">

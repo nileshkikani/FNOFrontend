@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import axiosInstance from '@/utils/axios';
 import { API_ROUTER } from '@/services/apiRouter';
 import { useAppSelector } from '@/store';
+import useAuth from '@/hooks/useAuth';
 
 //--------------------------CHARTS-------------------------
 const MultiStrikeChart = dynamic(() => import('@/component/MultiStrikeChart/MultiStrikeChart'), { ssr: false });
@@ -28,6 +29,7 @@ const Page = () => {
   const [PremiumDecayIsLoading, setPremiumdecayIsLoading] = useState(false);
   const [selectedPremDEcayExp, setSelectedPremDecayExp] = useState(expiryDropDown[0]);
   const [pdChartData, setPdChartData] = useState([]);
+  const { handleResponceError } = useAuth();
 
   useEffect(() => {
     getStrikes();
@@ -51,7 +53,8 @@ const Page = () => {
       setSelectedMsStrikePrices([String(response.data?.strikes[2])]);
       setSelectedPdStrikePrices([String(response.data?.strikes[2])]);
     } catch (error) {
-      console.log('error calling strikes api', error);
+      // console.log('error calling strikes api', error);
+      handleResponceError();
     }
   };
 
@@ -77,7 +80,7 @@ const Page = () => {
       }
       setMultistrikeLoading(false);
     } catch (err) {
-      console.log('error calling Multistrike', err);
+      // console.log('error calling Multistrike', err);
       handleResponceError();
     }
   };
@@ -101,7 +104,8 @@ const Page = () => {
         setPremiumdecayIsLoading(false);
       }
     } catch (error) {
-      console.log('error calling premium decay api', error);
+      handleResponceError();
+      // console.log('error calling premium decay api', error);
     }
   };
 

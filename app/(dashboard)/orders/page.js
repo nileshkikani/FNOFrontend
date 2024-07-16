@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '@/utils/axios';
 // import dynamic from 'next/dynamic';
-import axios from 'axios';
+// import axios from 'axios';
 import { socketForStocks } from '@/utils/socket';
 import { useAppSelector } from '@/store';
 // import DataTable from 'react-data-table-component';
 import './global.css';
+import useAuth from '@/hooks/useAuth';
 
 
 // --------------ICONS--------------
@@ -24,6 +25,7 @@ const Page = () => {
   const [openOrders, setOpenOrders] = useState([]);
   const [capital, setCapital] = useState(100000);
    const [currentTime, setCurrentTime] = useState(new Date());
+   const { handleResponceError } = useAuth();
 
 
   // -------------STOCK STATES----------
@@ -146,7 +148,8 @@ const Page = () => {
       });
       setClosedOrders(response.data);
     } catch (err) {
-      console.log('error getting closed orders', err);
+      // console.log('error getting closed orders', err);
+      handleResponceError()
     }
   };
 
@@ -159,7 +162,8 @@ const Page = () => {
       });
       setOpenOrders(response.data);
     } catch (err) {
-      console.log('error getting closed orders', err);
+      handleResponceError()
+      // console.log('error getting closed orders', err);
     }
   };
 
@@ -181,9 +185,10 @@ const Page = () => {
       const sellPrice = parseFloat(item.sell_price);
       const priceDifference = sellPrice - buyPrice;
       const quantity = capital / buyPrice; 
-      totalAmount += priceDifference * quantity;
+      totalAmount +=  Math.trunc(priceDifference) *  Math.trunc(quantity);
     });
-    return totalAmount.toFixed(2); 
+    const afterTrunc = Math.trunc(totalAmount);
+    return afterTrunc ; 
   };
 
   useEffect(() => {
@@ -240,8 +245,13 @@ const Page = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const capitalValueFromInput = document.getElementById('capital-id')?.value;
+    if (!capitalValueFromInput) {
+      alert('Please enter your capital');
+      return; 
+    }
     setCapital(capitalValueFromInput);
   }
+  
 
   const sortedOrders = closedOrders.slice().sort((a, b) => {
     const dateA = new Date(a.signal_time);
@@ -262,7 +272,7 @@ const Page = () => {
           </button>
         </div>
         <div>
-          <div>
+          <div className='capital'>
             <input
               id='capital-id'
               type='number'
@@ -273,6 +283,7 @@ const Page = () => {
           </div>
         </div>
       </div>
+      {/* -----------------OPEN ORDERS------------ */}
       {openOrders.length > 0 && <label className='title'>{`Open Orders (${openOrders.length})`}</label>}
       <table >
         <thead>
@@ -284,6 +295,7 @@ const Page = () => {
             <th>Sell Price</th>
             <th>Stop Loss</th>
             <th>Target</th>
+            <th>Indicator</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -294,12 +306,13 @@ const Page = () => {
               <tr key={item.id} className={rowClass}>
                 <td className='td-cell'>{new Date(item?.signal_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
                 <td className='order-icon td-cell'>{item.type === 'buy' ? <TbSquareLetterB size={25} style={{ color: 'green' }} /> : <TbSquareLetterS size={25} style={{ color: 'red' }} />}</td>
-                <td className='td-cell'>{item.symbol}</td>
-                <td className='td-cell'>{item.buy_price}</td>
-                <td className='td-cell'>{item.sell_price ? item.sell_price?.toFixed(2) : ''}</td>
-                <td className='td-cell'>{item.stop_loss?.toFixed(2)}</td>
-                <td className='td-cell'>{item.take_profit?.toFixed(2)}</td>
-                <td className='td-cell'>{item.status}</td>
+                <td className='td-cell'>{item?.symbol}</td>
+                <td className='td-cell'>{item?.buy_price}</td>
+                <td className='td-cell'>{item?.sell_price ? item.sell_price?.toFixed(2) : ''}</td>
+                <td className='td-cell'>{item?.stop_loss?.toFixed(2)}</td>
+                <td className='td-cell'>{item?.take_profit?.toFixed(2)}</td>
+                <td className='td-cell'>{item?.indicator}</td>
+                <td className='td-cell'>{item?.status}</td>
               </tr>
             )
           })}
@@ -328,17 +341,19 @@ const Page = () => {
             <th>Price Difference</th>
             <th>Amount</th>
             <th>Status</th>
+            <th>Indicator</th>
             <th>P/L</th>
             <th>%</th>
           </tr>
         </thead>
+        {/* -------------EXECUTED ORDERS-------------- */}
         <tbody>
           {sortedOrders.map((item, index) => {
-            const buyPrice = parseFloat(item.buy_price);
-            const sellPrice = parseFloat(item.sell_price);
-            const percentageChange = ((sellPrice - buyPrice) / buyPrice) * 100;
-            const priceDifference = sellPrice - buyPrice;
+            const buyPrice = item.buy_price;
+            const sellPrice = item.sell_price;
             const quantity = capital / buyPrice;
+            const percentageChange = ((sellPrice - buyPrice) / buyPrice) * quantity;
+            const priceDifference = sellPrice - buyPrice;
             let durationText;
             if (item.duration === "ONE_HOUR") {
               durationText = "1 hour";
@@ -352,14 +367,15 @@ const Page = () => {
                 <td className='td-cell'>{new Date(item?.signal_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
                 <td className='order-icon td-cell'>{item.type === 'buy' ? <TbSquareLetterB size={25} style={{ color: 'green' }} /> : <TbSquareLetterS size={25} style={{ color: 'red' }} />}</td>
                 <td className='td-cell'>{item.symbol}</td>
-                <td className='td-cell'>{buyPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
-                <td className='td-cell'>{quantity?.toFixed(0)}</td>
-                <td className='td-cell'>{sellPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
-                <td className='td-cell'>{priceDifference.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
-                <td className={((sellPrice - buyPrice) * 100) < 0 ? 'red-text td-cell' : 'green-text td-cell'}>
-                  {(priceDifference.toLocaleString('en-IN', { maximumFractionDigits: 2 }) * quantity).toFixed(2)}
+                <td className='td-cell'>{Math.trunc(buyPrice)}</td>
+                <td className='td-cell'>{Math.trunc(quantity)}</td>
+                <td className='td-cell'>{Math.trunc(sellPrice)}</td>
+                <td className='td-cell'>{Math.trunc(priceDifference)}</td>
+                <td className={(priceDifference * quantity) < 0 ? 'red-text td-cell' : 'green-text td-cell'}>
+                  {(Math.trunc(priceDifference) * Math.trunc(quantity))}
                 </td>
                 <td className='green-text td-cell'>{item.status === 'closed' && 'success'}</td>
+                <td className='td-cell' >{item.indicator}</td>
                 <td className='order-icon td-cell'>{item.outcome == 'loss' ? <FaArrowTrendDown size={18} style={{ color: 'red' }} /> : <FaArrowTrendUp size={18} style={{ color: 'green' }} />}{item.outcome}</td>
                 <td className={percentageChange < 0 ? 'red-text td-cell' : 'green-text td-cell'}>{percentageChange.toFixed(2)}%</td>
               </tr>
@@ -368,7 +384,7 @@ const Page = () => {
           {sortedOrders.length > 0 && (
             <tr>
               <td colSpan="8" className='td-cell'><strong>Total:</strong></td>
-              <td className={calculateTotalAmount() < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}><strong>{calculateTotalAmount().toLocaleString('en-IN', { maximumFractionDigits: 2 })}</strong></td>
+              <td className={calculateTotalAmount() < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}><strong>{calculateTotalAmount()}</strong></td>
               <td colSpan="2" className='td-cell'></td>
               <td className={calculateTotalPercentageChange().toFixed(2) < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}><strong>{calculateTotalPercentageChange().toFixed(2)}%</strong></td>
             </tr>

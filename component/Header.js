@@ -163,7 +163,7 @@ export default function Header() {
 
   async function generateToken() {
     const response = await getAccessToken();
-    console.log('RESPONSE---', response);
+    // console.log('RESPONSE---', response);
     if (response.status === 200) {
       const data = response?.data?.data;
       connectWebSocket(data);
@@ -203,7 +203,7 @@ export default function Header() {
 
     try {
       const response = await axios(config);
-      console.log('Access Token:', response);
+      // console.log('Access Token:', response);
       return response;
     } catch (error) {
       console.log('Error obtaining access token:');
@@ -216,7 +216,7 @@ export default function Header() {
       if (!token) {
         throw new Error('Token is required to connect WebSocket');
       }
-      console.log('feedToken', token?.feedToken);
+      // console.log('feedToken', token?.feedToken);
 
       await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed);
     } catch (error) {
@@ -265,7 +265,7 @@ export default function Header() {
   };
 
   const isActive = (path) => {
-    console.log('path', path);
+    // console.log('path', path);
     checkUserIsLoggedIn && router.push(path);
   };
 
@@ -365,14 +365,14 @@ export default function Header() {
     try{
       const webSocketUrl = 'wss://algo.satvikacart.com/ws/signals/'
       let socket = await new WebSocket(webSocketUrl);
-      console.log("cvccc",socket);
+      // console.log("cvccc",socket);
     }catch(error){
       console.log('error connecting socket::',error)
     }
 
   }
 
-  signalSocket();
+  // signalSocket();
 
 
   return (

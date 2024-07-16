@@ -10,6 +10,7 @@ import { setAuth, setRememberMe, setUserStatus, setUserStatusInitially } from '@
 import { useAppSelector } from '@/store';
 import { useDispatch } from 'react-redux';
 import Cookie from 'js-cookie';
+import useAuth from '@/hooks/useAuth';
 
 const DATA = [
   {
@@ -33,6 +34,7 @@ const Navbar = () => {
   const storeDispatch = useDispatch();
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
+  const { handleResponceError } = useAuth();
   const checkIsLoggedInInitially = useAppSelector((state) => state.auth.isCookie);
 
   const checkIsRemember = useAppSelector((state) => state.auth.rememberMe);
@@ -91,7 +93,8 @@ const Navbar = () => {
 
       router.push('/login');
     } catch (error) {
-      console.log('error in logout api', error);
+      handleResponceError()
+      // console.log('error in logout api', error);
     }
   };
 

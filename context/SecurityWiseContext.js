@@ -22,11 +22,11 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_PAGE':
-      console.log('action.payload', action.payload);
+      // console.log('action.payload', action.payload);
       return { ...state, page: action.payload };
 
     case 'SET_DATA':
-      console.log('state.page', state.page);
+      // console.log('state.page', state.page);
       return {
         ...state,
         data: state.page === 1 ? action.payload : [...state.data, ...action.payload]
@@ -59,7 +59,7 @@ export const SecurityWiseProvider = ({ children }) => {
 
   const getData = useCallback(
     async (selectedDate, page, isNifty) => {
-      console.log('page---', page, isNifty);
+      // console.log('page---', page, isNifty);
       dispatch({ type: 'SET_IS_LOADING', payload: page === 1 ? true : false });
 
       dispatch({ type: 'SET_PAGE', payload: page });
@@ -70,22 +70,22 @@ export const SecurityWiseProvider = ({ children }) => {
       try {
         let apiUrl = `${API_ROUTER.LIST_SECWISE_DATE}`;
         if (selectedDate) {
-          console.log('apiUrl', apiUrl);
+          // console.log('apiUrl', apiUrl);
 
           if (!isNifty) {
             apiUrl += `?page=${page}&date=${selectedDate}`;
-            console.log('apiUrl if', apiUrl);
+            // console.log('apiUrl if', apiUrl);
           } else {
             apiUrl += `?date=${selectedDate}&is_nifty=${isNifty}&page=${page}`;
-            console.log('apiUrl else', apiUrl);
+            // console.log('apiUrl else', apiUrl);
           }
         }
-        console.log('apiUrl', apiUrl);
+        // console.log('apiUrl', apiUrl);
         const response = await axiosInstance.get(apiUrl, {
           headers: { Authorization: `Bearer ${authState.access}` }
         });
         if (response.status === 200) {
-          console.log('response.data', response);
+          // console.log('response.data', response);
           const customDateComparator = (dateStr1, dateStr2) => {
             const date1 = new Date(dateStr1);
             const date2 = new Date(dateStr2);
@@ -97,7 +97,7 @@ export const SecurityWiseProvider = ({ children }) => {
               dispatch({ type: 'SET_DATA', payload: response.data.results });
               dispatch({ type: 'SET_IS_LOADING', payload: false });
             } else {
-              console.log('[...state.data, ...response.data.results]', [...state.data, ...response.data.results]);
+              // console.log('[...state.data, ...response.data.results]', [...state.data, ...response.data.results]);
               dispatch({ type: 'SET_DATA', payload: response.data.results });
             }
             setHasMore(response.data.results.length > 0);
@@ -123,7 +123,7 @@ export const SecurityWiseProvider = ({ children }) => {
         }
       } catch (err) {
         setHasMore(false);
-        // handleResponceError();
+        handleResponceError();
       }
     },
     [authState]

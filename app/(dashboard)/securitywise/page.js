@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import InfiniteScroll from 'react-infinite-scroll-component';
+// import InfiniteScroll from 'react-infinite-scroll-component';
 import '../securitywise/global.css';
 
 //  ===========LOADING ANIMATION ===========
@@ -67,14 +67,14 @@ export default function Page() {
   }, [data]);
 
   useEffect(() => {
-    console.log('currentSelectedDate', isMoreData);
+    // console.log('currentSelectedDate', isMoreData);
 
-    console.log('routeName', routeName);
+    // console.log('routeName', routeName);
     getSecurityData();
   }, [selectedDate, pathname]);
 
   useEffect(() => {
-    console.log('currentSelectedDate', selectedDate);
+    // console.log('currentSelectedDate', selectedDate);
     if (uniqueDates.length > 0) {
       if (!changeDate) {
         setSelectedDate(uniqueDates[0]);
@@ -82,23 +82,23 @@ export default function Page() {
     }
   }, [uniqueDates, selectedDate]);
 
-  useEffect(() => {
-    console.log('Data updated', data);
-    console.log('Data Length:', data?.length);
-    console.log('Has More Data:', isMoreData);
-  }, [data, isMoreData]);
+  // useEffect(() => {
+  //   console.log('Data updated', data);
+  //   console.log('Data Length:', data?.length);
+  //   console.log('Has More Data:', isMoreData);
+  // }, [data, isMoreData]);
 
   const getSecurityData = (pageNo, isNifty) => {
-    console.log('selectedDate', isMoreData);
+    // console.log('selectedDate', isMoreData);
     const pageNum = pageNo ? pageNo : page;
     const isNiftyData = isNifty ? isNifty : isShowNifty ? 1 : 0;
     if (routeName && selectedDate) {
-      console.log('routername', routeName);
+      // console.log('routername', routeName);
       if (page !== 1 && !isMoreData) {
-        console.log('isMoreData', isMoreData);
+        // console.log('isMoreData', isMoreData);
         return;
       } else {
-        console.log('page else', pageNum);
+        // console.log('page else', pageNum);
         getData(selectedDate, pageNum, isNiftyData).then(() => {
           setPage(pageNum + 1);
         });
@@ -120,10 +120,10 @@ export default function Page() {
 
         const scrollBottom = Math.floor(scrollHeight - (scrollTop + clientHeight));
 
-        console.log('scrollBottom:', scrollBottom);
+        // console.log('scrollBottom:', scrollBottom);
 
         if (scrollBottom === 0 && isMoreData) {
-          console.log('Scrolled to bottom, current page:', page);
+          // console.log('Scrolled to bottom, current page:', page);
           getSecurityDataCall();
         }
       }
@@ -141,7 +141,7 @@ export default function Page() {
   }, [getSecurityData]);
 
   const getSecurityDataCall = async () => {
-    console.log('getSecurityDataCall-=-=-', isMoreData);
+    // console.log('getSecurityDataCall-=-=-', isMoreData);
     if (!isMoreData) return;
     getSecurityData();
   };
@@ -176,7 +176,7 @@ export default function Page() {
       })
     );
     const dataset = (await Promise.resolve(dataArray)).sort((a, b) => b.times_delivery - a.times_delivery);
-    console.log('dataset', dataset);
+    // console.log('dataset', dataset);
 
     setSecurityData(dataset);
     setIsFilterData(true);
@@ -263,16 +263,16 @@ export default function Page() {
     route.push(`/securitywise/${aPath}/`);
   };
 
-  const handlePageChange = (page) => {
-    console.log('page', page);
-    setPage(page);
-  };
+  // const handlePageChange = (page) => {
+  //   console.log('page', page);
+  //   setPage(page);
+  // };
 
-  const handlePerRowsChange = async (newPerPage, page) => {
-    console.log('newPerPage', newPerPage);
-    setPerPage(newPerPage);
-    setPage(page);
-  };
+  // const handlePerRowsChange = async (newPerPage, page) => {
+  //   console.log('newPerPage', newPerPage);
+  //   setPerPage(newPerPage);
+  //   setPage(page);
+  // };
 
   const loadingAnimation = (
     <div
@@ -425,7 +425,7 @@ export default function Page() {
                   className="date-picker-modal"
                   onChange={async (event) => {
                     const selectedDate = event.target.value;
-                    console.log('selectedDate', selectedDate);
+                    // console.log('selectedDate', selectedDate);
                     setPage(1);
                     setChangeDate(true);
                     await refreshData();
@@ -455,12 +455,12 @@ export default function Page() {
                   type="checkbox"
                   className='className="checkbox-label"'
                   onChange={async (event) => {
-                    console.log('!isShowNifty', !isShowNifty);
+                    // console.log('!isShowNifty', !isShowNifty);
                     setIsShowNifty(event.target.checked);
                     setPage(1); // set page to 1
                     await refreshData();
                     setTimeout(() => {
-                      console.log('page no', page);
+                      // console.log('page no', page);
                       getSecurityData(1, !isShowNifty ? 1 : 0);
                     }, 1000);
                   }}

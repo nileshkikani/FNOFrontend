@@ -14,6 +14,7 @@ export const API_ROUTER = {
   CASH_FLOW_TOP_TEN: `moneyflow/cash/`,
   CASH_FLOW_ALL: `moneyflow/cash-chart/`,
   CANDLE_AND_MACD: `moneyflow/macd-list/`,
+  STOCK_PREMIUMDECAY: `moneyflow/symbol-premium-decay/`,
 
   
   LIST_OPTIONCHAIN_DATA: `data/`,

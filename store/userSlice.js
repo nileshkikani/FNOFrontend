@@ -21,7 +21,6 @@ const initialState = {
         state.socketToken = action.payload;
       },
       setHello:(state,action)=>{
-        console.log('asasassa',action.payload)
         state.hello = action.payload;
       }
     },
