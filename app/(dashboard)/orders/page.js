@@ -2,13 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '@/utils/axios';
 // import dynamic from 'next/dynamic';
-// import axios from 'axios';
+import axios from 'axios';
 import { socketForStocks } from '@/utils/socket';
 import { useAppSelector } from '@/store';
-import DataTable from 'react-data-table-component';
+// import DataTable from 'react-data-table-component';
 import './global.css';
-// const TbCircleLetterBFilled = dynamic(() => import('react-icons/tb'));
-// const TbCircleLetterSFilled = dynamic(() => import('react-icons/tb'));
+
 
 // --------------ICONS--------------
 import { TbSquareLetterS } from "react-icons/tb";
@@ -24,10 +23,8 @@ const Page = () => {
   const [closedOrders, setClosedOrders] = useState([]);
   const [openOrders, setOpenOrders] = useState([]);
   const [capital, setCapital] = useState(100000);
-  // const [buyIcon,setBuyIcon] = useState(<TbCircleLetterBFilled size={20}/>)
-  // const [sellIcon,setSellIcon] = useState(<TbCircleLetterSFilled size={20}/>)
+   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // console.log('hjhjh',buyIcon)
 
   // -------------STOCK STATES----------
   const stockStates = {
@@ -101,6 +98,7 @@ const Page = () => {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       setData(response.data);
+      // console.log('fffdd',response.data)
     } catch (error) {
       console.error('Error calling signal API:', error);
     }
@@ -178,15 +176,15 @@ const Page = () => {
 
   const calculateTotalAmount = () => {
     let totalAmount = 0;
-    closedOrders.forEach((item) => {
+    sortedOrders.forEach((item) => {
       const buyPrice = parseFloat(item.buy_price);
       const sellPrice = parseFloat(item.sell_price);
-      const amount = (sellPrice - buyPrice) * 100;
-      totalAmount += amount;
+      const priceDifference = sellPrice - buyPrice;
+      const quantity = capital / buyPrice; 
+      totalAmount += priceDifference * quantity;
     });
-    return totalAmount;
+    return totalAmount.toFixed(2); 
   };
-
 
   useEffect(() => {
     if (socketToken) {
@@ -203,7 +201,6 @@ const Page = () => {
     getOpenOrders();
   }, []);
 
-  console.log("mkmmkm", capital);
   useEffect(() => {
     Object.entries(stockStates).forEach(([symbol, [livePrice, setLivePrice]]) => {
       if (livePrice !== null && data.length > 0) {
@@ -216,6 +213,8 @@ const Page = () => {
                 price.price = item.stop_loss;
               } else if (livePrice >= item.take_profit) {
                 price.price = item.take_profit;
+              }else if (currentTime){
+
               }
               try {
                 axiosInstance.patch(url, price, {
@@ -229,13 +228,12 @@ const Page = () => {
         });
       }
     });
-  }, [capital]);
+  }, [data, capital]);
 
   const refreshBtn = () => {
     getClosedOrders();
     getOpenOrders();
   };
-
 
   // console.log('dcd',capitalValueFromInput)
 
@@ -262,20 +260,18 @@ const Page = () => {
           <button className="refresh-button" onClick={refreshBtn}>
             Refresh
           </button>
-              </div>
+        </div>
+        <div>
           <div>
-            <div>
-              <input
-                id='capital-id'
-                type='number'
-                placeholder='Enter your capital'
-                className='input-fld'
-              // value={capital}
-              // onChange={handleChange}
-              />
-              <button className="check-button" onClick={handleSubmit}>Check</button>
-            </div>
+            <input
+              id='capital-id'
+              type='number'
+              placeholder='Enter your capital'
+              className='input-fld'
+            />
+            <button className="check-button" onClick={handleSubmit}>Check</button>
           </div>
+        </div>
       </div>
       {openOrders.length > 0 && <label className='title'>{`Open Orders (${openOrders.length})`}</label>}
       <table >
@@ -361,14 +357,8 @@ const Page = () => {
                 <td className='td-cell'>{sellPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
                 <td className='td-cell'>{priceDifference.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
                 <td className={((sellPrice - buyPrice) * 100) < 0 ? 'red-text td-cell' : 'green-text td-cell'}>
-                  {/* {((sellPrice - buyPrice) * 100).toLocaleString('en-IN', { maximumFractionDigits: 2 })} */}
                   {(priceDifference.toLocaleString('en-IN', { maximumFractionDigits: 2 }) * quantity).toFixed(2)}
                 </td>
-                {/* <td>
-                  {item.type === 'sell'
-                    ? (item.sell_price * 100 - item.buy_price * 100).toLocaleString('en-IN', { maximumFractionDigits: 2 })
-                    : (item.buy_price * 100 - item.sell_price * 100).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
-                </td> */}
                 <td className='green-text td-cell'>{item.status === 'closed' && 'success'}</td>
                 <td className='order-icon td-cell'>{item.outcome == 'loss' ? <FaArrowTrendDown size={18} style={{ color: 'red' }} /> : <FaArrowTrendUp size={18} style={{ color: 'green' }} />}{item.outcome}</td>
                 <td className={percentageChange < 0 ? 'red-text td-cell' : 'green-text td-cell'}>{percentageChange.toFixed(2)}%</td>
@@ -377,9 +367,9 @@ const Page = () => {
           })}
           {sortedOrders.length > 0 && (
             <tr>
-              <td colSpan="7" className='td-cell'><strong>Total:</strong></td>
+              <td colSpan="8" className='td-cell'><strong>Total:</strong></td>
               <td className={calculateTotalAmount() < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}><strong>{calculateTotalAmount().toLocaleString('en-IN', { maximumFractionDigits: 2 })}</strong></td>
-              <td colSpan="3" className='td-cell'></td>
+              <td colSpan="2" className='td-cell'></td>
               <td className={calculateTotalPercentageChange().toFixed(2) < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}><strong>{calculateTotalPercentageChange().toFixed(2)}%</strong></td>
             </tr>
           )}

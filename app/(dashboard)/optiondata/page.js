@@ -2,7 +2,7 @@
 import { API_ROUTER } from '@/services/apiRouter';
 import axiosInstance from '@/utils/axios';
 import { useEffect, useState } from 'react';
-// import axios from 'axios';
+import axios from 'axios';
 import { useAppSelector } from '@/store';
 import dynamic from 'next/dynamic';
 import useAuth from '@/hooks/useAuth';
@@ -20,6 +20,7 @@ export default function Page() {
   const authState = useAppSelector((state) => state.auth.authState);
   const expiryDropDown = useAppSelector((state) => state.user.expiries);
   const [selectedExp, setSelectedExp] = useState(expiryDropDown[0]);
+  const [mostActiveStrikeTable, setMostActiveStrikeTable] = useState([])
 
   //---------OPTION CHAIN CALL----------
   const getData = async () => {
@@ -29,9 +30,11 @@ export default function Page() {
         await axiosInstance
           .get(`${API_ROUTER.OPTIONDATA_LIST}?expiry=${selectedExp}`, {
             headers: { Authorization: `Bearer ${authState.access}` }
-          })
+          }
+          )
           .then((response) => {
-            setApiData(response.data.reverse());
+            setApiData(response.data.option_chain_data.reverse());
+            setMostActiveStrikeTable(response.data.most_active_strikes);
             setIsLoading(false);
           })
           .catch((err) => handleResponceError());
@@ -47,10 +50,38 @@ export default function Page() {
     authState && getData();
   }, [authState, selectedExp]);
 
-
   return (
     <div>
-      <h1 className="table-title">Option Data Page </h1>
+      <h1 className="table-title">Most Active Strikes </h1>
+      <div>
+        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid #ddd' }}>
+              <th>STRIKE PRICE</th>
+              <th>OPTION TYPE</th>
+              <th>PERCENTAGE OF OI CHANGE</th>
+              <th>LTP</th>
+              <th>VOLUME</th>
+              <th>NET OI</th>
+              <th>IV</th>
+            </tr>
+          </thead>
+          <tbody>
+            {mostActiveStrikeTable.map((item, index) => (
+              <tr key={index} >
+                <td>{Number(item?.strike_price).toLocaleString('en-IN')}</td>
+                <td className={item.option_type == 'put' ? 'red-field' : 'green-field'}>{item?.option_type}</td>
+                <td>{item?.percentage} %</td>
+                <td>{item?.ltp}</td>
+                <td>{Number(item?.volume).toLocaleString('en-IN')}</td>
+                <td>{Number(item?.net_oi).toLocaleString('en-IN')}</td>
+                <td>{item?.iv}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <h1 className="table-title">Option Chain </h1>
       <div>
         <label>
           Expiry:
@@ -85,9 +116,11 @@ export default function Page() {
                 <th>CALL NET OI</th>
                 <th>CALL CHANGE OI</th>
                 <th>CALL PRICE CHANGE </th>
+                <th>CALL OI % CHANGE</th>
                 <th>CALL LTP</th>
                 <th>STRIKE</th>
                 <th>PUT LTP</th>
+                <th>PUT OI % CHANGE</th>
                 <th>PUT PRICE CHANGE </th>
                 <th>PUT CHANGE OI</th>
                 <th>PUT NET OI</th>
@@ -103,10 +136,10 @@ export default function Page() {
                       item.call_price_change < 0 && item.call_change_oi > 0
                         ? 'red-field'
                         : item.call_price_change > 0 && item.call_change_oi < 0
-                        ? 'green-field'
-                        : item.call_price_change > 0 && item.call_change_oi > 0
-                        ? 'red-field'
-                        : 'green-field'
+                          ? 'green-field'
+                          : item.call_price_change > 0 && item.call_change_oi > 0
+                            ? 'red-field'
+                            : 'green-field'
                     }
                   >
                     {item.call_price_change < 0 && item.call_change_oi > 0 && (
@@ -166,9 +199,11 @@ export default function Page() {
                       </>
                     )}
                   </td>
+                  <td>{item?.call_change_oi_percentage}{'%'}</td>
                   <td>{Number(item?.call_ltp).toLocaleString('en-IN')}</td>
                   <td>{Number(item?.strike_price).toLocaleString('en-IN')}</td>
                   <td>{Number(item?.put_ltp).toLocaleString('en-IN')}</td>
+                  <td>{item?.put_change_oi_percentage}{'%'}</td>
                   <td className={item.put_price_change < 0 ? 'red-field' : 'green-field'}>
                     {' '}
                     {item.put_price_change < 0 ? (
@@ -211,10 +246,10 @@ export default function Page() {
                       item.put_price_change < 0 && item.put_change_oi > 0
                         ? 'red-field'
                         : item.put_price_change > 0 && item.put_change_oi < 0
-                        ? 'green-field'
-                        : item.put_price_change > 0 && item.put_change_oi > 0
-                        ? 'red-field'
-                        : 'green-field'
+                          ? 'green-field'
+                          : item.put_price_change > 0 && item.put_change_oi > 0
+                            ? 'red-field'
+                            : 'green-field'
                     }
                   >
                     {item.put_price_change < 0 && item.put_change_oi > 0 && (

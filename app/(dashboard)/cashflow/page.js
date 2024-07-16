@@ -16,7 +16,6 @@ import axiosInstance from '@/utils/axios';
 // import axios from 'axios';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-// import axios from 'axios';
 
 //  ===========LOADING ANIMATION ===========
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'), { ssr: false });
@@ -67,10 +66,12 @@ const Page = () => {
   const getData = async () => {
     try {
       setLoading(true);
-      let apiUrl = `${API_ROUTER.CASH_FLOW_TOP_TEN}`;
+      let apiUrl = `
+${API_ROUTER.CASH_FLOW_TOP_TEN}`;
 
       const response = await axiosInstance.get(
-        selectedDate && selectedScript ? (apiUrl += `?date=${selectedDate}&symbol=${selectedScript}`) : apiUrl,
+        selectedDate && selectedScript ? (apiUrl += `?date=${selectedDate}&symbol=${selectedScript}`) : apiUrl
+        ,
         {
           headers: { Authorization: `Bearer ${authState.access}` }
         }
@@ -104,10 +105,13 @@ const Page = () => {
   const getAllStocks = async () => {
     try {
       setAllStockLoading(true);
-      let apiUrl = `${API_ROUTER.CASH_FLOW_ALL}`;
-      const response = await axiosInstance.get((apiUrl += `?date=${selectedDate}`), {
-        headers: { Authorization: `Bearer ${authState.access}` }
-      });
+      let apiUrl = `
+${API_ROUTER.CASH_FLOW_ALL}`;
+      const response = await axiosInstance.get((apiUrl += `?date=${selectedDate}`)
+        , {
+          headers: { Authorization: `Bearer ${authState.access}` }
+        }
+      );
       if (response.status == 200) {
         setAllData(response?.data);
         setLoading(false);
@@ -283,24 +287,22 @@ const Page = () => {
                               <td className="table-cell">{item?.average}</td>
                               <td className="table-cell">{item?.volume}</td>
                               <td
-                                className={`table-cell ${
-                                  selectedColors.netMoneyFlowColors[index] == 'green'
-                                    ? 'text-green-500'
-                                    : selectedColors.netMoneyFlowColors[index] == 'red'
+                                className={`table-cell ${selectedColors.netMoneyFlowColors[index] == 'green'
+                                  ? 'text-green-500'
+                                  : selectedColors.netMoneyFlowColors[index] == 'red'
                                     ? 'text-red-500'
                                     : ''
-                                }`}
+                                  }`}
                               >
                                 {item?.money_flow}
                               </td>
                               <td
-                                className={`table-cell ${
-                                  selectedColors.netMoneyFlowColors[index] == 'green'
-                                    ? 'text-green-500'
-                                    : selectedColors.netMoneyFlowColors[index] == 'red'
+                                className={`table-cell ${selectedColors.netMoneyFlowColors[index] == 'green'
+                                  ? 'text-green-500'
+                                  : selectedColors.netMoneyFlowColors[index] == 'red'
                                     ? 'text-red-500'
                                     : ''
-                                }`}
+                                  }`}
                               >
                                 {item?.net_money_flow}
                               </td>

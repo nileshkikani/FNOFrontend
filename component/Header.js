@@ -30,7 +30,7 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/store';
 import { useCallback } from 'react';
 import { setAuth, setRememberMe, setUserStatus, setUserStatusInitially } from '@/store/authSlice';
-// import axios from 'axios';
+import axios from 'axios';
 // import SmartAPI from 'smartapi-javascript';
 import { TOTP } from 'totp-generator';
 import { initializeWebSocket, socket } from '@/utils/socket';
@@ -163,7 +163,7 @@ export default function Header() {
 
   async function generateToken() {
     const response = await getAccessToken();
-    // console.log('RESPONSE---', response);
+    console.log('RESPONSE---', response);
     if (response.status === 200) {
       const data = response?.data?.data;
       connectWebSocket(data);
@@ -203,10 +203,10 @@ export default function Header() {
 
     try {
       const response = await axios(config);
-      // console.log('Access Token:', response);
+      console.log('Access Token:', response);
       return response;
     } catch (error) {
-      console.error('Error obtaining access token:');
+      console.log('Error obtaining access token:');
       return error;
     }
   }
@@ -216,7 +216,7 @@ export default function Header() {
       if (!token) {
         throw new Error('Token is required to connect WebSocket');
       }
-      // console.log('feedToken', token?.feedToken);
+      console.log('feedToken', token?.feedToken);
 
       await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed);
     } catch (error) {
@@ -358,6 +358,22 @@ export default function Header() {
       hidden: !checkUserIsLoggedIn
     }
   ];
+
+  // -----------------------CURRENT OPEN SIGNALS SOCKET--------------------
+
+  const signalSocket = async ()=>{
+    try{
+      const webSocketUrl = 'wss://algo.satvikacart.com/ws/signals/'
+      let socket = await new WebSocket(webSocketUrl);
+      console.log("cvccc",socket);
+    }catch(error){
+      console.log('error connecting socket::',error)
+    }
+
+  }
+
+  signalSocket();
+
 
   return (
     <>

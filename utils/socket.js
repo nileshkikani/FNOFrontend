@@ -1,7 +1,7 @@
 'use client';
 
 const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed) => {
-  // console.log('inside-function')
+  console.log('inside-function');
   if (typeof window !== 'undefined' && feedToken) {
     const webSocketUrl = 'wss://smartapisocket.angelone.in/smart-stream';
     const clientCode = 'METD1460';
@@ -10,11 +10,10 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
     let socket = await new WebSocket(
       `${webSocketUrl}?clientCode=${clientCode}&feedToken=${feedToken}&apiKey=${apiKey}`
     );
-
     socket.binaryType = 'arraybuffer';
 
     socket.onopen = (event) => {
-      // console.log('WebSocket connection opened', event);
+      console.log('WebSocket connection opened', event);
       setIsClosed(false);
       const param = {
         correlationID: 'METD1460',
@@ -24,7 +23,6 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
           tokenList: [
             {
               exchangeType: 1,
-
               tokens: ['99926000', '99926009']
             }
           ]
@@ -67,15 +65,16 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
 
       const lastTradedPrice = parseData(43, 8, 'getUint32');
 
-      // console.log('fdfd',lastTradedPrice/100)
+      console.log('fdfaoooooood',lastTradedPrice/100)
       if (token === '99926009') {
         setBankNiftyPrice(lastTradedPrice / 100);
       } else if (token === '99926000') {
+        console.log('nifty',lastTradedPrice / 100)
         setNiftyPrice(lastTradedPrice / 100);
       } else if (token === '1333') {
-        console.log('fdfdaaa', lastTradedPrice / 100)
+        console.log('fdfdaaxcaa', lastTradedPrice / 100)
         // let hdfcPrice = lastTradedPrice/100;
-        jd(lastTradedPrice / 100);
+        // jd(lastTradedPrice / 100);
       }
     };
 
