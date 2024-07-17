@@ -279,13 +279,17 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
             <div className="grand-div">{buySellData && <CandleChart candleData={buySellData} />}</div>
             <div>
               <div>
-                <h1 className="table-title1">CALL PREMIUM DECAY</h1>
+                <div className='callPullDecay'>
+                <h1 className="table-title1">EXPIRY DATE: {stockCallPremiumDecay && stockCallPremiumDecay[0]?.expiry_date}</h1>
+                <h1 className="table-title1"> CALL PREMIUM DECAY</h1>
+                <h1 className="table-title1">Underlying Value: {stockCallPremiumDecay && stockCallPremiumDecay[0]?.underlying_value}</h1>
+                  </div>
                 <table className="table1">
                   <thead className="table-header">
                     <tr>
                       <th className="table-header-cell">OI CHANGE</th>
                       <th className="table-header-cell">PRICE CHANGE</th>
-                      <th className="table-header-cell">EXPIRY DATE</th>
+                      {/* <th className="table-header-cell">EXPIRY DATE</th> */}
                       <th className="table-header-cell">IV</th>
                       <th className="table-header-cell">OI</th>
                       <th className="table-header-cell">OI CHANGE %</th>
@@ -303,7 +307,7 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
                       <tr key={index}>
                         <td className={item.change_in_oi < 0 ? 'text-red-500' : 'text-green-500'} >{item.change_in_oi}</td>
                         <td className={item.change_in_price < 0 ? 'text-red-500' : 'text-green-500'} >{item.change_in_price}</td>
-                        <td >{item.expiry_date}</td>
+                        {/* <td >{item.expiry_date}</td> */}
                         <td >{item.iv}</td>
                         <td >{item.oi}</td>
                         <td className={item.percentage_change_in_oi < 0 ? 'text-red-500' : 'text-green-500'} >{item.percentage_change_in_oi}</td>
@@ -320,13 +324,17 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
                 </table>
               </div>
               <div>
+                <div className='callPullDecay'>
+                <h1 className="table-title1">EXPIRY DATE: {stockPutPremiumDecay && stockPutPremiumDecay[0]?.expiry_date}</h1>
                 <h1 className="table-title1">PUT PREMIUM DECAY</h1>
+                <h1 className="table-title1">Underlying Value: {stockPutPremiumDecay && stockPutPremiumDecay[0]?.underlying_value}</h1>
+                  </div>
                 <table className="table1">
                   <thead className="table-header">
                     <tr>
                       <th className="table-header-cell">OI CHANGE</th>
                       <th className="table-header-cell">PRICE CHANGE</th>
-                      <th className="table-header-cell">EXPIRY DATE</th>
+                      {/* <th className="table-header-cell">EXPIRY DATE</th> */}
                       <th className="table-header-cell">IV</th>
                       <th className="table-header-cell">OI</th>
                       <th className="table-header-cell">OI CHANGE %</th>
@@ -336,7 +344,7 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
                       <th className="table-header-cell">TOTAL BUY QUANTITY</th>
                       <th className="table-header-cell">TOTAL SELL QUANTITY</th>
                       <th className="table-header-cell">TOTAL TRADE VOLUME</th>
-                      <th className="table-header-cell">UNDERLYING VALUE</th>
+                      {/* <th className="table-header-cell">UNDERLYING VALUE</th> */}
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -344,7 +352,7 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
                       <tr key={index}>
                         <td className={item.change_in_oi < 0 ? 'text-red-500' : 'text-green-500'}>{item.change_in_oi}</td>
                         <td className={item.change_in_price < 0 ? 'text-red-500' : 'text-green-500'}>{item.change_in_price}</td>
-                        <td>{item.expiry_date}</td>
+                        {/* <td>{item.expiry_date}</td> */}
                         <td>{item.iv}</td>
                         <td>{item.oi}</td>
                         <td className={item.percentage_change_in_oi < 0 ? 'text-red-500' : 'text-green-500'}>{item.percentage_change_in_oi}</td>
@@ -356,7 +364,7 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
                         </td>
                         <td >{item.total_sell_quantity.toLocaleString('en-IN')}</td>
                         <td >{item.total_trade_volume.toLocaleString('en-IN')}</td>
-                        <td>{item.underlying_value}</td>
+                        {/* <td>{item.underlying_value}</td> */}
                       </tr>
                     ))}
                   </tbody>

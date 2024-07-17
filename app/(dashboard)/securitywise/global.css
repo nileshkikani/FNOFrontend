@@ -46,12 +46,12 @@
 .main-label-div {
   @apply flex gap-2 w-full my-5;
 }
-.half-width {
+/* .half-width {
   @apply w-1/2 flex px-5;
 }
 .half-last-width {
   @apply w-1/2 flex justify-end px-5;
-}
+} */
 .div-main {
   @apply h-[100vh] overflow-hidden sticky top-60;
 }
@@ -89,7 +89,7 @@
   @apply p-3 justify-end items-end;
 }
 .delivery-div {
-  @apply ml-16;
+  @apply text-center;
 }
 .traded-div {
   @apply ml-5;
@@ -112,4 +112,8 @@
 /* Optional: Add a box shadow or border to make the header stand out */
 .sticky-header thead tr th {
   box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+.prediction-col{
+  @apply flex items-center gap-3;
 }

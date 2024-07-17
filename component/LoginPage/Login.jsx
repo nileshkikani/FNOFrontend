@@ -1,22 +1,32 @@
-'use client';
-import useAuth from '@/hooks/useAuth';
-import { useAppSelector } from '@/store';
-import React from 'react';
+'use client'
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setRememberMe } from '@/store/authSlice';
 import { setEmail } from '@/store/userSlice';
+import { setRememberMe } from '@/store/authSlice';
+import { useAppSelector } from '@/store';
+import useAuth from '@/hooks/useAuth';
 
 const Login = () => {
-  const { getData, refreshToken } = useAuth();
+  const { getData } = useAuth();
   const checkIsRemember = useAppSelector((state) => state.auth.rememberMe);
   const storeDispatch = useDispatch();
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    let email = e.target.email?.value;
-    let password = e.target.password?.value;
-    storeDispatch(setEmail(email))
-    getData({ email, password });
+    setIsButtonDisabled(true); 
+
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    storeDispatch(setEmail(email));
+
+    try {
+      await getData({ email, password });
+    } catch (error) {
+      console.error('Login failed:', error);
+      setIsButtonDisabled(false); 
+    }
   };
 
   return (
@@ -28,8 +38,6 @@ const Login = () => {
         <div className="login-parents">
           <div className="login-nested-div">
             <div>
-              {/* <h1 className="login-title-text"> */}
-              {/* </h1> */}
               <div className="login-logo-div">
                 <img src="/fnoLogo.png" alt="stockImage" className="login-logo" />
               </div>
@@ -38,7 +46,7 @@ const Login = () => {
               </div>
               <form className="login-form" action="/activeoi" method="POST" onSubmit={handleSubmit}>
                 <div className="input-div">
-                  <label htmlfor="email" className="login-lables ">
+                  <label htmlFor="email" className="login-lables">
                     Email
                   </label>
                   <input
@@ -47,11 +55,11 @@ const Login = () => {
                     id="email"
                     className="pass-email-input"
                     placeholder="Enter your email"
-                    required=""
+                    required
                   />
                 </div>
                 <div className="input-div">
-                  <label for="password" className="login-lables ">
+                  <label htmlFor="password" className="login-lables">
                     Password
                   </label>
                   <input
@@ -60,17 +68,15 @@ const Login = () => {
                     id="password"
                     placeholder="Enter password"
                     className="pass-email-input"
-                    required=""
+                    required
                   />
-                  <div className="rember-me-div">
-                    <label for="RememberMe">
+                  <div className="remember-me-div">
+                    <label htmlFor="RememberMe">
                       <input
                         type="checkbox"
                         name="RememberMe"
                         id="RememberMe"
                         className="remember-me"
-                        // className="pass-email-field"
-                        required=""
                         onChange={() => storeDispatch(setRememberMe(!checkIsRemember))}
                         checked={checkIsRemember}
                       />
@@ -78,8 +84,8 @@ const Login = () => {
                     </label>
                   </div>
                 </div>
-                <button type="submit" className="login-button">
-                  Login
+                <button type="submit" className="login-button" disabled={isButtonDisabled}>
+                  {isButtonDisabled ? 'Logging in...' : 'Login'}
                 </button>
               </form>
             </div>

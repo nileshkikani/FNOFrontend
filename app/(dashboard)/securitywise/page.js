@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import DataTable from 'react-data-table-component';
 // import InfiniteScroll from 'react-infinite-scroll-component';
 import '../securitywise/global.css';
+import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
 
 //  ===========LOADING ANIMATION ===========
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
@@ -305,7 +306,7 @@ export default function Page() {
       grow: 2
     },
     {
-      name: <span className="table-heading-text">{'Delivered Qty'}</span>,
+      name: <span className="table-heading-text">Delivered Qty</span>,
       selector: (row, index) => +row.times_delivery,
       format: (row, index) => (
         <span index={index} className="secwise-cols">
@@ -315,7 +316,7 @@ export default function Page() {
       sortable: true
     },
     {
-      name: <span className="table-heading-text">{'Avg Delivered Qty'}</span>,
+      name: <span className="table-heading-text">Avg Delivered Qty</span>,
       selector: (row, index) => +row.average_delivery_quantity,
       format: (row, index) => (
         <span index={index} className="secwise-cols">
@@ -325,7 +326,7 @@ export default function Page() {
       sortable: true
     },
     {
-      name: <span className="table-heading-text">{'Traded Qty'}</span>,
+      name: <span className="table-heading-text">Traded Qty</span>,
       selector: (row, index) => +row.times_traded,
       format: (row, index) => (
         <span index={index}>
@@ -337,7 +338,7 @@ export default function Page() {
       sortable: true
     },
     {
-      name: <span className="table-heading-text">{'Avg Traded Qty'}</span>,
+      name: <span className="table-heading-text">Avg Traded Qty</span>,
       selector: (row, index) => +row.average_traded_quantity,
       format: (row, index) => (
         <div index={index} className="traded-div">
@@ -347,7 +348,7 @@ export default function Page() {
       sortable: true
     },
     {
-      name: <span className="table-heading-text">{'Last Price'}</span>,
+      name: <span className="table-heading-text">Last Price</span>,
       selector: (row, index) => +row.last_price,
       format: (row, index) => {
         const value = ((row?.last_price - row?.prev_close) / row?.prev_close) * 100;
@@ -366,7 +367,7 @@ export default function Page() {
       sortable: true
     },
     {
-      name: <span className="table-heading-text">{'Insight (Vs Weekly Avg)'}</span>,
+      name: <span className="table-heading-text">Insight (Vs Weekly Avg)</span>,
       selector: (row, index) =>
         +((row?.deliverable_qty / row?.total_traded_quantity) * 100) >
         (row?.average_delivery_quantity / row?.average_traded_quantity) * 100,
@@ -391,7 +392,7 @@ export default function Page() {
       sortable: true
     },
     {
-      name: <span className="table-heading-text">{'% Dly Qt to Traded Qty'}</span>,
+      name: <span className="table-heading-text">% Dly Qt to Traded Qty</span>,
       selector: (row, index) => +row.dly_qt_to_traded_qty,
       format: (row, index) => (
         <div index={index} className="delivery-div">
@@ -399,7 +400,98 @@ export default function Page() {
         </div>
       ),
       sortable: true
-    }
+    },
+    {
+      name: <span className="table-heading-text">xg prediction</span>,
+      selector: (row, index) => +row.xg_prediction,
+      format: (row, index) => (
+        <div index={index} >
+          <span className="secwise-cols">
+            {+row.xg_prediction > 0 ? (
+              <span className='prediction-col'>
+                <FaArrowTrendUp size={18} style={{ color: 'green' }} />up
+              </span>
+            ) : (
+              <span className='prediction-col'>
+                <FaArrowTrendDown size={18} style={{ color: 'red' }} />down
+              </span>
+            )}
+          </span>
+        </div>
+      ),
+      sortable: true
+    },
+    {
+      name: <span className="table-heading-text">Ada prediction</span>,
+      selector: (row, index) => +row.ada_prediction,
+      format: (row, index) => (
+        <div index={index} >
+          <span className="secwise-cols">
+            {+row.ada_prediction > 0 ? (
+              <span className='prediction-col'>
+                <FaArrowTrendUp size={18} style={{ color: 'green' }} />up
+              </span>
+            ) : (
+              <span className='prediction-col'>
+                <FaArrowTrendDown size={18} style={{ color: 'red' }} />down
+              </span>
+            )}
+          </span>
+        </div>
+      ),
+      sortable: true
+    },
+    {
+      name: <span className="table-heading-text">Forest prediction</span>,
+      selector: (row, index) => +row.forest_prediction,
+      format: (row, index) => (
+        <div index={index} >
+          <span className="secwise-cols">
+            {+row.forest_prediction > 0 ? (
+              <span className='prediction-col'>
+                <FaArrowTrendUp size={18} style={{ color: 'green' }} />up
+              </span>
+            ) : (
+              <span className='prediction-col'>
+                <FaArrowTrendDown size={18} style={{ color: 'red' }} />down
+              </span>
+            )}
+          </span>
+        </div>
+      ),
+      sortable: true
+    },
+    {
+      name: <span className="table-heading-text">XG Reg prediction</span>,
+      selector: (row, index) => +row.xg_reg_prediction,
+      format: (row, index) => (
+        <div index={index} className="delivery-div">
+          <span className="secwise-cols">{(+row.xg_reg_prediction).toLocaleString('en-IN')}</span>
+        </div>
+      ),
+      sortable: true
+    },
+    {
+      name: <span className="table-heading-text">Ada Reg prediction</span>,
+      selector: (row, index) => +row.ada_reg_prediction,
+      format: (row, index) => (
+        <div index={index} className="delivery-div">
+          <span className="secwise-cols">{(+row.ada_reg_prediction).toLocaleString('en-IN')}</span>
+        </div>
+      ),
+      sortable: true
+    },
+    {
+      name: <span className="table-heading-text">Ann Reg prediction</span>,
+      selector: (row, index) => +row.ann_reg_prediction,
+      format: (row, index) => (
+        <div index={index} className="delivery-div">
+          <span className="secwise-cols">{(+row.ann_reg_prediction).toLocaleString('en-IN')}</span>
+        </div>
+      ),
+      sortable: true
+    },
+
   ];
 
   return (
@@ -494,11 +586,11 @@ export default function Page() {
             className="sticky-header"
             keyField="uniqueKey"
 
-            // pagination={isMoreData}
-            // paginationServer={isMoreData}
-            // paginationTotalRows={data?.length}
-            // onChangePage={handlePageChange}
-            // onChangeRowsPerPage={handlePerRowsChange}
+          // pagination={isMoreData}
+          // paginationServer={isMoreData}
+          // paginationTotalRows={data?.length}
+          // onChangePage={handlePageChange}
+          // onChangeRowsPerPage={handlePerRowsChange}
           />
         </div>
 

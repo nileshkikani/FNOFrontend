@@ -13,8 +13,7 @@ import useAuth from '@/hooks/useAuth';
 // --------------ICONS--------------
 import { TbSquareLetterS } from "react-icons/tb";
 import { TbSquareLetterB } from "react-icons/tb";
-import { FaArrowTrendDown } from "react-icons/fa6";
-import { FaArrowTrendUp } from "react-icons/fa6";
+import { FaArrowTrendDown,FaArrowTrendUp } from "react-icons/fa6";
 
 
 const Page = () => {
