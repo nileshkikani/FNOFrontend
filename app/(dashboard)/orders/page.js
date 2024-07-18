@@ -13,7 +13,7 @@ import useAuth from '@/hooks/useAuth';
 // --------------ICONS--------------
 import { TbSquareLetterS } from "react-icons/tb";
 import { TbSquareLetterB } from "react-icons/tb";
-import { FaArrowTrendDown,FaArrowTrendUp } from "react-icons/fa6";
+import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
 
 
 const Page = () => {
@@ -23,8 +23,8 @@ const Page = () => {
   const [closedOrders, setClosedOrders] = useState([]);
   const [openOrders, setOpenOrders] = useState([]);
   const [capital, setCapital] = useState(100000);
-   const [currentTime, setCurrentTime] = useState(new Date());
-   const { handleResponceError } = useAuth();
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const { handleResponceError } = useAuth();
 
 
   // -------------STOCK STATES----------
@@ -183,11 +183,11 @@ const Page = () => {
       const buyPrice = parseFloat(item.buy_price);
       const sellPrice = parseFloat(item.sell_price);
       const priceDifference = sellPrice - buyPrice;
-      const quantity = capital / buyPrice; 
-      totalAmount +=  Math.trunc(priceDifference) *  Math.trunc(quantity);
+      const quantity = capital / buyPrice;
+      totalAmount += Math.trunc(priceDifference) * Math.trunc(quantity);
     });
     const afterTrunc = Math.trunc(totalAmount);
-    return afterTrunc ; 
+    return afterTrunc;
   };
 
   useEffect(() => {
@@ -217,7 +217,7 @@ const Page = () => {
                 price.price = item.stop_loss;
               } else if (livePrice >= item.take_profit) {
                 price.price = item.take_profit;
-              }else if (currentTime){
+              } else if (currentTime) {
 
               }
               try {
@@ -246,11 +246,11 @@ const Page = () => {
     const capitalValueFromInput = document.getElementById('capital-id')?.value;
     if (!capitalValueFromInput) {
       alert('Please enter your capital');
-      return; 
+      return;
     }
     setCapital(capitalValueFromInput);
   }
-  
+
 
   const sortedOrders = closedOrders.slice().sort((a, b) => {
     const dateA = new Date(a.signal_time);
@@ -341,6 +341,7 @@ const Page = () => {
             <th>Amount</th>
             <th>Status</th>
             <th>Indicator</th>
+            <th>Duration</th>
             <th>P/L</th>
             <th>%</th>
           </tr>
@@ -375,6 +376,10 @@ const Page = () => {
                 </td>
                 <td className='green-text td-cell'>{item.status === 'closed' && 'success'}</td>
                 <td className='td-cell' >{item.indicator}</td>
+                <td className='td-cell'>
+                  {item.duration === 'FIVE_MINUTE' ? '5 minutes' : item.duration === 'FIFTEEN_MINUTE' ? '15 minutes' : ''}
+                </td>
+
                 <td className='order-icon td-cell'>{item.outcome == 'loss' ? <FaArrowTrendDown size={18} style={{ color: 'red' }} /> : <FaArrowTrendUp size={18} style={{ color: 'green' }} />}{item.outcome}</td>
                 <td className={percentageChange < 0 ? 'red-text td-cell' : 'green-text td-cell'}>{percentageChange.toFixed(2)}%</td>
               </tr>
