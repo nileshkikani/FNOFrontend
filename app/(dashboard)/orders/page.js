@@ -287,6 +287,7 @@ const Page = () => {
       <table >
         <thead>
           <tr>
+          <th>Duration</th>
             <th>Signal Time</th>
             <th>Type</th>
             <th>Stock</th>
@@ -303,6 +304,9 @@ const Page = () => {
             const rowClass = index % 2 === 0 ? 'row-light-color' : 'row-dark-color';
             return (
               <tr key={item.id} className={rowClass}>
+                                <td className='td-cell'>
+                  {item.duration === 'FIVE_MINUTE' ? '5 minutes' : item.duration === 'FIFTEEN_MINUTE' ? '15 minutes' : ''}
+                </td>
                 <td className='td-cell'>{new Date(item?.signal_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
                 <td className='order-icon td-cell'>{item.type === 'buy' ? <TbSquareLetterB size={25} style={{ color: 'green' }} /> : <TbSquareLetterS size={25} style={{ color: 'red' }} />}</td>
                 <td className='td-cell'>{item?.symbol}</td>
@@ -341,7 +345,7 @@ const Page = () => {
             <th>Amount</th>
             <th>Status</th>
             <th>Indicator</th>
-            <th>Duration</th>
+            {/* <th>Duration</th> */}
             <th>P/L</th>
             <th>%</th>
           </tr>
@@ -376,10 +380,9 @@ const Page = () => {
                 </td>
                 <td className='green-text td-cell'>{item.status === 'closed' && 'success'}</td>
                 <td className='td-cell' >{item.indicator}</td>
-                <td className='td-cell'>
+                {/* <td className='td-cell'>
                   {item.duration === 'FIVE_MINUTE' ? '5 minutes' : item.duration === 'FIFTEEN_MINUTE' ? '15 minutes' : ''}
-                </td>
-
+                </td> */}
                 <td className='order-icon td-cell'>{item.outcome == 'loss' ? <FaArrowTrendDown size={18} style={{ color: 'red' }} /> : <FaArrowTrendUp size={18} style={{ color: 'green' }} />}{item.outcome}</td>
                 <td className={percentageChange < 0 ? 'red-text td-cell' : 'green-text td-cell'}>{percentageChange.toFixed(2)}%</td>
               </tr>
