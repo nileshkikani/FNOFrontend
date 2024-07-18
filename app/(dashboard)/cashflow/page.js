@@ -299,7 +299,7 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
                       <th className="table-header-cell">TOTAL BUY QUANTITY</th>
                       <th className="table-header-cell">TOTAL SELL QUANTITY</th>
                       <th className="table-header-cell">TOTAL TRADE VOLUME</th>
-                      <th className="table-header-cell">UNDERLYING VALUE</th>
+                      {/* <th className="table-header-cell">UNDERLYING VALUE</th> */}
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -317,7 +317,7 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
                         <td >{item.total_buy_quantity.toLocaleString('en-IN')}</td>
                         <td >{item.total_sell_quantity.toLocaleString('en-IN')}</td>
                         <td >{item.total_trade_volume.toLocaleString('en-IN')}</td>
-                        <td >{item.underlying_value}</td>
+                        {/* <td >{item.underlying_value}</td> */}
                       </tr>
                     ))}
                   </tbody>
