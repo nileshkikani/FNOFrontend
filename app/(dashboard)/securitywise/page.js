@@ -147,21 +147,6 @@ export default function Page() {
     getSecurityData();
   };
 
-  useEffect(() => {
-    // getSecurityDataCall();
-  }, [page]);
-
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(
-  //     (entries) => {
-  //       if (entries[0].isIntersecting && !isLoading && hasMore) {
-  //         console.log('Bottom reached, loading more data.');
-  //         getData(currentSelectedDate, page + 1, isShowNifty);
-  //       }
-  //     },
-  //     { threshold: 0.1 } // Trigger when 10% of 'loader' is visible
-  //   );
-  // }, [hasMore, page, getData]);
 
   const setData = async (data) => {
     const dataArray = await Promise.all(
@@ -496,12 +481,6 @@ export default function Page() {
 
   return (
     <div
-      style={
-        {
-          // minHeight: '100vh',
-          // overflow: 'hidden'
-        }
-      }
       className="div-main"
     >
       <div style={{ display: isLoading ? 'block' : 'none' }}>{loadingAnimation}</div>

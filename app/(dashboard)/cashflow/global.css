@@ -39,7 +39,7 @@
 }
 
 .table-header {
-  @apply bg-gray-50 sticky top-0 z-10;
+  @apply bg-gray-50 sticky top-0 ;
 }
 
 .table-header-cell {

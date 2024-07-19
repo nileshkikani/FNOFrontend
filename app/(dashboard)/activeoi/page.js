@@ -42,7 +42,7 @@ export default function Page() {
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
   const [niftyFuturesData, setNiftyFuturesData] = useState('');
-  const [activeoiData, setActiveoiData] = useState('');
+  const [activeoiData, setActiveoiData] = useState([]);
   const [niftyFuturesExpDates, setNiftyFuturesExpDates] = useState('');
   const [selectedNiftyFuturesExpDates, setSelectedNiftyFuturesExpDates] = useState('');
   const [niftyFuturesFilterData, setNiftyFuturesFilterData] = useState('');
@@ -137,13 +137,13 @@ export default function Page() {
           expiriesParam = checkedExp[0];
         }
         const response = await axiosInstance.get(
-          `${apiUrl}?date=${selectedActiveoiDate}&expiries=${expiriesParam}&size=${strikeAtm}`
-          ,
+          `${apiUrl}?date=${selectedActiveoiDate}&expiries=${expiriesParam}&size=${strikeAtm}`,
           {
             headers: { Authorization: `Bearer ${authState.access}` }
           }
         );
-        if (response.status === 200) {
+  
+        if (response.data && response.data.length > 0) {
           setActiveoiData(response.data);
           const maxLiveNifty = Math.max(...response.data.map((item) => item?.live_nifty || 0));
           const minLiveNifty = Math.min(...response.data.map((item) => item?.live_nifty || 0));
@@ -151,7 +151,7 @@ export default function Page() {
           adjustedNiftyStart = minLiveNifty - range;
           adjustedNiftyEnd = maxLiveNifty + range;
         } else {
-          router.push('/login');
+          alert('No data for this expiry');
         }
       }
     } catch (err) {
@@ -163,7 +163,7 @@ export default function Page() {
   const getExpiries = async () => {
     try {
       const response = await axiosInstance.get(`${API_ROUTER.EXPIRIES}`
-        ,{
+        , {
           headers: { Authorization: `Bearer ${authState.access}` }
         }
       );
@@ -178,7 +178,7 @@ export default function Page() {
     } catch (e) {
       // console.log('error getting dates', e);
       handleResponceError();
-      
+
     }
   };
   useEffect(() => {
@@ -324,53 +324,55 @@ export default function Page() {
       ) : (
         <>
           {/* ----------COI DIFFERENCE------------------- */}
-          <div className="grand-div">
-            <CoiDiffGraph
-              strikeAtm={strikeAtm}
-              data={activeoiData}
-              adjustedNiftyStart={adjustedNiftyStart}
-              adjustedNiftyEnd={adjustedNiftyEnd}
-            />
-          </div>
-          <div className="grand-div">
-            <IntradayDiffGraph
-              strikeAtm={strikeAtm}
-              data={activeoiData}
-              adjustedNiftyStart={adjustedNiftyStart}
-              adjustedNiftyEnd={adjustedNiftyEnd}
-            />
-          </div>
+              <div className="grand-div">
+                <CoiDiffGraph
+                  strikeAtm={strikeAtm}
+                  data={activeoiData}
+                  adjustedNiftyStart={adjustedNiftyStart}
+                  adjustedNiftyEnd={adjustedNiftyEnd}
+                />
+              </div>
+              <div className="grand-div">
+                <IntradayDiffGraph
+                  strikeAtm={strikeAtm}
+                  data={activeoiData}
+                  adjustedNiftyStart={adjustedNiftyStart}
+                  adjustedNiftyEnd={adjustedNiftyEnd}
+                />
+              </div>
           {/* -------------------ACTIVE OI SECTION------------------ */}
-          <>
-            <div className="active-oi-table">
-              <ActiveOiTable
-                data={[...activeoiData].reverse()}
-                adjustedNiftyStart={adjustedNiftyStart}
-                adjustedNiftyEnd={adjustedNiftyEnd}
-              />
-              <div className="grand-div">
-                <ChangeOIGraph
-                  data={activeoiData}
+          {/* {activeoiData && 
+            <> */}
+              <div className="active-oi-table">
+                <ActiveOiTable
+                  data={[...activeoiData].reverse()}
                   adjustedNiftyStart={adjustedNiftyStart}
                   adjustedNiftyEnd={adjustedNiftyEnd}
                 />
+                <div className="grand-div">
+                  <ChangeOIGraph
+                    data={activeoiData}
+                    adjustedNiftyStart={adjustedNiftyStart}
+                    adjustedNiftyEnd={adjustedNiftyEnd}
+                  />
+                </div>
+                <div className="grand-div">
+                  <CallVsPutGraph
+                    data={activeoiData}
+                    adjustedNiftyStart={adjustedNiftyStart}
+                    adjustedNiftyEnd={adjustedNiftyEnd}
+                  />
+                </div>
+                <div className="grand-div">
+                  <ScatterPlotGraph
+                    data={activeoiData}
+                    adjustedNiftyStart={adjustedNiftyStart}
+                    adjustedNiftyEnd={adjustedNiftyEnd}
+                  />
+                </div>
               </div>
-              <div className="grand-div">
-                <CallVsPutGraph
-                  data={activeoiData}
-                  adjustedNiftyStart={adjustedNiftyStart}
-                  adjustedNiftyEnd={adjustedNiftyEnd}
-                />
-              </div>
-              <div className="grand-div">
-                <ScatterPlotGraph
-                  data={activeoiData}
-                  adjustedNiftyStart={adjustedNiftyStart}
-                  adjustedNiftyEnd={adjustedNiftyEnd}
-                />
-              </div>
-            </div>
-          </>
+            {/* </>
+          } */}
           {/* -----------------------NIFTY FUTURES SECTION-------------------- */}
           <>
             {!selectedNiftyFuturesExpDates ? (
