@@ -38,6 +38,7 @@ const Page = () => {
   const [selectedColors, setSelectedColors] = useState('');
   const [stockCallPremiumDecay, setStockCallPremiumDecay] = useState([]);
   const [stockPutPremiumDecay, setStockPutPremiumDecay] = useState([]);
+  const [selectedNavItem, setSelectedNavItem] = useState('MACD');
 
   // buy sell states-------
   const [buySellData, setBuySellData] = useState([]);
@@ -143,7 +144,6 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
       setBuySellData(response.data);
       setMacdData(response.data);
     } catch (error) {
-      // console.log('Error calling buy sell API:', error);
       handleResponceError();
     }
   };
@@ -162,7 +162,6 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
       );
       setStockCallPremiumDecay(response.data?.call_premium_decay);
       setStockPutPremiumDecay(response.data?.put_premium_decay);
-      // console.log('ghghghgh', response.data)
     } catch (err) {
 
     }
@@ -193,6 +192,10 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
     }
   }, [selectedDate]);
 
+  const handleNavItemClick = (item) => {
+    setSelectedNavItem(item);
+  };
+
   const refreshData = () => {
     getData();
     getAllStocks();
@@ -202,7 +205,6 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
     isDateDropdown ? setSelectedDate(event) : setSelectedScript(event.target.value);
   };
 
-  // console.log("esd",macdData)
 
   return (
     <>
@@ -269,174 +271,187 @@ ${API_ROUTER.CASH_FLOW_ALL}`;
             Refresh
           </button>
         </div>
+        <navbar className='component-nav'>
+          {['MACD', 'DECAY', 'MONEYFLOW'].map((item, index) => (
+            <span key={index} onClick={() => handleNavItemClick(item)} className={item == selectedNavItem ? 'component-nav-active' : 'component-nav-deactive'} >
+              {item}
+            </span>
+          ))}
+        </navbar>
         {loading ? (
           <div className="loading-container">
             <PropagateLoader color="#33a3e3" loading={loading} size={15} />
           </div>
         ) : (
           <>
-            <div className="grand-div">{macdData && <MacdIndicator macdData={macdData} />}</div>
-            <div className="grand-div">{buySellData && <CandleChart candleData={buySellData} />}</div>
-            <div>
-              <div>
-                <div className='callPullDecay'>
-                <h1 className="table-title1">EXPIRY DATE: {stockCallPremiumDecay && stockCallPremiumDecay[0]?.expiry_date}</h1>
-                <h1 className="table-title1"> CALL PREMIUM DECAY</h1>
-                <h1 className="table-title1">Underlying Value: {stockCallPremiumDecay && stockCallPremiumDecay[0]?.underlying_value}</h1>
+            {selectedNavItem === 'MACD' && (
+              <>
+                <div className="grand-div">{macdData && <MacdIndicator macdData={macdData} />}</div>
+                <div className="grand-div">{buySellData && <CandleChart candleData={buySellData} />}</div>
+              </>
+            )}
+            {selectedNavItem === 'DECAY' && (
+              <>
+                <div>
+                  <div className='callPullDecay'>
+                    <h1 className="table-title1">EXPIRY DATE: {stockCallPremiumDecay && stockCallPremiumDecay[0]?.expiry_date}</h1>
+                    <h1 className="table-title1"> CALL PREMIUM DECAY</h1>
+                    <h1 className="table-title1">Underlying Value: {stockCallPremiumDecay && stockCallPremiumDecay[0]?.underlying_value}</h1>
                   </div>
-                <table className="table1">
-                  <thead className="table-header">
-                    <tr>
-                      <th className="table-header-cell">OI CHANGE</th>
-                      <th className="table-header-cell">PRICE CHANGE</th>
-                      {/* <th className="table-header-cell">EXPIRY DATE</th> */}
-                      <th className="table-header-cell">IV</th>
-                      <th className="table-header-cell">OI</th>
-                      <th className="table-header-cell">OI CHANGE %</th>
-                      <th className="table-header-cell">STRIKE PRICE</th>
-                      <th className="table-header-cell">PRICE CHANGE %</th>
-                      <th className="table-header-cell">PRICE</th>
-                      <th className="table-header-cell">TOTAL BUY QUANTITY</th>
-                      <th className="table-header-cell">TOTAL SELL QUANTITY</th>
-                      <th className="table-header-cell">TOTAL TRADE VOLUME</th>
-                      {/* <th className="table-header-cell">UNDERLYING VALUE</th> */}
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {stockCallPremiumDecay.map((item, index) => (
-                      <tr key={index}>
-                        <td className={item.change_in_oi < 0 ? 'text-red-500' : 'text-green-500'} >{item.change_in_oi}</td>
-                        <td className={item.change_in_price < 0 ? 'text-red-500' : 'text-green-500'} >{item.change_in_price}</td>
-                        {/* <td >{item.expiry_date}</td> */}
-                        <td >{item.iv}</td>
-                        <td >{item.oi}</td>
-                        <td className={item.percentage_change_in_oi < 0 ? 'text-red-500' : 'text-green-500'} >{item.percentage_change_in_oi}</td>
-                        <td >{item.strike_price}</td>
-                        <td className={item.percentage_change_in_price < 0 ? 'text-red-500' : 'text-green-500'} >{item.percentage_change_in_price}%</td>
-                        <td >{item.price}</td>
-                        <td >{item.total_buy_quantity.toLocaleString('en-IN')}</td>
-                        <td >{item.total_sell_quantity.toLocaleString('en-IN')}</td>
-                        <td >{item.total_trade_volume.toLocaleString('en-IN')}</td>
-                        {/* <td >{item.underlying_value}</td> */}
+                  <table className="table1">
+                    <thead className="table-header">
+                      <tr>
+                        <th className="table-header-cell">OI CHANGE</th>
+                        <th className="table-header-cell">PRICE CHANGE</th>
+                        <th className="table-header-cell">IV</th>
+                        <th className="table-header-cell">OI</th>
+                        <th className="table-header-cell">OI CHANGE %</th>
+                        <th className="table-header-cell">STRIKE PRICE</th>
+                        <th className="table-header-cell">PRICE CHANGE %</th>
+                        <th className="table-header-cell">PRICE</th>
+                        <th className="table-header-cell">TOTAL BUY QUANTITY</th>
+                        <th className="table-header-cell">TOTAL SELL QUANTITY</th>
+                        <th className="table-header-cell">TOTAL TRADE VOLUME</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div>
-                <div className='callPullDecay'>
-                <h1 className="table-title1">EXPIRY DATE: {stockPutPremiumDecay && stockPutPremiumDecay[0]?.expiry_date}</h1>
-                <h1 className="table-title1">PUT PREMIUM DECAY</h1>
-                <h1 className="table-title1">Underlying Value: {stockPutPremiumDecay && stockPutPremiumDecay[0]?.underlying_value}</h1>
-                  </div>
-                <table className="table1">
-                  <thead className="table-header">
-                    <tr>
-                      <th className="table-header-cell">OI CHANGE</th>
-                      <th className="table-header-cell">PRICE CHANGE</th>
-                      {/* <th className="table-header-cell">EXPIRY DATE</th> */}
-                      <th className="table-header-cell">IV</th>
-                      <th className="table-header-cell">OI</th>
-                      <th className="table-header-cell">OI CHANGE %</th>
-                      <th className="table-header-cell">STRIKE PRICE</th>
-                      <th className="table-header-cell">PRICE CHANGE %</th>
-                      <th className="table-header-cell">PRICE</th>
-                      <th className="table-header-cell">TOTAL BUY QUANTITY</th>
-                      <th className="table-header-cell">TOTAL SELL QUANTITY</th>
-                      <th className="table-header-cell">TOTAL TRADE VOLUME</th>
-                      {/* <th className="table-header-cell">UNDERLYING VALUE</th> */}
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {stockPutPremiumDecay.map((item, index) => (
-                      <tr key={index}>
-                        <td className={item.change_in_oi < 0 ? 'text-red-500' : 'text-green-500'}>{item.change_in_oi}</td>
-                        <td className={item.change_in_price < 0 ? 'text-red-500' : 'text-green-500'}>{item.change_in_price}</td>
-                        {/* <td>{item.expiry_date}</td> */}
-                        <td>{item.iv}</td>
-                        <td>{item.oi}</td>
-                        <td className={item.percentage_change_in_oi < 0 ? 'text-red-500' : 'text-green-500'}>{item.percentage_change_in_oi}</td>
-                        <td>{item.strike_price}</td>
-                        <td className={item.percentage_change_in_price < 0 ? 'text-red-500' : 'text-green-500'}>{item.percentage_change_in_price}%</td>
-                        <td>{item.price}</td>
-                        <td >
-                          {item.total_buy_quantity.toLocaleString('en-IN')}
-                        </td>
-                        <td >{item.total_sell_quantity.toLocaleString('en-IN')}</td>
-                        <td >{item.total_trade_volume.toLocaleString('en-IN')}</td>
-                        {/* <td>{item.underlying_value}</td> */}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="table-container1">
-                <table className="table1">
-                  <thead className="table-header">
-                    <tr>
-                      <th className="table-header-cell">Time</th>
-                      <th className="table-header-cell">Close</th>
-                      <th className="table-header-cell">Open</th>
-                      <th className="table-header-cell">High</th>
-                      <th className="table-header-cell">Low</th>
-                      <th className="table-header-cell">Average</th>
-                      <th className="table-header-cell">
-                        Volume<span className="in-thousand1">in thousand</span>
-                      </th>
-                      <th className="table-header-cell">
-                        Money Flow<span className="in-thousand1">in thousand</span>
-                      </th>
-                      <th className="table-header-cell">
-                        Net Money Flow<span className="in-thousand1">in thousand</span>
-                      </th>
-                    </tr>
-                  </thead>
-                  {data && (
+                    </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {data
-                        .slice()
-                        .reverse()
-                        .map((item, index) => {
-                          return (
-                            <tr key={item?.id}>
-                              <td className="table-cell">{item?.time}</td>
-                              <td className="table-cell">{item?.close}</td>
-                              <td className="table-cell">{item?.open}</td>
-                              <td className="table-cell">{item?.high}</td>
-                              <td className="table-cell">{item?.low}</td>
-                              <td className="table-cell">{item?.average}</td>
-                              <td className="table-cell">{item?.volume}</td>
-                              <td
-                                className={`table-cell ${selectedColors.netMoneyFlowColors[index] == 'green'
-                                  ? 'text-green-500'
-                                  : selectedColors.netMoneyFlowColors[index] == 'red'
-                                    ? 'text-red-500'
-                                    : ''
-                                  }`}
-                              >
-                                {item?.money_flow}
-                              </td>
-                              <td
-                                className={`table-cell ${selectedColors.netMoneyFlowColors[index] == 'green'
-                                  ? 'text-green-500'
-                                  : selectedColors.netMoneyFlowColors[index] == 'red'
-                                    ? 'text-red-500'
-                                    : ''
-                                  }`}
-                              >
-                                {item?.net_money_flow}
-                              </td>
-                            </tr>
-                          );
-                        })}
+                      {stockCallPremiumDecay.map((item, index) => (
+                        <tr key={index}>
+                          <td className={item.change_in_oi < 0 ? 'text-red-500' : 'text-green-500'} >{item.change_in_oi}</td>
+                          <td className={item.change_in_price < 0 ? 'text-red-500' : 'text-green-500'} >{item.change_in_price}</td>
+                          <td >{item.iv}</td>
+                          <td >{item.oi}</td>
+                          <td className={item.percentage_change_in_oi < 0 ? 'text-red-500' : 'text-green-500'} >{item.percentage_change_in_oi}</td>
+                          <td >{item.strike_price}</td>
+                          <td className={item.percentage_change_in_price < 0 ? 'text-red-500' : 'text-green-500'} >{item.percentage_change_in_price}%</td>
+                          <td >{item.price}</td>
+                          <td >{item.total_buy_quantity.toLocaleString('en-IN')}</td>
+                          <td >{item.total_sell_quantity.toLocaleString('en-IN')}</td>
+                          <td >{item.total_trade_volume.toLocaleString('en-IN')}</td>
+                        </tr>
+                      ))}
                     </tbody>
-                  )}
-                </table>
+                  </table>
+                </div>
+                <div>
+                  <div className='callPullDecay'>
+                    <h1 className="table-title1">EXPIRY DATE: {stockPutPremiumDecay && stockPutPremiumDecay[0]?.expiry_date}</h1>
+                    <h1 className="table-title1">PUT PREMIUM DECAY</h1>
+                    <h1 className="table-title1">Underlying Value: {stockPutPremiumDecay && stockPutPremiumDecay[0]?.underlying_value}</h1>
+                  </div>
+                  <table className="table1">
+                    <thead className="table-header">
+                      <tr>
+                        <th className="table-header-cell">OI CHANGE</th>
+                        <th className="table-header-cell">PRICE CHANGE</th>
+                        <th className="table-header-cell">IV</th>
+                        <th className="table-header-cell">OI</th>
+                        <th className="table-header-cell">OI CHANGE %</th>
+                        <th className="table-header-cell">STRIKE PRICE</th>
+                        <th className="table-header-cell">PRICE CHANGE %</th>
+                        <th className="table-header-cell">PRICE</th>
+                        <th className="table-header-cell">TOTAL BUY QUANTITY</th>
+                        <th className="table-header-cell">TOTAL SELL QUANTITY</th>
+                        <th className="table-header-cell">TOTAL TRADE VOLUME</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {stockPutPremiumDecay.map((item, index) => (
+                        <tr key={index}>
+                          <td className={item.change_in_oi < 0 ? 'text-red-500' : 'text-green-500'}>{item.change_in_oi}</td>
+                          <td className={item.change_in_price < 0 ? 'text-red-500' : 'text-green-500'}>{item.change_in_price}</td>
+                          <td>{item.iv}</td>
+                          <td>{item.oi}</td>
+                          <td className={item.percentage_change_in_oi < 0 ? 'text-red-500' : 'text-green-500'}>{item.percentage_change_in_oi}</td>
+                          <td>{item.strike_price}</td>
+                          <td className={item.percentage_change_in_price < 0 ? 'text-red-500' : 'text-green-500'}>{item.percentage_change_in_price}%</td>
+                          <td>{item.price}</td>
+                          <td >
+                            {item.total_buy_quantity.toLocaleString('en-IN')}
+                          </td>
+                          <td >{item.total_sell_quantity.toLocaleString('en-IN')}</td>
+                          <td >{item.total_trade_volume.toLocaleString('en-IN')}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )
+            }
+            {selectedNavItem === 'MONEYFLOW' && (<>
+              <div>
+                <div className="table-container1">
+                  <table className="table1">
+                    <thead className="table-header">
+                      <tr>
+                        <th className="table-header-cell">Time</th>
+                        <th className="table-header-cell">Close</th>
+                        <th className="table-header-cell">Open</th>
+                        <th className="table-header-cell">High</th>
+                        <th className="table-header-cell">Low</th>
+                        <th className="table-header-cell">Average</th>
+                        <th className="table-header-cell">
+                          Volume<span className="in-thousand1">in thousand</span>
+                        </th>
+                        <th className="table-header-cell">
+                          Money Flow<span className="in-thousand1">in thousand</span>
+                        </th>
+                        <th className="table-header-cell">
+                          Net Money Flow<span className="in-thousand1">in thousand</span>
+                        </th>
+                      </tr>
+                    </thead>
+                    {data && (
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {data
+                          .slice()
+                          .reverse()
+                          .map((item, index) => {
+                            return (
+                              <tr key={item?.id}>
+                                <td className="table-cell">{item?.time}</td>
+                                <td className="table-cell">{item?.close}</td>
+                                <td className="table-cell">{item?.open}</td>
+                                <td className="table-cell">{item?.high}</td>
+                                <td className="table-cell">{item?.low}</td>
+                                <td className="table-cell">{item?.average}</td>
+                                <td className="table-cell">{item?.volume}</td>
+                                <td
+                                  className={`table-cell ${selectedColors.netMoneyFlowColors[index] == 'green'
+                                    ? 'text-green-500'
+                                    : selectedColors.netMoneyFlowColors[index] == 'red'
+                                      ? 'text-red-500'
+                                      : ''
+                                    }`}
+                                >
+                                  {item?.money_flow}
+                                </td>
+                                <td
+                                  className={`table-cell ${selectedColors.netMoneyFlowColors[index] == 'green'
+                                    ? 'text-green-500'
+                                    : selectedColors.netMoneyFlowColors[index] == 'red'
+                                      ? 'text-red-500'
+                                      : ''
+                                    }`}
+                                >
+                                  {item?.net_money_flow}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    )}
+                  </table>
+                </div>
               </div>
-            </div>
-            <div className="graph-cash-bottom">
-              <MoneyFlowGraph data={data} />
-            </div>
+              <div className="graph-cash-bottom">
+                <MoneyFlowGraph data={data} />
+              </div>
+            </>
+            )}
+
+
           </>
         )}
       </div>

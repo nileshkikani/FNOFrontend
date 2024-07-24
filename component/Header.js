@@ -8,7 +8,6 @@ import {
   FaAngleUp,
   FaArrowsAltV,
   FaDatabase,
-  FaMoneyBillAlt,
   FaRegChartBar,
   FaShieldVirus,
   FaTimes
@@ -18,6 +17,7 @@ import {
   FaArrowRightToBracket,
   FaGear,
   FaRegCircleQuestion,
+  FaMoneyBillTrendUp,
   FaRegMessage
 } from 'react-icons/fa6';
 import { createPopper } from '@popperjs/core';
@@ -36,44 +36,34 @@ import { TOTP } from 'totp-generator';
 import { initializeWebSocket, socket } from '@/utils/socket';
 import { setSocketToken } from '@/store/userSlice';
 
-export default function Header() {
+function Header() {
   const router = useRouter();
   const pathname = usePathname();
-  const { state } = useAuth();
 
-  const [navBar, setNavBar] = useState(true);
   const [analyseOn, setAnalyseOn] = useState(false);
-  const [isRefresh, setIsRefresh] = useState(false);
+  const [moneyFlowOn, setMoneyFlowOn] = useState(false);
   const [profileOn, setProfileOn] = useState(false);
   const [popoverShow, setPopoverShow] = React.useState(false);
+  const [popoverMfShow, setPopoverMfShow] = React.useState(false);
   const btnRef = React.createRef();
   const popoverRef = React.createRef();
+  const popoverMfRef = React.createRef();
   const [profilePopoverShow, setProfilePopoverShow] = React.useState(false);
   const profileBtnRef = React.createRef();
   const profilePopoverRef = React.createRef();
   const ref = useRef(null);
-  const [getAccessCookie, setGetCookies] = useState(Cookie.get('access'));
   const [data, setData] = useState({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const storeDispatch = useDispatch();
   const authState = useAppSelector((state) => state.auth.authState);
   const checkUserIsLoggedIn = useAppSelector((state) => state.auth.isUser);
   const checkIsLoggedInInitially = useAppSelector((state) => state.auth.isCookie);
-  const { refreshToken, checkTimer } = useAuth();
+  const { checkTimer } = useAuth();
   const [bankNiftyPrice, setBankNiftyPrice] = useState(null);
   const [niftyPrice, setNiftyPrice] = useState(null);
   const [isClosed, setIsClosed] = useState(false);
 
   var http = require('http');
-
-  // const { authenticator } = require('otplib');
-  const { createDigest, keyDecoder, keyEncoder, authenticator } = require('@otplib/preset-default');
-  // let { SmartAPI, WebSocket, WebSocketClient } = require('smartapi-javascript');
-  // const SmartAPI = require('smartapi-javascript');
-
-  // const smart_api = new SmartAPI({
-  //   api_key: 'mFDgvhuI' // Replace with your API key
-  // });
 
   useEffect(() => {
     // setInterval(() => {
@@ -134,7 +124,7 @@ export default function Header() {
   useEffect(() => {
     closeProfilePopover();
     getAdvanceDecline();
-  }, [isRefresh, pathname]);
+  }, [pathname]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -142,6 +132,11 @@ export default function Header() {
         setTimeout(() => {
           setPopoverShow(false);
         }, 1000);
+      }
+      if (popoverMfShow && !popoverMfRef.current?.contains(event.target) && !btnRef.current?.contains(event.target)) {
+        // setTimeout(() => {
+          setPopoverMfShow(false);
+        // }, 1000);
       }
       if (
         profilePopoverShow &&
@@ -228,7 +223,6 @@ export default function Header() {
     try {
       const response = await axiosInstance.get(API_ROUTER.ADR);
       setData(response.data);
-      // console.log('response.data-=- ', response.data);
     } catch (error) {
       console.error('Error fetching ADR data:', error);
     }
@@ -238,27 +232,25 @@ export default function Header() {
     setPopoverShow((prevShow) => !prevShow);
   }, []);
 
+  const toggleMfPopover = () => {
+    setPopoverMfShow((prevShow) => !prevShow);
+  };
+
   const toggleProfilePopover = useCallback(() => {
     setProfilePopoverShow((prevShow) => !prevShow);
   }, []);
 
-  const openPopover = () => {
-    createPopper(btnRef.current, popoverRef.current, {
-      placement: 'bottom'
-    });
-    setPopoverShow(true);
-  };
 
   const closePopover = () => {
     setPopoverShow(false);
   };
 
-  const openProfilePopover = () => {
-    createPopper(profileBtnRef.current, profilePopoverRef.current, {
-      placement: 'bottom'
-    });
-    setProfilePopoverShow(true);
-  };
+  // const openProfilePopover = () => {
+  //   createPopper(profileBtnRef.current, profilePopoverRef.current, {
+  //     placement: 'bottom'
+  //   });
+  //   setProfilePopoverShow(true);
+  // };
 
   const closeProfilePopover = () => {
     setProfilePopoverShow(false);
@@ -270,7 +262,6 @@ export default function Header() {
   };
 
   const handleSelectChange = (event) => {
-    // authState && authState.access && router.push(event.target.value == "Live Charts" ? "/activeoi" :event.target.value == "FII DII Data" ? "/fii-dii-data" : "/multistrike");
     checkUserIsLoggedIn && router.push(event.target.value);
   };
 
@@ -330,6 +321,20 @@ export default function Header() {
     }
   ];
 
+  const MfItems = [
+    {
+      // path: '/multistrike/multistrike-oi',
+      title: 'Stocks & FNO ',
+      icon: FaMoneyBillTrendUp
+    },
+    {
+      // path: '/multistrike/multistrike-oi',
+      title: 'All',
+      icon: FaMoneyBillTrendUp
+    }
+  ]
+
+
   let ProfileMenuItems = [
     {
       path: '/account-details',
@@ -361,16 +366,16 @@ export default function Header() {
 
   // -----------------------CURRENT OPEN SIGNALS SOCKET--------------------
 
-  const signalSocket = async ()=>{
-    try{
-      const webSocketUrl = 'wss://algo.satvikacart.com/ws/signals/'
-      let socket = await new WebSocket(webSocketUrl);
-      // console.log("cvccc",socket);
-    }catch(error){
-      console.log('error connecting socket::',error)
-    }
+  // const signalSocket = async ()=>{
+  //   try{
+  //     const webSocketUrl = 'wss://algo.satvikacart.com/ws/signals/'
+  //     let socket = await new WebSocket(webSocketUrl);
+  //     // console.log("cvccc",socket);
+  //   }catch(error){
+  //     console.log('error connecting socket::',error)
+  //   }
 
-  }
+  // }
 
   // signalSocket();
 
@@ -411,8 +416,8 @@ export default function Header() {
                 {bankNiftyPrice
                   ? bankNiftyPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })
                   : data && data?.live_bank_nifty
-                  ? data?.live_bank_nifty.toLocaleString('en-IN', { maximumFractionDigits: 2 })
-                  : '...'}
+                    ? data?.live_bank_nifty.toLocaleString('en-IN', { maximumFractionDigits: 2 })
+                    : '...'}
               </span>
               <br />
               <span className="heading-text">
@@ -423,34 +428,6 @@ export default function Header() {
           </div>
           <div className="nav-parent">
             <ul className="nav-ul">
-              {/* <div className="bank-nifty-div">
-                <li className="heading-text">
-                  <span className="advance-text">
-                    Advance:
-                    {data && data?.bank_nifty_advance ? data?.bank_nifty_advance : '...'}
-                  </span>
-                  <br />
-                  <span className="decline-text">
-                    <span className="heading-text">Decline:</span>
-                    {data && data?.bank_nifty_decline ? data?.bank_nifty_decline : '...'}
-                  </span>
-                </li>
-                <li className="heading-text">
-                  <span className="heading-text">
-                    Bank Nifty:
-                    {data && data?.live_bank_nifty
-                      ? Math.trunc(data?.live_bank_nifty).toLocaleString('en-IN', {
-                          maximumFractionDigits: 0
-                        })
-                      : '...'}
-                  </span>
-                  <br />
-                  <span className="heading-text">
-                    ADR:
-                    {data && data?.bank_nifty_adr ? data?.bank_nifty_adr : '...'}
-                  </span>
-                </li>
-              </div> */}
               {checkUserIsLoggedIn ? (
                 <div className="li-btn-parent" ref={ref}>
                   <li
@@ -472,9 +449,15 @@ export default function Header() {
                       {!analyseOn ? <FaAngleDown color="black" size={16} /> : <FaAngleUp color="black" size={16} />}
                     </button>
                   </li>
-
-                  <li className="nav-li" onClick={() => router.push('/cashflow')}>
+                  <li className="nav-li-flex" onClick={(e) => {
+                    setMoneyFlowOn(!moneyFlowOn);
+                    e.stopPropagation();
+                    toggleMfPopover();
+                  }}>
                     Money Flow
+                    <button>
+                      {!moneyFlowOn ? <FaAngleDown color="black" size={16} /> : <FaAngleUp color="black" size={16} />}
+                    </button>
                   </li>
                   <li className="nav-li" onClick={() => router.push('/orders')} >Orders</li>
                 </div>
@@ -500,8 +483,8 @@ export default function Header() {
                   {niftyPrice
                     ? niftyPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })
                     : data && data?.live_nifty
-                    ? data?.live_nifty.toLocaleString('en-IN', { maximumFractionDigits: 2 })
-                    : '...'}
+                      ? data?.live_nifty.toLocaleString('en-IN', { maximumFractionDigits: 2 })
+                      : '...'}
                 </span>
               </span>
               <br />
@@ -511,7 +494,6 @@ export default function Header() {
           <div className="nav-button">
             <div className="nav-btn-parent">
               <button
-                // ref={profileBtnRef}
                 className="nav-btn-profile"
                 onClick={(e) => {
                   setProfileOn(!profileOn);
@@ -546,7 +528,7 @@ export default function Header() {
               className="mobile-menu-logo"
               src="/fnoLogo.png"
               alt="Logo"
-              // style={{ filter: "brightness(1.5)" }}
+            // style={{ filter: "brightness(1.5)" }}
             />
             <button className="mobile-menu-close" onClick={() => setIsMobileMenuOpen(false)}>
               <FaTimes size={24} color="#215584" />
@@ -594,7 +576,7 @@ export default function Header() {
                 {MenuItems.map((item) => {
                   const FaIcon = item?.icon;
                   return (
-                    <Link
+                    <span
                       key={item.title}
                       className="popover-li"
                       href={item.path}
@@ -605,7 +587,7 @@ export default function Header() {
                       }}
                     >
                       <FaIcon size={18} color="#344054" /> {item?.title}
-                    </Link>
+                    </span>
                   );
                 })}
               </ul>
@@ -613,6 +595,41 @@ export default function Header() {
           </div>
         </div>
       )}
+
+      {popoverMfShow && (
+        <div
+          className="popover-container"
+          ref={popoverRef}
+          style={{ position: 'fixed', top: `${window.innerHeight * 0.09}px`, right: 0 }}
+        >
+          <div>
+            <div className="popover-content">
+              <span className="popover-heading-text">Insights of MoneyFlow</span>
+              <ul className="popover-ul">
+                {MfItems.map((item) => {
+                  const FaIcon = item?.icon;
+                  return (
+                    <span
+                      key={item.title}
+                      className="popover-li"
+                      // href={item.path}
+                      onClick={(e) => {
+                        setTimeout(() => {
+                          closePopover();
+                        }, 2000);
+                      }}
+                    >
+                      <FaIcon size={18} color="#344054" /> {item?.title}
+                    </span>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+
 
       {profilePopoverShow && (
         <div
@@ -651,3 +668,6 @@ export default function Header() {
     </>
   );
 }
+
+
+export default Header;

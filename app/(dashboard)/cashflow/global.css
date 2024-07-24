@@ -95,5 +95,22 @@ td {
 }
 
 .grand-div{
-  @apply py-2;
+  @apply py-4;
+}
+
+.component-nav{
+  @apply bg-[rgb(249,249,249)] flex h-14 items-start gap-4 cursor-pointer sticky top-0 z-[1] pt-4 pb-0 px-8 border-b-[rgb(216,220,227)] border-b border-solid;
+  -webkit-box-pack: justify;
+}
+
+.component-nav-active {
+  @apply font-medium text-blue-500 flex relative h-10;
+}
+
+.component-nav-active::after{
+  @apply content-[""] w-full  absolute bg-blue-500 bottom-0 h-1 rounded-[0.5rem_0.5rem_0rem_0rem] mt-4;
+}
+
+.component-nav-deactive{
+  @apply text-[#808284];
 }
