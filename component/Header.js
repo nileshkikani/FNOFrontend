@@ -135,7 +135,7 @@ function Header() {
       }
       if (popoverMfShow && !popoverMfRef.current?.contains(event.target) && !btnRef.current?.contains(event.target)) {
         // setTimeout(() => {
-          setPopoverMfShow(false);
+        setPopoverMfShow(false);
         // }, 1000);
       }
       if (
@@ -323,12 +323,12 @@ function Header() {
 
   const MfItems = [
     {
-      // path: '/multistrike/multistrike-oi',
+      path: '/cashflow/stocks-fno',
       title: 'Stocks & FNO ',
       icon: FaMoneyBillTrendUp
     },
     {
-      // path: '/multistrike/multistrike-oi',
+      path: '/cashflow/all-stocks',
       title: 'All',
       icon: FaMoneyBillTrendUp
     }
@@ -459,6 +459,7 @@ function Header() {
                       {!moneyFlowOn ? <FaAngleDown color="black" size={16} /> : <FaAngleUp color="black" size={16} />}
                     </button>
                   </li>
+                  <li className="nav-li" onClick={() => router.push('/top-gainers-lossers')} >Top Gainers/Lossers</li>
                   <li className="nav-li" onClick={() => router.push('/orders')} >Orders</li>
                 </div>
               ) : null}
@@ -573,24 +574,27 @@ function Header() {
             <div className="popover-content">
               <span className="popover-heading-text">Tools to predict direction</span>
               <ul className="popover-ul">
-                {MenuItems.map((item) => {
+                {MenuItems.map((item, index) => {
                   const FaIcon = item?.icon;
                   return (
-                    <span
-                      key={item.title}
-                      className="popover-li"
-                      href={item.path}
-                      onClick={(e) => {
-                        setTimeout(() => {
-                          closePopover();
-                        }, 2000);
-                      }}
-                    >
-                      <FaIcon size={18} color="#344054" /> {item?.title}
-                    </span>
+                    <>
+                      <Link href={item.path} key={index}>
+                        <span
+                          className="popover-li"
+                          onClick={(e) => {
+                            setTimeout(() => {
+                              closePopover();
+                            }, 2000);
+                          }}
+                        >
+                          <FaIcon size={18} color="#344054" /> {item?.title}
+                        </span>
+                      </Link>
+                    </>
                   );
                 })}
               </ul>
+
             </div>
           </div>
         </div>
@@ -606,21 +610,20 @@ function Header() {
             <div className="popover-content">
               <span className="popover-heading-text">Insights of MoneyFlow</span>
               <ul className="popover-ul">
-                {MfItems.map((item) => {
+                {MfItems.map((item, index) => {
                   const FaIcon = item?.icon;
-                  return (
-                    <span
-                      key={item.title}
-                      className="popover-li"
-                      // href={item.path}
-                      onClick={(e) => {
-                        setTimeout(() => {
-                          closePopover();
-                        }, 2000);
-                      }}
-                    >
-                      <FaIcon size={18} color="#344054" /> {item?.title}
-                    </span>
+                  return (<>
+                    <Link key={index} href={item.path}>
+                      <span
+                        className="popover-li"
+                        onClick={() => {
+                            setPopoverMfShow(false);
+                        }}
+                      >
+                        <FaIcon size={18} color="#344054" /> {item?.title}
+                      </span>
+                    </Link>
+                  </>
                   );
                 })}
               </ul>

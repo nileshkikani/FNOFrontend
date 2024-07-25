@@ -61,8 +61,8 @@
   @apply min-w-full divide-y divide-gray-200;
 }
 
-.calender-dropdown{
-  @apply bg-white  w-80 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500;
+.calender-dropdown-activeoi{
+  @apply bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500;
 }
 
 .exp-checkbox{

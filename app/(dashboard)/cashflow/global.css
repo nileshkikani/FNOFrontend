@@ -82,7 +82,7 @@
 }
 
 .calender-dropdown{
-  @apply bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500;
+  @apply bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 z-10 p-1;
 }
 
 td {
