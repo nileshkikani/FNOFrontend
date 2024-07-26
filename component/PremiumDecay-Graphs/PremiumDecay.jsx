@@ -1,23 +1,24 @@
 import React from 'react';
 import {
-  LineChart,
+  ComposedChart,
   Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
+  BarChart,
+  Bar
 } from 'recharts';
 
 const PremiumDecayChart = ({ data }) => {
-  
-  // Function to prepare data for Recharts
+
   const prepareChartData = () => {
     let chartData = [];
 
     if (!Array.isArray(data) || data.length === 0) {
-      return chartData; 
+      return chartData;
     }
 
     data.forEach(item => {
@@ -25,13 +26,15 @@ const PremiumDecayChart = ({ data }) => {
       const itemData = item.data;
 
       if (!Array.isArray(itemData) || itemData.length === 0) {
-        return; 
+        return;
       }
 
       itemData.forEach(dataItem => {
         const createdAt = dataItem.created_at;
         const callDecay = dataItem.call_decay;
         const putDecay = dataItem.put_decay;
+        const TotalPutDecay = dataItem.total_put_decay;
+        const TotalCallDecay = dataItem.total_call_decay;
 
         let existingEntry = chartData.find(entry => entry.created_at === createdAt);
 
@@ -49,6 +52,12 @@ const PremiumDecayChart = ({ data }) => {
         if (putDecay !== undefined) {
           existingEntry.put_decay = putDecay;
         }
+        if (TotalPutDecay !== undefined) {
+          existingEntry.total_put_decay = TotalPutDecay;
+        }
+        if (TotalCallDecay !== undefined) {
+          existingEntry.total_call_decay = TotalCallDecay;
+        }
       });
     });
 
@@ -61,7 +70,7 @@ const PremiumDecayChart = ({ data }) => {
 
   return (
     <ResponsiveContainer width="100%" height={350}>
-      <LineChart data={chartData}>
+      <ComposedChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
           dataKey="created_at"
@@ -72,7 +81,8 @@ const PremiumDecayChart = ({ data }) => {
             })
           }
         />
-        <YAxis />
+        <YAxis yAxisId="left" />
+        <YAxis yAxisId="right" orientation="right" />
         <Tooltip
           labelFormatter={(timeStr) =>
             new Date(timeStr).toLocaleTimeString([], {
@@ -102,9 +112,11 @@ const PremiumDecayChart = ({ data }) => {
           }}
         />
         <Legend />
-        <Line type="monotone" dataKey="call_decay" name="Call Decay" stroke="#63D168" />
-        <Line type="monotone" dataKey="put_decay" name="Put Decay" stroke="#E96767" />
-      </LineChart>
+        <Line yAxisId="right" type="linear" dataKey="total_call_decay" name="Total Call Decay" stroke="#63D168" dot={false}/>
+        <Line yAxisId="right" type="linear" dataKey="total_put_decay" name="Total Put Decay" stroke="#E96767" dot={false} />
+        <Bar yAxisId="left" dataKey="call_decay" name="Call Decay" fill="#63D168" />
+        <Bar yAxisId="left" dataKey="put_decay" name="Put Decay" fill="#E96767" />
+      </ComposedChart>
     </ResponsiveContainer>
   );
 };

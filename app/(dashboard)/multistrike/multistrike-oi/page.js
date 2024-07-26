@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import '../global.css';
 import dynamic from 'next/dynamic';
+// import axios from 'axios';
 import axiosInstance from '@/utils/axios';
 import { API_ROUTER } from '@/services/apiRouter';
 import { useAppSelector } from '@/store';
@@ -293,7 +294,7 @@ let totalLast9PutDecaySum = 0;
             </tbody>
           </table>
           )}
-          {pdChartData?.length === 0 && <p>Loading data...</p>}
+          {/* {pdChartData?.length === 0 && <p>Loading data...</p>} */}
         </div>
       </div>
 
