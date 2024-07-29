@@ -19,8 +19,12 @@ const Page = () => {
     const authState = useAppSelector((state) => state.auth.authState);
     const [loading, setLoading] = useState(true);
     const [allDates, setAllDates] = useState('');
+
+    //------------------------PREMIUM DECAY STATES-----------------------
     const [stockCallPremiumDecay, setStockCallPremiumDecay] = useState([]);
     const [stockPutPremiumDecay, setStockPutPremiumDecay] = useState([]);
+    const [decayLoading, setDecayLoading] = useState(false);
+
     const [buySellData, setBuySellData] = useState([]);
     const [selectedColors, setSelectedColors] = useState({
         moneyFlowColors: [],
@@ -90,12 +94,14 @@ const Page = () => {
     const getStockPremiumDecay = async () => {
         if (!selectedScript) return;
         try {
+            setDecayLoading(false)
             let apiUrl = API_ROUTER.STOCK_PREMIUMDECAY;
             const response = await axiosInstance.get(`${apiUrl}?symbol=${selectedScript}`, {
                 headers: { Authorization: `Bearer ${authState.access}` }
             });
             setStockCallPremiumDecay(response.data?.call_premium_decay);
             setStockPutPremiumDecay(response.data?.put_premium_decay);
+            setDecayLoading(true)
         } catch (error) {
             console.log('Error in getStockPremiumDecay:', error);
             handleResponceError();
@@ -190,7 +196,7 @@ const Page = () => {
                                 <div className="grand-div">{buySellData && <CandleChart candleData={buySellData} />}</div>
                             </>
                         )}
-                        {selectedNavItem === 'DECAY' && (
+                        {selectedNavItem === 'DECAY' && decayLoading && (
                             <>
                                 <div>
                                     <div className="callPullDecay">

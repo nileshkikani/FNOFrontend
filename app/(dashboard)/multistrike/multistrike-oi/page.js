@@ -141,9 +141,9 @@ const Page = () => {
   };
 
   let totalCallDecay = 0;
-let totalPutDecay = 0;
-let totalLast9CallDecaySum = 0;
-let totalLast9PutDecaySum = 0;
+  let totalPutDecay = 0;
+  let totalLast9CallDecaySum = 0;
+  let totalLast9PutDecaySum = 0;
 
   const pChartDataNew = pdChartData.slice(1).forEach((itm) => {
     totalCallDecay += itm.total_call_decay;
@@ -152,6 +152,7 @@ let totalLast9PutDecaySum = 0;
     totalLast9PutDecaySum += itm.last_9_put_decay_sum;
   });
 
+  // console.log('current',pdChartData,'new',pChartDataNew);
   return (
     <>
       {/* -----------MULTISTRIKE SECTION--------- */}
@@ -249,33 +250,33 @@ let totalLast9PutDecaySum = 0;
         <div>
           {pdChartData?.length > 1 && (
             <table>
-            <thead>
-              <tr>
-                <th>strike price</th>
-                <th>total call decay</th>
-                <th>total put decay</th>
-                <th>last 45 min call decay</th>
-                <th>last 45 min put decay</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pdChartData.slice(1).map((itm, index) => (
-                <tr key={index}>
-                  <td>{itm.strike_price}</td>
-                  <td className={itm.total_call_decay < 0 ? 'red-text' : 'green-text'}>
-                    {itm.total_call_decay}
-                  </td>
-                  <td className={itm.total_put_decay < 0 ? 'red-text' : 'green-text'}>
-                    {itm.total_put_decay}
-                  </td>
-                  <td className={itm.last_9_call_decay_sum < 0 ? 'red-text' : 'green-text'}>
-                    {itm.last_9_call_decay_sum}
-                  </td>
-                  <td className={itm.last_9_put_decay_sum < 0 ? 'red-text' : 'green-text'}>
-                    {itm.last_9_put_decay_sum}
-                  </td>
+              <thead>
+                <tr>
+                  <th>strike price</th>
+                  <th>total call decay</th>
+                  <th>total put decay</th>
+                  <th>last 45 min call decay</th>
+                  <th>last 45 min put decay</th>
                 </tr>
-              ))}
+              </thead>
+              <tbody>
+                {pdChartData.slice(1).map((itm, index) => (
+                  <tr key={index}>
+                    <td>{itm.strike_price}</td>
+                    <td className={itm.total_call_decay < 0 ? 'red-text' : 'green-text'}>
+                      {itm.total_call_decay}
+                    </td>
+                    <td className={itm.total_put_decay < 0 ? 'red-text' : 'green-text'}>
+                      {itm.total_put_decay}
+                    </td>
+                    <td className={itm.last_9_call_decay_sum < 0 ? 'red-text' : 'green-text'}>
+                      {itm.last_9_call_decay_sum}
+                    </td>
+                    <td className={itm.last_9_put_decay_sum < 0 ? 'red-text' : 'green-text'}>
+                      {itm.last_9_put_decay_sum}
+                    </td>
+                  </tr>
+                ))}
                 <tr>
                   <td>Total</td>
                   <td className={totalCallDecay < 0 ? 'red-text' : 'green-text'}>
@@ -291,8 +292,8 @@ let totalLast9PutDecaySum = 0;
                     {totalLast9PutDecaySum?.toFixed(2)}
                   </td>
                 </tr>
-            </tbody>
-          </table>
+              </tbody>
+            </table>
           )}
           {/* {pdChartData?.length === 0 && <p>Loading data...</p>} */}
         </div>
@@ -313,7 +314,7 @@ let totalLast9PutDecaySum = 0;
         </div>
       ) : (
         <>
-          <PremiumDecayChart data={pdChartData} />
+          <PremiumDecayChart data={pdChartData} isChecked={selectedPdStrikePrices} />
         </>
       )}
     </>

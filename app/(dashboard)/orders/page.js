@@ -217,9 +217,7 @@ const Page = () => {
                 price.price = item.stop_loss;
               } else if (livePrice >= item.take_profit) {
                 price.price = item.take_profit;
-              } else if (currentTime) {
-
-              }
+              } 
               try {
                 axiosInstance.patch(url, price, {
                   headers: { Authorization: `Bearer ${authState.access}` }
@@ -232,11 +230,12 @@ const Page = () => {
         });
       }
     });
-  }, [data, capital]);
+  }, [ capital]);
 
   const refreshBtn = () => {
     getClosedOrders();
     getOpenOrders();
+    getSignal();
   };
 
   // console.log('dcd',capitalValueFromInput)

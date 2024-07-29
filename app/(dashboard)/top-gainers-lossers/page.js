@@ -30,6 +30,7 @@ const Page = () => {
         <>
             <div>
             <h1>GAINERS</h1>
+            {}
                 <table>
                     <thead>
                         <tr>

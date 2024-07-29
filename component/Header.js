@@ -128,15 +128,15 @@ function Header() {
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
-      if (popoverShow && !popoverRef.current?.contains(event.target) && !btnRef.current?.contains(event.target)) {
+      if (analyseOn && !popoverRef.current?.contains(event.target) && !btnRef.current?.contains(event.target)) {
         setTimeout(() => {
-          setPopoverShow(false);
-        }, 1000);
+          setAnalyseOn(false);
+        }, 200);
       }
-      if (popoverMfShow && !popoverMfRef.current?.contains(event.target) && !btnRef.current?.contains(event.target)) {
-        // setTimeout(() => {
-        setPopoverMfShow(false);
-        // }, 1000);
+      if (moneyFlowOn && !popoverMfRef.current?.contains(event.target) && !btnRef.current?.contains(event.target)) {
+        setTimeout(() => {
+          setMoneyFlowOn(false);
+        }, 200);
       }
       if (
         profilePopoverShow &&
@@ -154,7 +154,7 @@ function Header() {
     return () => {
       window.removeEventListener('mousedown', handleOutsideClick);
     };
-  }, [popoverShow, profilePopoverShow]);
+  }, [analyseOn,moneyFlowOn, profilePopoverShow]);
 
   async function generateToken() {
     const response = await getAccessToken();
@@ -228,13 +228,13 @@ function Header() {
     }
   };
 
-  const togglePopover = useCallback(() => {
-    setPopoverShow((prevShow) => !prevShow);
-  }, []);
+  // const togglePopover = useCallback(() => {
+  //   setPopoverShow((prevShow) => !prevShow);
+  // }, []);
 
-  const toggleMfPopover = () => {
-    setPopoverMfShow((prevShow) => !prevShow);
-  };
+  // const toggleMfPopover = () => {
+  //   setPopoverMfShow((prevShow) => !prevShow);
+  // };
 
   const toggleProfilePopover = useCallback(() => {
     setProfilePopoverShow((prevShow) => !prevShow);
@@ -242,7 +242,7 @@ function Header() {
 
 
   const closePopover = () => {
-    setPopoverShow(false);
+    setAnalyseOn(false);
   };
 
   // const openProfilePopover = () => {
@@ -379,6 +379,8 @@ function Header() {
 
   // signalSocket();
 
+  // console.log('analyse is',analyseOn,'mf',moneyFlowOn);
+
 
   return (
     <>
@@ -434,16 +436,18 @@ function Header() {
                     className="nav-li-flex"
                     onClick={(e) => {
                       setAnalyseOn(!analyseOn);
+                      moneyFlowOn && setMoneyFlowOn(!moneyFlowOn);
                       e.stopPropagation();
-                      togglePopover();
+                      // togglePopover();
                     }}
                   >
                     Analyse
                     <button
                       onClick={(e) => {
                         setAnalyseOn(!analyseOn);
+                        
                         e.stopPropagation();
-                        togglePopover();
+                        // togglePopover();
                       }}
                     >
                       {!analyseOn ? <FaAngleDown color="black" size={16} /> : <FaAngleUp color="black" size={16} />}
@@ -451,8 +455,9 @@ function Header() {
                   </li>
                   <li className="nav-li-flex" onClick={(e) => {
                     setMoneyFlowOn(!moneyFlowOn);
+                    analyseOn && setAnalyseOn(!analyseOn);
                     e.stopPropagation();
-                    toggleMfPopover();
+                    // toggleMfPopover();
                   }}>
                     Money Flow
                     <button>
@@ -499,9 +504,8 @@ function Header() {
                 onClick={(e) => {
                   setProfileOn(!profileOn);
                   setIsMobileMenuOpen(false);
-
                   e.stopPropagation();
-                  toggleProfilePopover();
+                  // toggleProfilePopover();
                 }}
               >
                 <img className="img-profile" src="/profile.png" />
@@ -512,7 +516,7 @@ function Header() {
                   setProfileOn(!profileOn);
                   setIsMobileMenuOpen(false);
                   e.stopPropagation();
-                  toggleProfilePopover();
+                  // toggleProfilePopover();
                 }}
               >
                 {!profilePopoverShow ? <FaAngleDown color="black" size={24} /> : <FaAngleUp color="black" size={24} />}
@@ -564,7 +568,7 @@ function Header() {
         </div>
       )}
 
-      {popoverShow && (
+      {analyseOn && (
         <div
           className="popover-container"
           ref={popoverRef}
@@ -600,7 +604,7 @@ function Header() {
         </div>
       )}
 
-      {popoverMfShow && (
+      {moneyFlowOn && (
         <div
           className="popover-container"
           ref={popoverRef}
@@ -617,7 +621,7 @@ function Header() {
                       <span
                         className="popover-li"
                         onClick={() => {
-                            setPopoverMfShow(false);
+                          setPopoverMfShow(false);
                         }}
                       >
                         <FaIcon size={18} color="#344054" /> {item?.title}
