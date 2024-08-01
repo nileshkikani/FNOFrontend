@@ -230,7 +230,7 @@ const Page = () => {
         });
       }
     });
-  }, [ capital]);
+  }, [data, capital]);
 
   const refreshBtn = () => {
     getClosedOrders();
@@ -346,7 +346,7 @@ const Page = () => {
             <th>Amount</th>
             <th>Status</th>
             <th>Indicator</th>
-            <th>Close Duration</th>
+            {/* <th>Close Duration</th> */}
             <th>P/L</th>
             <th>%</th>
           </tr>
@@ -381,7 +381,7 @@ const Page = () => {
                 </td>
                 <td className='green-text td-cell'>{item.status === 'closed' && 'success'}</td>
                 <td className='td-cell' >{item.indicator}</td>
-                <td className='td-cell' >{item.close_duration}</td>
+                {/* <td className='td-cell' >{item.close_duration}</td> */}
                 <td className='order-icon td-cell'>{item.outcome == 'loss' ? <FaArrowTrendDown size={18} style={{ color: 'red' }} /> : <FaArrowTrendUp size={18} style={{ color: 'green' }} />}{item.outcome}</td>
                 <td className={percentageChange < 0 ? 'red-text td-cell' : 'green-text td-cell'}>{percentageChange.toFixed(2)}%</td>
               </tr>
@@ -391,7 +391,7 @@ const Page = () => {
             <tr>
               <td colSpan="8" className='td-cell'><strong>Total:</strong></td>
               <td className={calculateTotalAmount() < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}><strong>{calculateTotalAmount()}</strong></td>
-              <td colSpan="4" className='td-cell'></td>
+              <td colSpan="3" className='td-cell'></td>
               <td className={calculateTotalPercentageChange().toFixed(2) < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}><strong>{calculateTotalPercentageChange().toFixed(2)}%</strong></td>
             </tr>
           )}

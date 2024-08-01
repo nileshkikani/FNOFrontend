@@ -174,7 +174,7 @@ const Page = () => {
                 </button>
                 </div>
                 <navbar className="component-nav">
-                    {['MACD', 'DECAY', 'MONEYFLOW'].map((item, index) => (
+                    {['MACD', 'DECAY', 'MONEYFLOW','PREDICTIONS'].map((item, index) => (
                         <span
                             key={index}
                             onClick={() => setSelectedNavItem(item)}
@@ -368,6 +368,38 @@ const Page = () => {
                                 </div>
                                 <div className="graph-cash-bottom">
                                     <MoneyFlowGraph data={data} />
+                                </div>
+                            </>
+                        )}
+                        {selectedNavItem === 'PREDICTIONS' && (
+                            <>
+                             <div className="table-container1">
+                                    <table className="table1">
+                                        <thead className="table-header">
+                                            <tr>
+                                                <th className="table-header-cell">Time</th>
+                                                <th className="table-header-cell">Close</th>
+                                                <th className="table-header-cell">Adaboost</th>
+                                                <th className="table-header-cell">Xgboost</th>
+                                                <th className="table-header-cell">Xgboost sma</th>
+                                                <th className="table-header-cell">Lstm 10</th>
+                                                <th className="table-header-cell">Lstm 10 sma</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                            {data.slice().reverse().map((item, index) => (
+                                                <tr key={item?.id}>
+                                                    <td className="table-cell">{item?.time}</td>
+                                                    <td className="table-cell">{item?.close}</td>
+                                                    <td className="table-cell">{item?.predicted_close}</td>
+                                                    <td className="table-cell">{item?.predicted_xgboost_close}</td>
+                                                    <td className="table-cell">{item?.predicted_xgboost_close_sma}</td>
+                                                    <td className="table-cell">{item?.predicted_lstm_10_close}</td>
+                                                    <td className="table-cell">{item?.predicted_lstm_10_close_sma}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </>
                         )}

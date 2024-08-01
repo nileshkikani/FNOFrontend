@@ -236,14 +236,14 @@ export default function Page() {
     return insight;
   }
 
-  const processData = (data) => {
-    const dates = data.map((item) => item.date);
-    const tradedVolume = data.map((item) => item.total_traded_quantity);
-    const deliveryVolume = data.map((item) => item.deliverable_qty);
-    const deliveryVolumePercentage = data.map((item) => parseFloat(item.dly_qt_to_traded_qty));
+  // const processData = (data) => {
+  //   const dates = data.map((item) => item.date);
+  //   const tradedVolume = data.map((item) => item.total_traded_quantity);
+  //   const deliveryVolume = data.map((item) => item.deliverable_qty);
+  //   const deliveryVolumePercentage = data.map((item) => parseFloat(item.dly_qt_to_traded_qty));
 
-    return { dates, tradedVolume, deliveryVolume, deliveryVolumePercentage };
-  };
+  //   return { dates, tradedVolume, deliveryVolume, deliveryVolumePercentage };
+  // };
 
   const routerRedirect = (aPath) => {
     route.push(`/securitywise/${aPath}/`);
@@ -472,6 +472,36 @@ export default function Page() {
       format: (row, index) => (
         <div index={index} className="delivery-div">
           <span className="secwise-cols">{(+row.ann_reg_prediction).toLocaleString('en-IN')}</span>
+        </div>
+      ),
+      sortable: true
+    },
+    {
+      name: <span className="table-heading-text">Voting reg prediction</span>,
+      selector: (row, index) => +row.ann_reg_prediction,
+      format: (row, index) => (
+        <div index={index} className="delivery-div">
+          <span className="secwise-cols">{(+row.voting_reg_prediction).toLocaleString('en-IN')}</span>
+        </div>
+      ),
+      sortable: true
+    },
+    {
+      name: <span className="table-heading-text">Final prediction</span>,
+      selector: (row, index) => +row.final_prediction,
+      format: (row, index) => (
+        <div index={index} >
+          <span className="secwise-cols">
+            {+row.final_prediction > 0 ? (
+              <span className='prediction-col'>
+                <FaArrowTrendUp size={18} style={{ color: 'green' }} />up
+              </span>
+            ) : (
+              <span className='prediction-col'>
+                <FaArrowTrendDown size={18} style={{ color: 'red' }} />down
+              </span>
+            )}
+          </span>
         </div>
       ),
       sortable: true

@@ -80,7 +80,7 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
 
     socket.onclose = (event) => {
       // console.log('WebSocket connection closed');
-      setIsClosed(true);
+      // setIsClosed(true);
     };
 
     socket.onerror = (error) => {

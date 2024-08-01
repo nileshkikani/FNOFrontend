@@ -198,7 +198,7 @@ function Header() {
 
     try {
       const response = await axios(config);
-      // console.log('Access Token:', response);
+      console.log('Access Token:', response);
       return response;
     } catch (error) {
       console.log('Error obtaining access token:');
@@ -505,7 +505,7 @@ function Header() {
                   setProfileOn(!profileOn);
                   setIsMobileMenuOpen(false);
                   e.stopPropagation();
-                  // toggleProfilePopover();
+                  toggleProfilePopover();
                 }}
               >
                 <img className="img-profile" src="/profile.png" />
