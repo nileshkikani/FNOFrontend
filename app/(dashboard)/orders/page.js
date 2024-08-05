@@ -206,10 +206,12 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
+    const openOrderIds = new Set(openOrders.map(order => order.id));
+  
     Object.entries(stockStates).forEach(([symbol, [livePrice, setLivePrice]]) => {
       if (livePrice !== null && data.length > 0) {
         data.forEach((item) => {
-          if (item.symbol === symbol) {
+          if (item.symbol === symbol && openOrderIds.has(item.id)) {
             if (livePrice <= item.stop_loss || livePrice >= item.take_profit) {
               const price = {};
               const url = `signal/orderupdate/${item.id}`;
@@ -230,7 +232,7 @@ const Page = () => {
         });
       }
     });
-  }, [data, capital]);
+  }, [data, openOrders, capital]);
 
   const refreshBtn = () => {
     getClosedOrders();
@@ -238,7 +240,6 @@ const Page = () => {
     getSignal();
   };
 
-  // console.log('dcd',capitalValueFromInput)
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -315,7 +316,6 @@ const Page = () => {
                 <td className='td-cell'>{item?.stop_loss?.toFixed(2)}</td>
                 <td className='td-cell'>{item?.take_profit?.toFixed(2)}</td>
                 <td className='td-cell'>{item?.indicator}</td>
-                {/* <td className='td-cell' >{item.close_duration}</td> */}
                 <td className='td-cell'>{item?.status}</td>
               </tr>
             )
@@ -346,7 +346,7 @@ const Page = () => {
             <th>Amount</th>
             <th>Status</th>
             <th>Indicator</th>
-            {/* <th>Close Duration</th> */}
+            <th>Close Duration</th>
             <th>P/L</th>
             <th>%</th>
           </tr>
@@ -381,7 +381,7 @@ const Page = () => {
                 </td>
                 <td className='green-text td-cell'>{item.status === 'closed' && 'success'}</td>
                 <td className='td-cell' >{item.indicator}</td>
-                {/* <td className='td-cell' >{item.close_duration}</td> */}
+                <td className='td-cell' >{item.close_duration}</td>
                 <td className='order-icon td-cell'>{item.outcome == 'loss' ? <FaArrowTrendDown size={18} style={{ color: 'red' }} /> : <FaArrowTrendUp size={18} style={{ color: 'green' }} />}{item.outcome}</td>
                 <td className={percentageChange < 0 ? 'red-text td-cell' : 'green-text td-cell'}>{percentageChange.toFixed(2)}%</td>
               </tr>

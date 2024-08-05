@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import DataTable from 'react-data-table-component';
-// import InfiniteScroll from 'react-infinite-scroll-component';
 import '../securitywise/global.css';
 import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
 
@@ -15,14 +14,12 @@ export default function Page() {
   const {
     setDropdownDate,
     data,
-    // page,
     uniqueDates,
     getData,
     showNiftyStocksOnly,
     isLoading,
     currentSelectedDate,
     hasMore,
-    // isShowNifty,
     refreshData,
     setCurrentSelectedDate
   } = useSecurityWiseData();
@@ -31,6 +28,8 @@ export default function Page() {
   const [changeDate, setChangeDate] = useState(false);
   const [securityData, setSecurityData] = useState([]);
   const [sData, setSData] = useState([]);
+  const [originalSecurityData, setOriginalSecurityData] = useState([]);
+
   let [page, setPage] = useState(1);
   let [perPage, setPerPage] = useState(1);
   const [selectedDate, setSelectedDate] = useState('');
@@ -38,21 +37,31 @@ export default function Page() {
   const [isMoreData, setIsMoreData] = useState(true);
   const [isMore, setIsMore] = useState(true);
   const tableRef = useRef(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // const [currentSelectedDate, setCurrentSelectedDate] = useState('');
 
   const pathname = usePathname();
   let routeName = pathname.match('securitywise') ? 'securitywise' : null;
-  // Current page index
 
   const loader = useRef(null);
 
   useEffect(() => {
-    // Check if the component is mounted to avoid the warning
     if (typeof window !== 'undefined') {
       getData();
     }
   }, []);
+
+  useEffect(() => {
+    if (searchTerm) {
+      const filteredData = originalSecurityData.filter(item =>
+        item.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setSecurityData(filteredData);
+    } else {
+      setSecurityData(originalSecurityData);
+    }
+  }, [searchTerm, originalSecurityData]);
+  
 
   useEffect(() => {
     console.log('data.map', data);
@@ -68,14 +77,11 @@ export default function Page() {
   }, [data]);
 
   useEffect(() => {
-    // console.log('currentSelectedDate', isMoreData);
 
-    // console.log('routeName', routeName);
     getSecurityData();
   }, [selectedDate, pathname]);
 
   useEffect(() => {
-    // console.log('currentSelectedDate', selectedDate);
     if (uniqueDates.length > 0) {
       if (!changeDate) {
         setSelectedDate(uniqueDates[0]);
@@ -83,23 +89,14 @@ export default function Page() {
     }
   }, [uniqueDates, selectedDate]);
 
-  // useEffect(() => {
-  //   console.log('Data updated', data);
-  //   console.log('Data Length:', data?.length);
-  //   console.log('Has More Data:', isMoreData);
-  // }, [data, isMoreData]);
 
   const getSecurityData = (pageNo, isNifty) => {
-    // console.log('selectedDate', isMoreData);
     const pageNum = pageNo ? pageNo : page;
     const isNiftyData = isNifty ? isNifty : isShowNifty ? 1 : 0;
     if (routeName && selectedDate) {
-      // console.log('routername', routeName);
       if (page !== 1 && !isMoreData) {
-        // console.log('isMoreData', isMoreData);
         return;
       } else {
-        // console.log('page else', pageNum);
         getData(selectedDate, pageNum, isNiftyData).then(() => {
           setPage(pageNum + 1);
         });
@@ -109,6 +106,7 @@ export default function Page() {
       refreshData();
     }
   };
+  
 
   useEffect(() => {
     const dataTable = document.querySelector('.sticky-header');
@@ -120,11 +118,7 @@ export default function Page() {
         const clientHeight = dataTable.clientHeight;
 
         const scrollBottom = Math.floor(scrollHeight - (scrollTop + clientHeight));
-
-        // console.log('scrollBottom:', scrollBottom);
-
         if (scrollBottom === 0 && isMoreData) {
-          // console.log('Scrolled to bottom, current page:', page);
           getSecurityDataCall();
         }
       }
@@ -142,7 +136,6 @@ export default function Page() {
   }, [getSecurityData]);
 
   const getSecurityDataCall = async () => {
-    // console.log('getSecurityDataCall-=-=-', isMoreData);
     if (!isMoreData) return;
     getSecurityData();
   };
@@ -157,17 +150,18 @@ export default function Page() {
           (item.average_delivery_quantity / item.average_traded_quantity) * 100,
           ((item.close_price - item.prev_close) / item.prev_close) * 100
         );
-
+  
         return { ...item, insight, uniqueKey: key };
       })
     );
     const dataset = (await Promise.resolve(dataArray)).sort((a, b) => b.times_delivery - a.times_delivery);
-    // console.log('dataset', dataset);
-
+    
+    setOriginalSecurityData(dataset);
     setSecurityData(dataset);
     setIsFilterData(true);
     setChangeDate(false);
   };
+  
 
   async function getInsight(deliveryPercent, avgDeliveryPercent, priceChange) {
     let insight = {};
@@ -236,29 +230,11 @@ export default function Page() {
     return insight;
   }
 
-  // const processData = (data) => {
-  //   const dates = data.map((item) => item.date);
-  //   const tradedVolume = data.map((item) => item.total_traded_quantity);
-  //   const deliveryVolume = data.map((item) => item.deliverable_qty);
-  //   const deliveryVolumePercentage = data.map((item) => parseFloat(item.dly_qt_to_traded_qty));
-
-  //   return { dates, tradedVolume, deliveryVolume, deliveryVolumePercentage };
-  // };
 
   const routerRedirect = (aPath) => {
     route.push(`/securitywise/${aPath}/`);
   };
 
-  // const handlePageChange = (page) => {
-  //   console.log('page', page);
-  //   setPage(page);
-  // };
-
-  // const handlePerRowsChange = async (newPerPage, page) => {
-  //   console.log('newPerPage', newPerPage);
-  //   setPerPage(newPerPage);
-  //   setPage(page);
-  // };
 
   const loadingAnimation = (
     <div
@@ -509,33 +485,36 @@ export default function Page() {
 
   ];
 
+  const filteredData = securityData.filter(item =>
+    item.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div
       className="div-main"
-    >
-      <div style={{ display: isLoading ? 'block' : 'none' }}>{loadingAnimation}</div>
-      <div style={{ display: !isLoading && !isFilterData && !securityData ? 'block' : 'none' }}>{loadingAnimation}</div>
+      >
+      {/* <div style={{ display: isLoading ? 'block' : 'none' }}>{loadingAnimation}</div> */}
+{/* <div style={{ display: !isLoading && !isFilterData && !securityData ? 'block' : 'none' }}>{loadingAnimation}</div> */}
+      <div >
 
-      <div style={{ display: !isLoading && isFilterData && securityData ? 'block' : 'none' }}>
-        {securityData && securityData?.length > 0 && (
           <div className="main-label-div">
             <div className="half-width">
-              <label>
+              {selectedDate && (
+
+                <label>
                 {/* Date */}
                 <select
                   className="date-picker-modal"
                   onChange={async (event) => {
                     const selectedDate = event.target.value;
-                    // console.log('selectedDate', selectedDate);
                     setPage(1);
                     setChangeDate(true);
                     await refreshData();
                     setSelectedDate(selectedDate);
-                    // setCurrentSelectedDate(selectedDate);
                     getSecurityData();
                   }}
                   value={selectedDate}
-                >
+                  >
                   {uniqueDates?.map((itm, index) => (
                     <option key={index} value={itm}>
                       {itm}
@@ -543,11 +522,7 @@ export default function Page() {
                   ))}
                 </select>
               </label>
-              {/* <input
-              value={''}
-              placeholder="Enter Stock Symbol"
-              //  onChange={(event) => filterByStockAndDate(event)}
-            /> */}
+                    )}
             </div>
             <div className="half-last-width">
               <label>
@@ -556,12 +531,10 @@ export default function Page() {
                   type="checkbox"
                   className='className="checkbox-label"'
                   onChange={async (event) => {
-                    // console.log('!isShowNifty', !isShowNifty);
                     setIsShowNifty(event.target.checked);
-                    setPage(1); // set page to 1
+                    setPage(1); 
                     await refreshData();
                     setTimeout(() => {
-                      // console.log('page no', page);
                       getSecurityData(1, !isShowNifty ? 1 : 0);
                     }, 1000);
                   }}
@@ -569,19 +542,28 @@ export default function Page() {
                 <span className="checkbox-text">NIFTY STOCKS</span>
               </label>
             </div>
+            <div>
+            <input
+            type="text"
+            placeholder="Search by Symbol"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ padding: '5px', maxWidth: '80%', border: '1px solid black', borderRadius: '5px' }}
+          />
+            </div>
           </div>
-        )}
 
-        <div
+        {!isLoading && isFilterData && securityData && (
+          <div
           className="scrolling-tableData"
           style={{
             position: 'relative',
             height: '100%',
             overflow: 'auto'
-            // overflowY: 'auto'
           }}
           ref={tableRef}
-        >
+          >
+
           <DataTable
             columns={column}
             data={securityData}
@@ -594,55 +576,10 @@ export default function Page() {
             fixedHeaderScrollHeight="calc(100vh - 80px)"
             className="sticky-header"
             keyField="uniqueKey"
-
-          // pagination={isMoreData}
-          // paginationServer={isMoreData}
-          // paginationTotalRows={data?.length}
-          // onChangePage={handlePageChange}
-          // onChangeRowsPerPage={handlePerRowsChange}
-          />
+            />
         </div>
+          ) }
 
-        {/* <div
-          className="scrolling-tableData"
-          style={{
-            position: 'relative',
-            height: '100%',
-            overflow: 'auto',
-            overflowY: 'auto'
-          }}
-          // onScroll={(e) => handleScroll(e)}
-        > */}
-        {/* <InfiniteScroll
-            dataLength={data?.length - 1}
-            next={() => {
-              console.log('Next page', page);
-              if (isMoreData) {
-                // setPage((prev) => prev + 1);
-                getSecurityData();
-              }
-            }}
-            hasMore={isMoreData}
-            height={1000}
-            scrollableTarget="scrollableDiv"
-            endMessage={false}
-          > */}
-        {/* <DataTable
-            columns={column}
-            data={securityData}
-            noDataComponent={
-              <div ref={loader} style={{ height: '100px', margin: '10px 0' }}>
-                {isLoading && <PropagateLoader color="#33a3e3" loading={true} size={15} />}
-              </div>
-            }
-            fixedHeader={true}
-            // fixedHeader={{ top: 0, bottom: 0 }}
-            // fixedHeaderScrollHeight="100vh"
-            className="sticky-header"
-            keyField="uniqueKey"
-          /> */}
-        {/* </InfiniteScroll> */}
-        {/* </div> */}
         <style jsx>{`
           .scrolling-tableData {
             position: absolute;
@@ -653,37 +590,7 @@ export default function Page() {
           }
         `}</style>
 
-        {/* <div className="scrolling-table"> */}
-        {/* <InfiniteScroll
-          dataLength={data?.length}
-          next={() => {
-            console.log('Next page', page);
-            if (isMoreData) {
-              console.log('if (isMoreData)', isMoreData);
-              setPage((prev) => prev + 1);
-              getSecurityData();
-            }
-          }}
-          hasMore={isMoreData}
-          // height={`calc(100vh - ${loader.current?.offsetHeight}px)`}
-          height={1000}
-          scrollableTarget="scrollableDiv"
-          pullDownToRefreshThreshold={100}
-        >
-          <DataTable
-            columns={column}
-            data={securityData}
-            noDataComponent={
-              <div ref={loader} style={{ height: '100px', margin: '10px 0' }}>
-                {isLoading && <PropagateLoader color="#33a3e3" loading={true} size={15} />}
-              </div>
-            }
-            persistTableHead
-            keyField="uniqueKey"
-            fixedHeader={false}
-          />
-        </InfiniteScroll> */}
-        {/* </div> */}
+
       </div>
     </div>
   );

@@ -93,20 +93,33 @@ const Page = () => {
     // -----------------------PREMIUM DECAY TABLES---------------------
     const getStockPremiumDecay = async () => {
         if (!selectedScript) return;
+    
+        setDecayLoading(false);
+        
+        const apiUrl = API_ROUTER.STOCK_PREMIUMDECAY;
+    
         try {
-            setDecayLoading(false)
-            let apiUrl = API_ROUTER.STOCK_PREMIUMDECAY;
             const response = await axiosInstance.get(`${apiUrl}?symbol=${selectedScript}`, {
                 headers: { Authorization: `Bearer ${authState.access}` }
             });
-            setStockCallPremiumDecay(response.data?.call_premium_decay);
-            setStockPutPremiumDecay(response.data?.put_premium_decay);
-            setDecayLoading(true)
+    
+            if (response.data?.call_premium_decay && response.data?.put_premium_decay) {
+                setStockCallPremiumDecay(response.data?.call_premium_decay);
+                setStockPutPremiumDecay(response.data?.put_premium_decay);
+                setDecayLoading(true);
+            } else {
+                alert('No data for this symbol');
+            }
         } catch (error) {
-            console.log('Error in getStockPremiumDecay:', error);
-            handleResponceError();
+            if (error.response && error.response.status === 400 ) {
+                alert(`${error.response.data.error}`);
+            } else {
+                handleResponceError();
+            }
         }
     };
+    
+    
 
     // ----------------------MACD AND CANDLE CHART-----------------------
     const buySellCall = async () => {
@@ -135,9 +148,9 @@ const Page = () => {
         buySellCall();
     }, [selectedScript, selectedDate]);
 
-    useEffect(()=>{
+    useEffect(() => {
         getStockPremiumDecay();
-    },[selectedScript])
+    }, [selectedScript])
 
 
     return (
@@ -169,12 +182,12 @@ const Page = () => {
                                 ))}
                         </select>
                     </div>
-                <button className="refresh-button2" onClick={refreshData}>
-                    Refresh
-                </button>
+                    <button className="refresh-button2" onClick={refreshData}>
+                        Refresh
+                    </button>
                 </div>
                 <navbar className="component-nav">
-                    {['MACD', 'DECAY', 'MONEYFLOW','PREDICTIONS'].map((item, index) => (
+                    {['MACD', 'DECAY', 'MONEYFLOW', 'PREDICTIONS'].map((item, index) => (
                         <span
                             key={index}
                             onClick={() => setSelectedNavItem(item)}
@@ -340,24 +353,22 @@ const Page = () => {
                                                     <td className="table-cell">{item?.average}</td>
                                                     <td className="table-cell">{item?.volume}</td>
                                                     <td
-                                                        className={`table-cell ${
-                                                            selectedColors.netMoneyFlowColors[index] === 'green'
+                                                        className={`table-cell ${selectedColors.netMoneyFlowColors[index] === 'green'
                                                                 ? 'text-green-500'
                                                                 : selectedColors.netMoneyFlowColors[index] === 'red'
-                                                                ? 'text-red-500'
-                                                                : ''
-                                                        }`}
+                                                                    ? 'text-red-500'
+                                                                    : ''
+                                                            }`}
                                                     >
                                                         {item?.money_flow}
                                                     </td>
                                                     <td
-                                                        className={`table-cell ${
-                                                            selectedColors.netMoneyFlowColors[index] === 'green'
+                                                        className={`table-cell ${selectedColors.netMoneyFlowColors[index] === 'green'
                                                                 ? 'text-green-500'
                                                                 : selectedColors.netMoneyFlowColors[index] === 'red'
-                                                                ? 'text-red-500'
-                                                                : ''
-                                                        }`}
+                                                                    ? 'text-red-500'
+                                                                    : ''
+                                                            }`}
                                                     >
                                                         {item?.net_money_flow}
                                                     </td>
@@ -373,7 +384,7 @@ const Page = () => {
                         )}
                         {selectedNavItem === 'PREDICTIONS' && (
                             <>
-                             <div className="table-container1">
+                                <div className="table-container1">
                                     <table className="table1">
                                         <thead className="table-header">
                                             <tr>

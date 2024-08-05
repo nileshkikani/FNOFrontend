@@ -117,3 +117,7 @@
 .prediction-col{
   @apply flex items-center gap-3;
 }
+
+.left-paft{
+  @apply flex items-center;
+}

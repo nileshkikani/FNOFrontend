@@ -128,36 +128,49 @@ export default function Page() {
   // -------------------------ACTIVE OI API CALL-------------------------------
   const getActiveoiData = async () => {
     try {
-      if (selectedActiveoiDate && checkedExp) {
-        let apiUrl = `${API_ROUTER.ACTIVE_OI}`;
-        let expiriesParam = '';
-        if (checkedExp.length > 1) {
-          expiriesParam = checkedExp.join(',');
-        } else if (checkedExp.length === 1) {
-          expiriesParam = checkedExp[0];
+        if (selectedActiveoiDate && checkedExp) {
+            const apiUrl = `${API_ROUTER.ACTIVE_OI}`;
+            let expiriesParam = '';
+            
+            if (checkedExp.length > 1) {
+                expiriesParam = checkedExp.join(',');
+            } else if (checkedExp.length === 1) {
+                expiriesParam = checkedExp[0];
+            }
+
+            const response = await axiosInstance.get(
+                `${apiUrl}?date=${selectedActiveoiDate}&expiries=${expiriesParam}&size=${strikeAtm}`,
+                {
+                    headers: { Authorization: `Bearer ${authState.access}` }
+                }
+            );
+
+            if (response.data && response.data.length > 0) {
+                setActiveoiData(response.data);
+                const maxLiveNifty = Math.max(...response.data.map((item) => item?.live_nifty || 0));
+                const minLiveNifty = Math.min(...response.data.map((item) => item?.live_nifty || 0));
+                const range = 10;
+                adjustedNiftyStart = minLiveNifty - range;
+                adjustedNiftyEnd = maxLiveNifty + range;
+            } else {
+                alert('No data for this expiry');
+            }
         }
-        const response = await axiosInstance.get(
-          `${apiUrl}?date=${selectedActiveoiDate}&expiries=${expiriesParam}&size=${strikeAtm}`,
-          {
-            headers: { Authorization: `Bearer ${authState.access}` }
-          }
-        );
-  
-        if (response.data && response.data.length > 0) {
-          setActiveoiData(response.data);
-          const maxLiveNifty = Math.max(...response.data.map((item) => item?.live_nifty || 0));
-          const minLiveNifty = Math.min(...response.data.map((item) => item?.live_nifty || 0));
-          const range = 10;
-          adjustedNiftyStart = minLiveNifty - range;
-          adjustedNiftyEnd = maxLiveNifty + range;
+    } catch (error) {
+        if (error.response) {
+            if (error.response.status === 400) {
+                alert(`${error.response.data.detail}, please change date or expiry`);
+            } else {
+                alert(`${error.response.data.error || 'An unexpected error occurred.'}`);
+                handleResponceError();
+            }
         } else {
-          alert('No data for this expiry');
+            console.error('Network error:', error);
+            alert('Network error: Please check your connection.');
         }
-      }
-    } catch (err) {
-      handleResponceError();
-    }
-  };
+    } 
+};
+
 
   // -----------------------EXPIRY+DATES API CALL-------------------------------------
   const getExpiries = async () => {
@@ -170,13 +183,10 @@ export default function Page() {
       setAllActiveOiExp(response.data.expiries);
       setActiveoiDate(response.data.dates);
 
-      //storing expiries in store
       storeDispatch(setExpiryDates(response.data.expiries));
       setCheckedExp([response.data.expiries[0]]);
-      // console.log('gh', response.data.expiries[0]);
       setSelectedActiveoiDate(response.data.dates[0]);
     } catch (e) {
-      // console.log('error getting dates', e);
       handleResponceError();
 
     }

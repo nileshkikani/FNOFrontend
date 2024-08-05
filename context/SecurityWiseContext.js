@@ -68,63 +68,57 @@ export const SecurityWiseProvider = ({ children }) => {
         return router.push('/login');
       }
       try {
+        if (page > 2 && isNifty) {
+          return; 
+        }
         let apiUrl = `${API_ROUTER.LIST_SECWISE_DATE}`;
         if (selectedDate) {
-          // console.log('apiUrl', apiUrl);
-
           if (!isNifty) {
             apiUrl += `?page=${page}&date=${selectedDate}`;
-            // console.log('apiUrl if', apiUrl);
           } else {
             apiUrl += `?date=${selectedDate}&is_nifty=${isNifty}&page=${page}`;
-            // console.log('apiUrl else', apiUrl);
           }
+        } else {
+          // Handle the case where selectedDate is not provided if needed
+          // Example: apiUrl += `?page=${page}`;
         }
-        // console.log('apiUrl', apiUrl);
+      
         const response = await axiosInstance.get(apiUrl, {
           headers: { Authorization: `Bearer ${authState.access}` }
         });
+      
         if (response.status === 200) {
-          // console.log('response.data', response);
           const customDateComparator = (dateStr1, dateStr2) => {
             const date1 = new Date(dateStr1);
             const date2 = new Date(dateStr2);
             return date1 - date2;
           };
-
+      
           if (selectedDate) {
             if (page === 1) {
               dispatch({ type: 'SET_DATA', payload: response.data.results });
               dispatch({ type: 'SET_IS_LOADING', payload: false });
             } else {
-              // console.log('[...state.data, ...response.data.results]', [...state.data, ...response.data.results]);
-              dispatch({ type: 'SET_DATA', payload: response.data.results });
+              dispatch({ type: 'SET_DATA', payload: [...state.data, ...response.data.results] });
             }
             setHasMore(response.data.results.length > 0);
-            // if (!isNifty) {
-            //   setPage(page + 1);
-            //   dispatch({ type: 'SET_PAGE', payload: page + 1 });
-            // }
           } else {
             dispatch({
               type: 'SET_UNIQUE_DATES',
               payload: response.data.dates.sort(customDateComparator).reverse()
             });
           }
-
-          // const currentPath = window.location.pathname;
-          // localStorage.setItem('lastPath', currentPath);
         } else {
           setHasMore(false);
           dispatch({ type: 'SET_IS_LOADING', payload: false });
-
           dispatch({ type: 'SET_DATA', payload: state.data });
-          // router.push('/login');
         }
       } catch (err) {
         setHasMore(false);
         handleResponceError();
       }
+      
+      
     },
     [authState]
   );

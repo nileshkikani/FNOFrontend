@@ -15,6 +15,7 @@ const PremiumDecayChart = dynamic(() => import('@/component/PremiumDecay-Graphs/
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'), { ssr: false });
 
 const Page = () => {
+  const { handleResponceError } = useAuth();
   const authState = useAppSelector((state) => state.auth.authState);
   const expiryDropDown = useAppSelector((state) => state.user.expiries);
   const [allStrikes, setAllStrikes] = useState([]);
@@ -30,7 +31,6 @@ const Page = () => {
   const [PremiumDecayIsLoading, setPremiumdecayIsLoading] = useState(false);
   const [selectedPremDEcayExp, setSelectedPremDecayExp] = useState(expiryDropDown[0]);
   const [pdChartData, setPdChartData] = useState([]);
-  const { handleResponceError } = useAuth();
 
   useEffect(() => {
     getStrikes();
@@ -50,14 +50,20 @@ const Page = () => {
       const response = await axiosInstance.get('strikes-list/', {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
-      setAllStrikes(response.data?.strikes);
-      setSelectedMsStrikePrices([String(response.data?.strikes[2])]);
-      setSelectedPdStrikePrices([String(response.data?.strikes[2])]);
+      
+      const strikes = response.data?.strikes || [];
+      
+      const stringifiedStrikes = strikes.map(strike => String(strike));
+      
+      setAllStrikes(stringifiedStrikes);
+      setSelectedMsStrikePrices([stringifiedStrikes[2]]);
+      setSelectedPdStrikePrices(stringifiedStrikes);
+      
     } catch (error) {
-      // console.log('error calling strikes api', error);
       handleResponceError();
     }
   };
+  
 
   // -----------------MULTISTRIKE API CALL------------------
   const multiStrikeAPiCall = async () => {
@@ -81,7 +87,6 @@ const Page = () => {
       }
       setMultistrikeLoading(false);
     } catch (err) {
-      // console.log('error calling Multistrike', err);
       handleResponceError();
     }
   };
@@ -90,23 +95,18 @@ const Page = () => {
   const premiumDecayApiCall = async () => {
     setPremiumdecayIsLoading(true);
     try {
-      let strikeParam = '';
-      if (selectedPdStrikePrices.length > 1) {
-        strikeParam = selectedPdStrikePrices.join(',');
-      } else if (selectedPdStrikePrices.length === 1) {
-        strikeParam = selectedPdStrikePrices[0];
-      }
-      if (strikeParam && selectedPremDEcayExp) {
-        let apiUrl = `${API_ROUTER.PREMIUM_DECAY}?expiry=${selectedPremDEcayExp}&strikes=${strikeParam}`;
+      const strikeParam = selectedPdStrikePrices.join(',');
+      if (selectedPremDEcayExp && strikeParam) {
+        const apiUrl = `${API_ROUTER.PREMIUM_DECAY}?expiry=${selectedPremDEcayExp}&strikes=${strikeParam}`;
         const response = await axiosInstance.get(apiUrl, {
           headers: { Authorization: `Bearer ${authState.access}` }
         });
         setPdChartData(response.data);
-        setPremiumdecayIsLoading(false);
       }
     } catch (error) {
       handleResponceError();
-      // console.log('error calling premium decay api', error);
+    } finally {
+      setPremiumdecayIsLoading(false);
     }
   };
 
@@ -114,6 +114,8 @@ const Page = () => {
     param ? multiStrikeAPiCall() : premiumDecayApiCall();
   };
 
+
+  // --------------------CHECK-UNCHECK MULTISTIRKES----------------
   const checkSelectedMsStrikePrice = (e) => {
     const { checked, value } = e.target;
     if (checked) {
@@ -127,32 +129,25 @@ const Page = () => {
     }
   };
 
+  // --------------------CHECK-UNCHECK PREMIUM-DECAY STRIKES----------------
   const checkSelectedPdStrikePrice = (e) => {
     const { checked, value } = e.target;
     if (checked) {
       if (!selectedPdStrikePrices.includes(value)) {
-        setSelectedPdStrikePrices((prevCheckedExp) => [...prevCheckedExp, value]);
+        setSelectedPdStrikePrices((prevSelected) => [...prevSelected, value]);
       }
     } else {
       if (selectedPdStrikePrices.includes(value)) {
-        setSelectedPdStrikePrices((prevCheckedExp) => prevCheckedExp.filter((item) => item !== value));
+        setSelectedPdStrikePrices((prevSelected) => prevSelected.filter((item) => item !== value));
       }
     }
   };
-
+  
   let totalCallDecay = 0;
   let totalPutDecay = 0;
   let totalLast9CallDecaySum = 0;
   let totalLast9PutDecaySum = 0;
-
-  const pChartDataNew = pdChartData.slice(1).forEach((itm) => {
-    totalCallDecay += itm.total_call_decay;
-    totalPutDecay += itm.total_put_decay;
-    totalLast9CallDecaySum += itm.last_9_call_decay_sum;
-    totalLast9PutDecaySum += itm.last_9_put_decay_sum;
-  });
-
-  // console.log('current',pdChartData,'new',pChartDataNew);
+  
   return (
     <>
       {/* -----------MULTISTRIKE SECTION--------- */}
@@ -295,7 +290,6 @@ const Page = () => {
               </tbody>
             </table>
           )}
-          {/* {pdChartData?.length === 0 && <p>Loading data...</p>} */}
         </div>
       </div>
 
