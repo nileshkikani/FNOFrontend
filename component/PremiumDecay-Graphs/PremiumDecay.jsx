@@ -14,7 +14,7 @@ import {
 
 //--------------------------FUNCTION TO MODIFY TIME(ADDING ORIGINAL_TIME KEY)----------------
 const modifyTime = (dataArray) => {
-  return dataArray.map(item => {
+  return dataArray && dataArray.map(item => {
     const date = new Date(item.created_at);
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
@@ -50,13 +50,13 @@ const PremiumDecayChart = ({ data, isChecked }) => {
   const [fullFinalData, setFullFinalData] = useState([]);
 
   useEffect(() => {
-    const filteredByStrike = data
+    const filteredByStrike = data && data
       .filter(sp => isChecked.includes(sp.strike_price))
       .flatMap(i => i.data);
 
     const modifiedData = modifyTime(filteredByStrike);
 
-    if (data.length > 2) {
+    if (data && data.length > 2) {
       const groupedAndSummed = groupAndSum(modifiedData);
       setFullFinalData(Object.values(groupedAndSummed));
     } else {

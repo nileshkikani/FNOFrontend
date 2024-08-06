@@ -32,6 +32,12 @@ const Page = () => {
   const [selectedPremDEcayExp, setSelectedPremDecayExp] = useState(expiryDropDown[0]);
   const [pdChartData, setPdChartData] = useState([]);
 
+  // -----------TOTAL VALUES-----------------
+  const [totalCallDecay, setTotalCallDecay] = useState(0);
+  const [totalPutDecay, setTotalPutDecay] = useState(0);
+  const [totalLast9CallDecaySum, setTotalLast9CallDecaySum] = useState(0);
+  const [totalLast9PutDecaySum, setTotalLast9PutDecaySum] = useState(0);
+
   useEffect(() => {
     getStrikes();
   }, []);
@@ -142,11 +148,36 @@ const Page = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (pdChartData.length) {
+      calculateTotals();
+    }
+  }, [pdChartData]);
+
+  const calculateTotals = () => {
+    let totalCallDecay = 0;
+    let totalPutDecay = 0;
+    let totalLast9CallDecaySum = 0;
+    let totalLast9PutDecaySum = 0;
+
+    pdChartData.forEach(item => {
+      totalCallDecay += item.total_call_decay || 0;
+      totalPutDecay += item.total_put_decay || 0;
+      totalLast9CallDecaySum += item.last_9_call_decay_sum || 0;
+      totalLast9PutDecaySum += item.last_9_put_decay_sum || 0;
+    });
+
+    setTotalCallDecay(totalCallDecay);
+    setTotalPutDecay(totalPutDecay);
+    setTotalLast9CallDecaySum(totalLast9CallDecaySum);
+    setTotalLast9PutDecaySum(totalLast9PutDecaySum);
+  };
   
-  let totalCallDecay = 0;
-  let totalPutDecay = 0;
-  let totalLast9CallDecaySum = 0;
-  let totalLast9PutDecaySum = 0;
+  // let totalCallDecay = 0;
+  // let totalPutDecay = 0;
+  // let totalLast9CallDecaySum = 0;
+  // let totalLast9PutDecaySum = 0;
   
   return (
     <>
@@ -244,51 +275,51 @@ const Page = () => {
         {/* -------------PREMIUM DECAY TABLE--------- */}
         <div>
           {pdChartData?.length > 1 && (
-            <table>
-              <thead>
-                <tr>
-                  <th>strike price</th>
-                  <th>total call decay</th>
-                  <th>total put decay</th>
-                  <th>last 45 min call decay</th>
-                  <th>last 45 min put decay</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pdChartData.slice(1).map((itm, index) => (
-                  <tr key={index}>
-                    <td>{itm.strike_price}</td>
-                    <td className={itm.total_call_decay < 0 ? 'red-text' : 'green-text'}>
-                      {itm.total_call_decay}
-                    </td>
-                    <td className={itm.total_put_decay < 0 ? 'red-text' : 'green-text'}>
-                      {itm.total_put_decay}
-                    </td>
-                    <td className={itm.last_9_call_decay_sum < 0 ? 'red-text' : 'green-text'}>
-                      {itm.last_9_call_decay_sum}
-                    </td>
-                    <td className={itm.last_9_put_decay_sum < 0 ? 'red-text' : 'green-text'}>
-                      {itm.last_9_put_decay_sum}
-                    </td>
-                  </tr>
-                ))}
-                <tr>
-                  <td>Total</td>
-                  <td className={totalCallDecay < 0 ? 'red-text' : 'green-text'}>
-                    {totalCallDecay?.toFixed(2)}
-                  </td>
-                  <td className={totalPutDecay < 0 ? 'red-text' : 'green-text'}>
-                    {totalPutDecay?.toFixed(2)}
-                  </td>
-                  <td className={totalLast9CallDecaySum < 0 ? 'red-text' : 'green-text'}>
-                    {totalLast9CallDecaySum?.toFixed(2)}
-                  </td>
-                  <td className={totalLast9PutDecaySum < 0 ? 'red-text' : 'green-text'}>
-                    {totalLast9PutDecaySum?.toFixed(2)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                     <table className="premium-decay-table">
+                     <thead>
+                       <tr>
+                         <th>Strike Price</th>
+                         <th>Call Decay</th>
+                         <th>Put Decay</th>
+                         <th>Last 9 Call Decay Sum</th>
+                         <th>Last 9 Put Decay Sum</th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                       {pdChartData.map((item, index) => (
+                         <tr key={index}>
+                           <td>{item.strike_price}</td>
+                           <td className={item.total_call_decay < 0 ? 'red-text' : 'green-text'}>
+                             {item.total_call_decay}
+                           </td>
+                           <td className={item.total_put_decay < 0 ? 'red-text' : 'green-text'}>
+                             {item.total_put_decay}
+                           </td>
+                           <td className={item.last_9_call_decay_sum < 0 ? 'red-text' : 'green-text'}>
+                             {item.last_9_call_decay_sum}
+                           </td>
+                           <td className={item.last_9_put_decay_sum < 0 ? 'red-text' : 'green-text'}>
+                             {item.last_9_put_decay_sum}
+                           </td>
+                         </tr>
+                       ))}
+                       <tr>
+                         <td><strong>Total:</strong></td>
+                         <td className={totalCallDecay < 0 ? 'red-text' : 'green-text'}>
+                           {totalCallDecay.toFixed(2)}
+                         </td>
+                         <td className={totalPutDecay < 0 ? 'red-text' : 'green-text'}>
+                           {totalPutDecay.toFixed(2)}
+                         </td>
+                         <td className={totalLast9CallDecaySum < 0 ? 'red-text' : 'green-text'}>
+                           {totalLast9CallDecaySum.toFixed(2)}
+                         </td>
+                         <td className={totalLast9PutDecaySum < 0 ? 'red-text' : 'green-text'}>
+                           {totalLast9PutDecaySum.toFixed(2)}
+                         </td>
+                       </tr>
+                     </tbody>
+                   </table>
           )}
         </div>
       </div>

@@ -364,22 +364,6 @@ function Header() {
     }
   ];
 
-  // -----------------------CURRENT OPEN SIGNALS SOCKET--------------------
-
-  // const signalSocket = async ()=>{
-  //   try{
-  //     const webSocketUrl = 'wss://algo.satvikacart.com/ws/signals/'
-  //     let socket = await new WebSocket(webSocketUrl);
-  //     // console.log("cvccc",socket);
-  //   }catch(error){
-  //     console.log('error connecting socket::',error)
-  //   }
-
-  // }
-
-  // signalSocket();
-
-  // console.log('analyse is',analyseOn,'mf',moneyFlowOn);
 
 
   return (
