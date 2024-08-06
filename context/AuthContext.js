@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
       storeDispatch(setRememberMe(false));
       router.push('/login');
   }
-  // -----------GET NEW REFRESH TOKEN AND STORING AFTER EVERY 55 MINS from handleSubmit function------------
+  // -----------GET NEW REFRESH TOKEN AND STORING------------
   const refreshToken = async () => {
     const accessToken = Cookie.get('access');
     const refreshToken = Cookie.get('refresh');
@@ -118,7 +118,6 @@ export const AuthProvider = ({ children }) => {
           access: newRefreshToken?.data?.tokens?.access ? newRefreshToken?.data?.tokens?.access : ''
         })
       );
-
     } catch (error) {
       console.log("error") 
        }

@@ -112,7 +112,7 @@ const allStocks = {
 }
 
 
-// ---------------FOR STOCKS-----------
+// ------------------FOR STOCKS PRICE MATCHING in LIVE------------------
 export const socketForStocks = async (feedToken,
   // ...setters
   setHDFC,
@@ -244,8 +244,22 @@ export const socketForStocks = async (feedToken,
   socket.onerror = (error) => {
     console.log('WebSocket error:');
   };
+};
+
+
+// ---------------------SOCKET FOR CURRENT OPEN ORDERS------------------
+
+export const socketForOpenOrders = async ()=>{
+  try{
+    const webSocketUrl = 'wss://algo.satvikacart.com/ws/signals/';
+        let socket = await new WebSocket(webSocketUrl);
+        console.log("cvccc",socket);
+
+  }catch(error){
+    console.error('error connecting socket->',error)
+  }
+  const response = await new WebSocket()
 }
-  ;
 
 
 export { initializeWebSocket };

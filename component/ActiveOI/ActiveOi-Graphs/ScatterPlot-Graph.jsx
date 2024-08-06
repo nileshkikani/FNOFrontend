@@ -3,6 +3,12 @@ import React from 'react';
 import { Line, LineChart, XAxis, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 const ScatterPlotGraph = ({ data, adjustedNiftyStart, adjustedNiftyEnd }) => {
+  const formatTooltipValue = (value) => {
+    if (typeof value === 'number') {
+      return value.toFixed(2); 
+    }
+    return value;
+  };
   return (
     <div style={{ width: '100%', height: '400px' }}>
       <h1 className="table-title">PCR</h1>
@@ -42,6 +48,7 @@ const ScatterPlotGraph = ({ data, adjustedNiftyStart, adjustedNiftyEnd }) => {
                 minute: '2-digit'
               })
             }
+            formatter={(value, name) => [formatTooltipValue(value), name]}
           />
           <Legend />
           <Line

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axiosInstance from '@/utils/axios';
 // import dynamic from 'next/dynamic';
 // import axios from 'axios';
-import { socketForStocks } from '@/utils/socket';
+import { socketForStocks,socketForOpenOrders } from '@/utils/socket';
 import { useAppSelector } from '@/store';
 // import DataTable from 'react-data-table-component';
 import './global.css';
@@ -138,7 +138,7 @@ const Page = () => {
     }
   };
 
-  // -------------get closed orders--------------
+  // -------------------GET CLOSED ORDERS----------------
   const getClosedOrders = async () => {
     try {
       let url = `signal/orderupdate/?status=closed`;
@@ -152,7 +152,7 @@ const Page = () => {
     }
   };
 
-  // -------------------get open orders--------
+  // -------------------GET OPEN ORDERS----------------
   const getOpenOrders = async () => {
     try {
       let url = `signal/orderupdate/?status=open`;
@@ -190,54 +190,55 @@ const Page = () => {
     return afterTrunc;
   };
 
-  useEffect(() => {
-    if (socketToken) {
-      connectWebSocket(socketToken);
-    }
-  }, [socketToken]);
+  // useEffect(() => {
+  //   if (socketToken) {
+  //     connectWebSocket(socketToken);
+  //   }
+  // }, [socketToken]);
 
-  useEffect(() => {
-    getSignal();
-  }, []);
+  // useEffect(() => {
+    // socketForOpenOrders();
+    // getSignal();
+  // }, []);
 
   useEffect(() => {
     getClosedOrders();
     getOpenOrders();
   }, []);
 
-  useEffect(() => {
-    const openOrderIds = new Set(openOrders.map(order => order.id));
+  // useEffect(() => {
+  //   const openOrderIds = new Set(openOrders.map(order => order.id));
   
-    Object.entries(stockStates).forEach(([symbol, [livePrice, setLivePrice]]) => {
-      if (livePrice !== null && data.length > 0) {
-        data.forEach((item) => {
-          if (item.symbol === symbol && openOrderIds.has(item.id)) {
-            if (livePrice <= item.stop_loss || livePrice >= item.take_profit) {
-              const price = {};
-              const url = `signal/orderupdate/${item.id}`;
-              if (livePrice <= item.stop_loss) {
-                price.price = item.stop_loss;
-              } else if (livePrice >= item.take_profit) {
-                price.price = item.take_profit;
-              } 
-              try {
-                axiosInstance.patch(url, price, {
-                  headers: { Authorization: `Bearer ${authState.access}` }
-                });
-              } catch (error) {
-                console.log('Error in patch request:', error);
-              }
-            }
-          }
-        });
-      }
-    });
-  }, [data, openOrders, capital]);
+  //   Object.entries(stockStates).forEach(([symbol, [livePrice, setLivePrice]]) => {
+  //     if (livePrice !== null && data.length > 0) {
+  //       data.forEach((item) => {
+  //         if (item.symbol === symbol && openOrderIds.has(item.id)) {
+  //           if (livePrice <= item.stop_loss || livePrice >= item.take_profit) {
+  //             const price = {};
+  //             const url = `signal/orderupdate/${item.id}`;
+  //             if (livePrice <= item.stop_loss) {
+  //               price.price = item.stop_loss;
+  //             } else if (livePrice >= item.take_profit) {
+  //               price.price = item.take_profit;
+  //             } 
+  //             try {
+  //               axiosInstance.patch(url, price, {
+  //                 headers: { Authorization: `Bearer ${authState.access}` }
+  //               });
+  //             } catch (error) {
+  //               console.log('Error in patch request:', error);
+  //             }
+  //           }
+  //         }
+  //       });
+  //     }
+  //   });
+  // }, [data, openOrders, capital]);
 
   const refreshBtn = () => {
     getClosedOrders();
     getOpenOrders();
-    getSignal();
+    // getSignal();
   };
 
 
