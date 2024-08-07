@@ -46,6 +46,7 @@ export default function Page() {
   const [niftyFuturesExpDates, setNiftyFuturesExpDates] = useState('');
   const [selectedNiftyFuturesExpDates, setSelectedNiftyFuturesExpDates] = useState('');
   const [niftyFuturesFilterData, setNiftyFuturesFilterData] = useState('');
+  const [isLoading ,setIsLoading] = useState(true)
 
   const storeDispatch = useDispatch();
   const [allActiveOiExp, setAllActiveOiExp] = useState([]);
@@ -56,11 +57,9 @@ export default function Page() {
   useEffect(() => {
     if (checkUserIsLoggedIn) {
       getActiveoiData();
-      // getNiftyFuturesData();
       const intervalId = setInterval(() => {
         setTimeLeft((prevTime) => prevTime - 1);
       }, 1000);
-      // return () => clearInterval(intervalId);
     }
   }, [setTimeLeft]);
 
@@ -95,6 +94,7 @@ export default function Page() {
   // --------------------NIFTY FUTURES API CALL-----------------------------
   const getNiftyFuturesData = async () => {
     try {
+      setIsLoading(true);
       let apiUrl = `${API_ROUTER.NIFTY_FUTURE_DATA}`;
       const response = await axiosInstance.get(
         selectedNiftyFutureDates ? (apiUrl += `?date=${selectedNiftyFutureDates}`) : apiUrl,
@@ -120,15 +120,18 @@ export default function Page() {
       } else {
         router.push('/login');
       }
+      // setIsLoading(true);
     } catch (error) {
       handleResponceError();
-      // console.log('qwqw');
+    } finally {
+      setIsLoading(false); 
     }
   };
   // -------------------------ACTIVE OI API CALL-------------------------------
   const getActiveoiData = async () => {
     try {
         if (selectedActiveoiDate && checkedExp) {
+          setIsLoading(true)
             const apiUrl = `${API_ROUTER.ACTIVE_OI}`;
             let expiriesParam = '';
             
@@ -155,7 +158,8 @@ export default function Page() {
             } else {
                 alert('No data for this expiry');
             }
-        }
+          }
+          // setIsLoading(true);
     } catch (error) {
         if (error.response) {
             if (error.response.status === 400) {
@@ -168,7 +172,9 @@ export default function Page() {
             console.error('Network error:', error);
             alert('Network error: Please check your connection.');
         }
-    } 
+    } finally {
+      setIsLoading(false); 
+    }
 };
 
 
@@ -235,7 +241,7 @@ export default function Page() {
   // console.log('hhh', allActiveOiExp);
   return (
     <div>
-      <div>
+      <div >
         {marketClosed ? (
           <h1 className="timer">MARKET CLOSED</h1>
         ) : (
@@ -245,8 +251,14 @@ export default function Page() {
           </h1>
         )}
       </div>
-      <section className="main-section">
+      
+      <section className="main-section ">
+        <div className='checkbox-container-strikes'>
         <div>
+          <button className="refresh-button2" onClick={() => refreshData()}>
+            Refresh
+          </button>
+        </div>
           <label>select expiry</label>
           {allActiveOiExp?.map((itm, index) => (
             <div key={index} className="exp-date-div">
@@ -280,6 +292,7 @@ export default function Page() {
             </select>
           </label>
         </div>
+          <label>Date:</label>
         <div className="calender-dropdown-activeoi">
           <DatePicker
             showIcon
@@ -312,14 +325,10 @@ export default function Page() {
             }}
           />
         </div>
-        <div>
-          <button className="refresh-button2" onClick={() => refreshData()}>
-            Refresh
-          </button>
-        </div>
-      </section>
 
-      {!selectedActiveoiDate ? (
+      </section>
+      
+      {isLoading ? (
         <div
           style={{
             display: 'flex',
@@ -328,7 +337,7 @@ export default function Page() {
             height: '80vh'
           }}
         >
-          <PropagateLoader color="#33a3e3" loading={!selectedActiveoiDate} size={15} />
+          <PropagateLoader color="#33a3e3" loading={isLoading} size={15} />
         </div>
       ) : (
         <>
@@ -350,8 +359,6 @@ export default function Page() {
                 />
               </div>
           {/* -------------------ACTIVE OI SECTION------------------ */}
-          {/* {activeoiData && 
-            <> */}
               <div className="active-oi-table">
                 <ActiveOiTable
                   data={[...activeoiData].reverse()}
@@ -384,7 +391,7 @@ export default function Page() {
           } */}
           {/* -----------------------NIFTY FUTURES SECTION-------------------- */}
           <>
-            {!selectedNiftyFuturesExpDates ? (
+            { isLoading ? (
               <div
                 style={{
                   display: 'flex',
@@ -393,7 +400,7 @@ export default function Page() {
                   marginTop: '50px'
                 }}
               >
-                <PropagateLoader color="#33a3e3" loading={!selectedNiftyFuturesExpDates} size={15} />
+                <PropagateLoader color="#33a3e3" loading={isLoading} size={15} />
               </div>
             ) : (
               <>

@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.positive{
+    @apply text-green-500 ;
+}
+
+.negative{
+    @apply text-red-500 ;
+}
+
+.negative-price-change{
+    @apply text-red-500 flex items-center;
+}
+
+.positive-price-change{
+    @apply text-green-500 flex items-center;
+}
+
+.td-cell {
+    @apply border-none py-4 text-center;
+  }
+
+  .row-light-color {
+    background-color: #f9f9f9;
+  }
+  
+  .row-dark-color {
+    background-color: #f0f0f0;
+  }
+  
+  .table-title1 {
+    @apply text-xl font-semibold p-4 ;
+  }
+
+/* .triangle-red-div {
+    @apply w-0 h-0
+    border-l-[5px] border-l-transparent
+    border-t-[10px] border-t-red-500 flex items-center
+    border-r-[5px] border-r-transparent;
+
+  }
+  .triangle-green-div {
+    @apply w-0 h-0
+    border-l-[5px] border-l-transparent
+    border-b-[10px] border-b-green0A
+    border-r-[5px] border-r-transparent;
+  } */

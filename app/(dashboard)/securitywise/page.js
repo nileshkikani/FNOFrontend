@@ -61,7 +61,7 @@ export default function Page() {
       setSecurityData(originalSecurityData);
     }
   }, [searchTerm, originalSecurityData]);
-  
+
 
   useEffect(() => {
     console.log('data.map', data);
@@ -90,15 +90,13 @@ export default function Page() {
   }, [uniqueDates, selectedDate]);
 
 
-  const getSecurityData = (pageNo, isNifty) => {
-    const pageNum = pageNo ? pageNo : page;
-    const isNiftyData = isNifty ? isNifty : isShowNifty ? 1 : 0;
+  const getSecurityData = (pageNo = page, isNifty) => {
     if (routeName && selectedDate) {
       if (page !== 1 && !isMoreData) {
         return;
       } else {
-        getData(selectedDate, pageNum, isNiftyData).then(() => {
-          setPage(pageNum + 1);
+        getData(selectedDate, pageNo, isNifty).then(() => {
+          setPage(pageNo + 1);
         });
       }
     } else {
@@ -106,7 +104,9 @@ export default function Page() {
       refreshData();
     }
   };
-  
+
+
+
 
   useEffect(() => {
     const dataTable = document.querySelector('.sticky-header');
@@ -133,12 +133,14 @@ export default function Page() {
         dataTable.removeEventListener('scroll', handleScroll);
       }
     };
-  }, [getSecurityData]);
+  }, [getSecurityData, isMoreData]);
+
 
   const getSecurityDataCall = async () => {
     if (!isMoreData) return;
-    getSecurityData();
+    getSecurityData(page, isShowNifty ? 1 : 0);
   };
+
 
 
   const setData = async (data) => {
@@ -150,18 +152,18 @@ export default function Page() {
           (item.average_delivery_quantity / item.average_traded_quantity) * 100,
           ((item.close_price - item.prev_close) / item.prev_close) * 100
         );
-  
+
         return { ...item, insight, uniqueKey: key };
       })
     );
     const dataset = (await Promise.resolve(dataArray)).sort((a, b) => b.times_delivery - a.times_delivery);
-    
+
     setOriginalSecurityData(dataset);
     setSecurityData(dataset);
     setIsFilterData(true);
     setChangeDate(false);
   };
-  
+
 
   async function getInsight(deliveryPercent, avgDeliveryPercent, priceChange) {
     let insight = {};
@@ -492,16 +494,14 @@ export default function Page() {
   return (
     <div
       className="div-main"
-      >
-      {/* <div style={{ display: isLoading ? 'block' : 'none' }}>{loadingAnimation}</div> */}
-{/* <div style={{ display: !isLoading && !isFilterData && !securityData ? 'block' : 'none' }}>{loadingAnimation}</div> */}
+    >
       <div >
 
-          <div className="main-label-div">
-            <div className="half-width">
-              {selectedDate && (
+        <div className="main-label-div">
+          <div className="half-width">
+            {selectedDate && (
 
-                <label>
+              <label>
                 {/* Date */}
                 <select
                   className="date-picker-modal"
@@ -514,7 +514,7 @@ export default function Page() {
                     getSecurityData();
                   }}
                   value={selectedDate}
-                  >
+                >
                   {uniqueDates?.map((itm, index) => (
                     <option key={index} value={itm}>
                       {itm}
@@ -522,63 +522,62 @@ export default function Page() {
                   ))}
                 </select>
               </label>
-                    )}
-            </div>
-            <div className="half-last-width">
-              <label>
-                <input
-                  checked={isShowNifty}
-                  type="checkbox"
-                  className='className="checkbox-label"'
-                  onChange={async (event) => {
-                    setIsShowNifty(event.target.checked);
-                    setPage(1); 
-                    await refreshData();
-                    setTimeout(() => {
-                      getSecurityData(1, !isShowNifty ? 1 : 0);
-                    }, 1000);
-                  }}
-                />
-                <span className="checkbox-text">NIFTY STOCKS</span>
-              </label>
-            </div>
-            <div>
-            <input
-            type="text"
-            placeholder="Search by Symbol"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ padding: '5px', maxWidth: '80%', border: '1px solid black', borderRadius: '5px' }}
-          />
-            </div>
+            )}
           </div>
+          <div className="half-last-width">
+            <label>
+              <input
+                checked={isShowNifty}
+                type="checkbox"
+                className="checkbox-label"
+                onChange={async (event) => {
+                  const newIsShowNifty = event.target.checked;
+                  setIsShowNifty(newIsShowNifty);
+                  setPage(1);
+                  await refreshData();
+                  getSecurityData(1, newIsShowNifty ? 1 : 0);
+                }}
+              />
+              <span className="checkbox-text">NIFTY STOCKS</span>
+            </label>
+          </div>
+          <div>
+            <input
+              type="text"
+              placeholder="Search by Symbol"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ padding: '5px', maxWidth: '80%', border: '1px solid black', borderRadius: '5px' }}
+            />
+          </div>
+        </div>
 
         {!isLoading && isFilterData && securityData && (
           <div
-          className="scrolling-tableData"
-          style={{
-            position: 'relative',
-            height: '100%',
-            overflow: 'auto'
-          }}
-          ref={tableRef}
+            className="scrolling-tableData"
+            style={{
+              position: 'relative',
+              height: '100%',
+              overflow: 'auto'
+            }}
+            ref={tableRef}
           >
 
-          <DataTable
-            columns={column}
-            data={securityData}
-            noDataComponent={
-              <div ref={loader} style={{ height: '100px', margin: '10px 0' }}>
-                {isLoading && <PropagateLoader color="#33a3e3" loading={true} size={15} />}
-              </div>
-            }
-            fixedHeader
-            fixedHeaderScrollHeight="calc(100vh - 80px)"
-            className="sticky-header"
-            keyField="uniqueKey"
+            <DataTable
+              columns={column}
+              data={securityData}
+              noDataComponent={
+                <div ref={loader} style={{ height: '100px', margin: '10px 0' }}>
+                  {isLoading && <PropagateLoader color="#33a3e3" loading={true} size={15} />}
+                </div>
+              }
+              fixedHeader
+              fixedHeaderScrollHeight="calc(100vh - 80px)"
+              className="sticky-header"
+              keyField="uniqueKey"
             />
-        </div>
-          ) }
+          </div>
+        )}
 
         <style jsx>{`
           .scrolling-tableData {

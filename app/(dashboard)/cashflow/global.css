@@ -15,11 +15,11 @@
 }
 
 .flex-container {
-  @apply flex items-center space-x-10 mt-10 mb-10;
+  @apply flex items-center space-x-10 mt-10 mb-10 ;
 }
 
-.dropdown-container {
-  @apply flex items-center space-x-2;
+.dropdown-container-date {
+  @apply flex items-center space-x-2 border border-gray-300 rounded-md p-4 shadow;
 }
 
 .refresh-button2 {
@@ -67,22 +67,23 @@
 }
 
 .dropdown-container {
-  @apply flex items-center space-x-2; 
+  @apply flex items-center space-x-2 ; 
 }
 
-.table-title1 {
-  @apply text-xl font-semibold mt-4 mb-2;
+.table-date-text{
+  @apply text-xl font-semibold p-4 ;
 }
 
-/* .stock-dropdown3 {
-  @apply block w-auto rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
-} */
 .stock-dropdown {
   @apply px-5 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500;
 }
 
-.calender-dropdown{
-  @apply bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 z-10 p-1;
+.calender-dropdown-stocks{
+  @apply bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 p-1;
+}
+
+.date-dropdown-all-stocks{
+  @apply bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 z-10  p-1;
 }
 
 td {

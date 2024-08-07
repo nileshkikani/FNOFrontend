@@ -2,13 +2,26 @@
 import React from 'react';
 import { Line, LineChart, XAxis, ResponsiveContainer, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
+const formatNumberInIndianStyle = (number) => {
+  const [integerPart, decimalPart] = number.toFixed(2).split('.');
+  let lastThree = integerPart.slice(-3);
+  let otherParts = integerPart.slice(0, -3);
+
+  if (otherParts !== '') {
+    lastThree = ',' + lastThree;
+  }
+
+  otherParts = otherParts.replace(/\B(?=(\d{2})+(?!\d))/g, ',');
+  const formattedInteger = otherParts + lastThree;
+
+  return `${formattedInteger}.${decimalPart}`;
+};
+
+const tooltipFormatter = (value, name) => {
+  return [formatNumberInIndianStyle(value), name];
+};
+
 const ScatterPlotGraph = ({ data, adjustedNiftyStart, adjustedNiftyEnd }) => {
-  const formatTooltipValue = (value) => {
-    if (typeof value === 'number') {
-      return value.toFixed(2); 
-    }
-    return value;
-  };
   return (
     <div style={{ width: '100%', height: '400px' }}>
       <h1 className="table-title">PCR</h1>
@@ -48,7 +61,7 @@ const ScatterPlotGraph = ({ data, adjustedNiftyStart, adjustedNiftyEnd }) => {
                 minute: '2-digit'
               })
             }
-            formatter={(value, name) => [formatTooltipValue(value), name]}
+            formatter={tooltipFormatter}
           />
           <Legend />
           <Line

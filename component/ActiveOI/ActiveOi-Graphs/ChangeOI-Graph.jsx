@@ -13,6 +13,26 @@ import {
   ComposedChart
 } from 'recharts';
 
+
+const formatNumberInIndianStyle = (number) => {
+  const [integerPart, decimalPart] = number.toString().split('.');
+  let lastThree = integerPart.slice(-3);
+  let otherParts = integerPart.slice(0, -3);
+
+  if (otherParts !== '') {
+    lastThree = ',' + lastThree;
+  }
+
+  otherParts = otherParts.replace(/\B(?=(\d{2})+(?!\d))/g, ',');
+  const formattedInteger = otherParts + lastThree;
+
+  return decimalPart ? `${formattedInteger}.${decimalPart}` : formattedInteger;
+};
+
+const tooltipFormatter = (value, name) => {
+  return [formatNumberInIndianStyle(value), name];
+};
+
 const ChangeOIGraph = ({ data, adjustedNiftyStart, adjustedNiftyEnd }) => {
   return (
     <>
@@ -53,6 +73,7 @@ const ChangeOIGraph = ({ data, adjustedNiftyStart, adjustedNiftyEnd }) => {
                   minute: '2-digit'
                 })
               }
+              formatter={tooltipFormatter}
             />
             <Bar yAxisId="left" name="coi difference" dataKey="call_oi_difference" fill="#E96767" />
             <Bar yAxisId="left" name="poi difference " dataKey="put_oi_difference" fill="#63D168" />

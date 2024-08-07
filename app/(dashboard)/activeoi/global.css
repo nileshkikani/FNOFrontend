@@ -81,3 +81,7 @@ td {
   text-align: center ;
   border: solid 2px lightgrey ;
 }
+
+.checkbox-container-strikes{
+    @apply  p-6 border rounded-lg ;
+}

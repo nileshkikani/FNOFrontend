@@ -20,6 +20,7 @@ import {
   FaMoneyBillTrendUp,
   FaRegMessage
 } from 'react-icons/fa6';
+import { IoBarChartSharp } from "react-icons/io5";
 import { createPopper } from '@popperjs/core';
 import React, { useEffect, useRef, useState } from 'react';
 import Cookie from 'js-cookie';
@@ -325,7 +326,7 @@ function Header() {
     {
       path: '/cashflow/stocks-fno',
       title: 'Stocks & FNO ',
-      icon: FaMoneyBillTrendUp
+      icon: IoBarChartSharp
     },
     {
       path: '/cashflow/all-stocks',

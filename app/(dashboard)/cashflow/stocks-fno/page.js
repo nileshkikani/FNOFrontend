@@ -54,9 +54,10 @@ const Page = () => {
         <>
             <div>
                 <div className="dropdown-container">
-                    <div  className="dropdown-container" >{allDates && (<>
-                        <h1 className="table-title1">SELECT DATE :</h1>
-                        <div className="calender-dropdown">
+                    {!loading && (
+                    <div  className="dropdown-container-date" >{allDates && (<>
+                        <h1 className="table-date-text ">SELECT DATE :</h1>
+                        <div className="calender-dropdown-stocks">
                         <DatePicker
                             selected={date}
                             dateFormat="yyyy-MM-dd"
@@ -71,6 +72,7 @@ const Page = () => {
                     )
                     }
                     </div>
+                    )}
                 </div>
             </div>
             <div>

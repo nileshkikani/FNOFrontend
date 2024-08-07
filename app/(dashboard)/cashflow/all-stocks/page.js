@@ -157,9 +157,9 @@ const Page = () => {
         <>
             <div>
                 <div className="flex-container">
-                    <div className="dropdown-container">
-                        <h1 className="table-title1">SELECT DATE :</h1>
-                        <div className="calender-dropdown">
+                    <div className="dropdown-container-date">
+                        <h1 className="table-date-text">SELECT DATE :</h1>
+                        <div className="date-dropdown-all-stocks">
                             <DatePicker
                                 selected={selectedDate}
                                 dateFormat="yyyy-MM-dd"
@@ -170,9 +170,8 @@ const Page = () => {
                                 shouldCloseOnSelect
                             />
                         </div>
-                    </div>
                     <div className="dropdown-container">
-                        <h1 className="table-title1">SELECT SCRIPT :</h1>
+                        <h1 className="table-date-text">SELECT SCRIPT :</h1>
                         <select value={selectedScript} onChange={(e) => setSelectedScript(e.target.value)} className="stock-dropdown">
                             {allScript &&
                                 allScript.map((stockData, index) => (
@@ -185,6 +184,7 @@ const Page = () => {
                     <button className="refresh-button2" onClick={refreshData}>
                         Refresh
                     </button>
+                    </div>
                 </div>
                 <navbar className="component-nav">
                     {['MACD', 'DECAY', 'MONEYFLOW', 'PREDICTIONS'].map((item, index) => (
@@ -213,11 +213,11 @@ const Page = () => {
                             <>
                                 <div>
                                     <div className="callPullDecay">
-                                        <h1 className="table-title1">
+                                        <h1 className="table-date-text">
                                             EXPIRY DATE: {stockCallPremiumDecay && stockCallPremiumDecay[0]?.expiry_date}
                                         </h1>
-                                        <h1 className="table-title1">CALL PREMIUM DECAY</h1>
-                                        <h1 className="table-title1">
+                                        <h1 className="table-date-text">CALL PREMIUM DECAY</h1>
+                                        <h1 className="table-date-text">
                                             Underlying Value: {stockCallPremiumDecay && stockCallPremiumDecay[0]?.underlying_value}
                                         </h1>
                                     </div>
@@ -266,11 +266,11 @@ const Page = () => {
                                 </div>
                                 <div>
                                     <div className="callPullDecay">
-                                        <h1 className="table-title1">
+                                        <h1 className="table-date-text">
                                             EXPIRY DATE: {stockPutPremiumDecay && stockPutPremiumDecay[0]?.expiry_date}
                                         </h1>
-                                        <h1 className="table-title1">PUT PREMIUM DECAY</h1>
-                                        <h1 className="table-title1">
+                                        <h1 className="table-date-text">PUT PREMIUM DECAY</h1>
+                                        <h1 className="table-date-text">
                                             Underlying Value: {stockPutPremiumDecay && stockPutPremiumDecay[0]?.underlying_value}
                                         </h1>
                                     </div>
