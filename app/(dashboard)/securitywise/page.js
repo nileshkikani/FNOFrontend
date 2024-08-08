@@ -2,48 +2,52 @@
 import useSecurityWiseData from '@/hooks/useSecurityWiseData';
 import dynamic from 'next/dynamic';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import DataTable from 'react-data-table-component';
 import '../securitywise/global.css';
 import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
+import debounce from 'lodash.debounce';
 
 //  ===========LOADING ANIMATION ===========
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
 export default function Page() {
   const {
-    setDropdownDate,
+    setSearchTerm,
     data,
     uniqueDates,
     getData,
-    showNiftyStocksOnly,
+    searchTerm,
     isLoading,
-    currentSelectedDate,
-    hasMore,
     refreshData,
-    setCurrentSelectedDate
   } = useSecurityWiseData();
   const route = useRouter();
-  const [isFilterData, setIsFilterData] = useState(false);
   const [changeDate, setChangeDate] = useState(false);
   const [securityData, setSecurityData] = useState([]);
-  const [sData, setSData] = useState([]);
-  const [originalSecurityData, setOriginalSecurityData] = useState([]);
-
-  let [page, setPage] = useState(1);
-  let [perPage, setPerPage] = useState(1);
   const [selectedDate, setSelectedDate] = useState('');
   const [isShowNifty, setIsShowNifty] = useState(false);
   const [isMoreData, setIsMoreData] = useState(true);
   const [isMore, setIsMore] = useState(true);
+  let [page, setPage] = useState(1);
   const tableRef = useRef(null);
-  const [searchTerm, setSearchTerm] = useState('');
 
 
   const pathname = usePathname();
   let routeName = pathname.match('securitywise') ? 'securitywise' : null;
 
-  const loader = useRef(null);
+  const debouncedSearch = useCallback(
+    debounce((term) => {
+      if (term.length >= 2) {
+        console.log('afterdebouncing', term);
+        setSearchTerm(term);
+      } else if (term.length === 0) {
+        setSearchTerm('');
+      } else {
+        alert('Minimum 2 letters required');
+      }
+    }, 1000),
+    []
+  );
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -51,20 +55,8 @@ export default function Page() {
     }
   }, []);
 
-  useEffect(() => {
-    if (searchTerm) {
-      const filteredData = originalSecurityData.filter(item =>
-        item.symbol.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setSecurityData(filteredData);
-    } else {
-      setSecurityData(originalSecurityData);
-    }
-  }, [searchTerm, originalSecurityData]);
-
 
   useEffect(() => {
-    console.log('data.map', data);
     routeName = pathname.match('securitywise') ? 'securitywise' : null;
     setData(data);
     if (data?.length > 0) {
@@ -73,11 +65,9 @@ export default function Page() {
     } else {
       setIsMoreData(false);
     }
-    setSData(data);
   }, [data]);
 
   useEffect(() => {
-
     getSecurityData();
   }, [selectedDate, pathname]);
 
@@ -105,12 +95,8 @@ export default function Page() {
     }
   };
 
-
-
-
   useEffect(() => {
     const dataTable = document.querySelector('.sticky-header');
-
     const handleScroll = () => {
       if (dataTable) {
         const scrollTop = dataTable.scrollTop;
@@ -118,7 +104,7 @@ export default function Page() {
         const clientHeight = dataTable.clientHeight;
 
         const scrollBottom = Math.floor(scrollHeight - (scrollTop + clientHeight));
-        if (scrollBottom === 0 && isMoreData) {
+        if (scrollBottom === 0 && isMoreData && !searchTerm) {
           getSecurityDataCall();
         }
       }
@@ -141,8 +127,6 @@ export default function Page() {
     getSecurityData(page, isShowNifty ? 1 : 0);
   };
 
-
-
   const setData = async (data) => {
     const dataArray = await Promise.all(
       data.map(async (item, index) => {
@@ -158,9 +142,7 @@ export default function Page() {
     );
     const dataset = (await Promise.resolve(dataArray)).sort((a, b) => b.times_delivery - a.times_delivery);
 
-    setOriginalSecurityData(dataset);
     setSecurityData(dataset);
-    setIsFilterData(true);
     setChangeDate(false);
   };
 
@@ -236,20 +218,6 @@ export default function Page() {
   const routerRedirect = (aPath) => {
     route.push(`/securitywise/${aPath}/`);
   };
-
-
-  const loadingAnimation = (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '80vh'
-      }}
-    >
-      <PropagateLoader color="#33a3e3" loading={true} size={15} />
-    </div>
-  );
 
   const column = [
     {
@@ -487,9 +455,21 @@ export default function Page() {
 
   ];
 
-  const filteredData = securityData.filter(item =>
-    item.symbol.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    if (searchTerm.length >= 2) {
+      if (isShowNifty) {
+        getData(selectedDate, null, 1, searchTerm);
+      }
+      else if (!isShowNifty) {
+        getData(selectedDate, null, 0, searchTerm);
+      }
+    } else if(!isShowNifty) {
+      getData(selectedDate, 1, 0, null);
+    }else if(isShowNifty && searchTerm == '' ){
+      getData(selectedDate, 1, 1,null)
+    }
+  }, [searchTerm]);
+
 
   return (
     <div
@@ -498,11 +478,11 @@ export default function Page() {
       <div >
 
         <div className="main-label-div">
+          <div className='main-label-div-inside'>
           <div className="half-width">
             {selectedDate && (
-
               <label>
-                {/* Date */}
+                Date :
                 <select
                   className="date-picker-modal"
                   onChange={async (event) => {
@@ -536,23 +516,25 @@ export default function Page() {
                   setPage(1);
                   await refreshData();
                   getSecurityData(1, newIsShowNifty ? 1 : 0);
+                  setSearchTerm('');
                 }}
               />
               <span className="checkbox-text">NIFTY STOCKS</span>
             </label>
           </div>
+          </div>
           <div>
             <input
               type="text"
               placeholder="Search by Symbol"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ padding: '5px', maxWidth: '80%', border: '1px solid black', borderRadius: '5px' }}
+              // value={searchTerm}
+              onChange={(e) => debouncedSearch(e.target.value)}
+              style={{ padding: '5px', maxWidth: '80%', border: '1px solid gray', borderRadius: '5px' }}
             />
           </div>
         </div>
 
-        {!isLoading && isFilterData && securityData && (
+        {!isLoading ? (
           <div
             className="scrolling-tableData"
             style={{
@@ -562,20 +544,24 @@ export default function Page() {
             }}
             ref={tableRef}
           >
-
             <DataTable
               columns={column}
               data={securityData}
-              noDataComponent={
-                <div ref={loader} style={{ height: '100px', margin: '10px 0' }}>
-                  {isLoading && <PropagateLoader color="#33a3e3" loading={true} size={15} />}
-                </div>
-              }
-              fixedHeader
+              // noDataComponent={
+              //   <div className="loading-container">
+              //     <PropagateLoader color="#33a3e3" loading={isLoading} size={15} />
+              //   </div>
+              // }
+              // progressPending={isLoading}
               fixedHeaderScrollHeight="calc(100vh - 80px)"
               className="sticky-header"
               keyField="uniqueKey"
+              fixedHeader
             />
+          </div>
+        ) : (
+          <div className="loading-container">
+            <PropagateLoader color="#33a3e3" loading={isLoading} size={15} />
           </div>
         )}
 
@@ -588,8 +574,6 @@ export default function Page() {
             bottom: 0;
           }
         `}</style>
-
-
       </div>
     </div>
   );

@@ -5,7 +5,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 .date-picker-modal {
-  @apply bg-blue21 font-Roboto tracking-wider text-white px-2 py-1 rounded-md;
+  @apply bg-blue21 font-Roboto tracking-wider text-white px-2 py-1 rounded-md px-3 mx-1;
 }
 .table-heading-text {
   @apply font-Roboto tracking-wide font-semibold text-[16px] text-blue21 mt-5 mb-3 2xl:text-[16px] text-center;
@@ -44,14 +44,15 @@
   @apply flex justify-end items-end;
 }
 .main-label-div {
-  @apply flex gap-2 w-full my-5;
+  @apply flex gap-2 w-full my-5 p-4 border rounded shadow items-center justify-between;
 }
-/* .half-width {
-  @apply w-1/2 flex px-5;
+
+.main-label-div-inside {
+  @apply flex items-center gap-4 ;
 }
-.half-last-width {
-  @apply w-1/2 flex justify-end px-5;
-} */
+.loading-container {
+  @apply flex justify-center items-center h-80;
+}
 .div-main {
   @apply h-[100vh] overflow-hidden sticky top-60;
 }
