@@ -65,7 +65,7 @@ const Page = () => {
       setMonthlyData(monthlyData);
     } catch (err) {
       handleResponceError()
-      console.log('error getting selected stock data', err);
+      // console.log('error getting selected stock data', err);
     }
   };
 

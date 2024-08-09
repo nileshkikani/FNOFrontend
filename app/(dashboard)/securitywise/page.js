@@ -7,6 +7,7 @@ import DataTable from 'react-data-table-component';
 import '../securitywise/global.css';
 import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
 import debounce from 'lodash.debounce';
+import toast from 'react-hot-toast';
 
 //  ===========LOADING ANIMATION ===========
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
@@ -38,12 +39,12 @@ export default function Page() {
   const debouncedSearch = useCallback(
     debounce((term) => {
       if (term.length >= 2) {
-        console.log('afterdebouncing', term);
+        // console.log('afterdebouncing', term);
         setSearchTerm(term);
       } else if (term.length === 0) {
         setSearchTerm('');
       } else {
-        alert('Minimum 2 letters required');
+        toast.error('Minimum 2 letters required');
       }
     }, 1000),
     []

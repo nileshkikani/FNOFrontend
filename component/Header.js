@@ -44,7 +44,7 @@ function Header() {
   const [analyseOn, setAnalyseOn] = useState(false);
   const [moneyFlowOn, setMoneyFlowOn] = useState(false);
   const [profileOn, setProfileOn] = useState(false);
-  const [popoverShow, setPopoverShow] = React.useState(false);
+  // const [popoverShow, setPopoverShow] = React.useState(false);
   const [popoverMfShow, setPopoverMfShow] = React.useState(false);
   const btnRef = React.createRef();
   const popoverRef = React.createRef();
@@ -199,10 +199,10 @@ function Header() {
 
     try {
       const response = await axios(config);
-      console.log('Access Token:', response);
+      // console.log('Access Token:', response);
       return response;
     } catch (error) {
-      console.log('Error obtaining access token:');
+      // console.log('Error obtaining access token:');
       return error;
     }
   }

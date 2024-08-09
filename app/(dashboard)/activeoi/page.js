@@ -10,6 +10,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useDispatch } from 'react-redux';
 import { setExpiryDates } from '@/store/userSlice';
+import toast from 'react-hot-toast';
 
 //  ===========HOOKS ===========
 import { useAppSelector } from '@/store';
@@ -156,21 +157,22 @@ export default function Page() {
                 adjustedNiftyStart = minLiveNifty - range;
                 adjustedNiftyEnd = maxLiveNifty + range;
             } else {
-                alert('No data for this expiry');
+                // alert('No data for this expiry');
+                toast.error("No data for this expiry")
             }
           }
           // setIsLoading(true);
     } catch (error) {
         if (error.response) {
             if (error.response.status === 400) {
-                alert(`${error.response.data.detail}, please change date or expiry`);
+              toast.error(`${error.response.data.detail}`);
             } else {
-                alert(`${error.response.data.error || 'An unexpected error occurred.'}`);
+              toast.error(`${error.response.data.error || 'An unexpected error occurred.'}`);
                 handleResponceError();
             }
         } else {
-            console.error('Network error:', error);
-            alert('Network error: Please check your connection.');
+            // console.error('Network error:', error);
+            toast.error('Network error: Please check your connection.');
         }
     } finally {
       setIsLoading(false); 

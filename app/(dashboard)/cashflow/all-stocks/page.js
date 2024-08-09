@@ -9,6 +9,9 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import '../global.css';
 import useAuth from '@/hooks/useAuth';
+import toast from 'react-hot-toast';
+
+
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'), { ssr: false });
 const CandleChart = dynamic(() => import('@/component/MoneyFlow-Graphs/CandleChart-Graph'), { ssr: false });
 const MacdIndicator = dynamic(() => import('@/component/MoneyFlow-Graphs/MacdIndicator-Graph'), { ssr: false });
@@ -83,7 +86,7 @@ const Page = () => {
                 router.push('/login');
             }
         } catch (error) {
-            console.log('Error in getData:', error);
+            // console.log('Error in getData:', error);
             handleResponceError();
         } finally {
             setLoading(false);
@@ -108,11 +111,11 @@ const Page = () => {
                 setStockPutPremiumDecay(response.data?.put_premium_decay);
                 setDecayLoading(true);
             } else {
-                alert('No data for this symbol');
+                toast.error('No data for this symbol');
             }
         } catch (error) {
             if (error.response && error.response.status === 400 ) {
-                alert(`${error.response.data.error}`);
+                toast.error(`${error.response.data.error}`);
             } else {
                 handleResponceError();
             }
@@ -133,7 +136,7 @@ const Page = () => {
             setBuySellData(response.data);
             setMacdData(response.data);
         } catch (error) {
-            console.log('Error in buySellCall:', error);
+            // console.log('Error in buySellCall:', error);
             handleResponceError();
         }
     };

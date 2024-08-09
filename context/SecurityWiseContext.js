@@ -5,6 +5,7 @@ import React, { createContext, useReducer, useCallback, useMemo, useState, useEf
 import { useRouter, usePathname } from 'next/navigation';
 import { useAppSelector } from '@/store';
 import useAuth from '@/hooks/useAuth';
+import toast from 'react-hot-toast';
 
 export const SecurityWiseContext = createContext({});
 
@@ -90,7 +91,7 @@ export const SecurityWiseProvider = ({ children }) => {
           };
 
           if(selectedDate && response?.data?.results?.length === 0){
-            alert('no symbol found');
+            toast.error('no symbol found');
             return;
           }
 
@@ -128,7 +129,7 @@ export const SecurityWiseProvider = ({ children }) => {
   );
   
 
-  console.log('fromContext', searchTerm);
+  // console.log('fromContext', searchTerm);
 
   // ----------------SELECT DATE FROM DROPDOWN------------
   const setDropdownDate = (event) => {

@@ -1,13 +1,11 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '@/utils/axios';
-// import dynamic from 'next/dynamic';
-// import axios from 'axios';
 import { socketForStocks,socketForOpenOrders } from '@/utils/socket';
 import { useAppSelector } from '@/store';
-// import DataTable from 'react-data-table-component';
 import './global.css';
 import useAuth from '@/hooks/useAuth';
+import toast from 'react-hot-toast';
 
 
 // --------------ICONS--------------
@@ -19,126 +17,26 @@ import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
 const Page = () => {
   const authState = useAppSelector((state) => state.auth.authState);
   const socketToken = useAppSelector((state) => state.user.socketToken);
-  const [data, setData] = useState([]);
   const [closedOrders, setClosedOrders] = useState([]);
   const [openOrders, setOpenOrders] = useState([]);
   const [capital, setCapital] = useState(100000);
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [openOrdersTokens,setOpenOrdersToken] = useState([])
+  const [livePrices, setLivePrices] = useState({});
   const { handleResponceError } = useAuth();
 
 
-  // -------------STOCK STATES----------
-  const stockStates = {
-    TATAMOTORS: useState(null),
-    SBIBANK: useState(null),
-    HDFCBANK: useState(null),
-    RELIANCE: useState(null),
-    ICICIBANK: useState(null),
-    INFOSYS: useState(null),
-    TCS: useState(null),
-    LT: useState(null),
-    ITC: useState(null),
-    AXISBANK: useState(null),
-    AIRTEL: useState(null),
-    BAJAJFINANCE: useState(null),
-    HINDUNILVR: useState(null),
-    KOTAKBANK: useState(null),
-    MARUTI: useState(null),
-    HDFCAMC: useState(null),
-    INDUSINDBK: useState(null),
-    ADANIENT: useState(null),
-    TECHM: useState(null),
-  };
-
-  // const [HDFC, setHDFC] = useState(null);
-  // const [Reliance, setReliance] = useState(null);
-  // const [Icici, setIcici] = useState(null);
-  // const [Infosys, setInfosys] = useState(null);
-  // const [Tcs, setTcs] = useState(null);
-  // const [Lt, setLt] = useState(null);
-  // const [Itc, setItc] = useState(null);
-  // const [AxisBank, setAxisBank] = useState(null);
-  // const [Sbi, setSbi] = useState(null);
-  // const [Airtel, setAirtel] = useState(null);
-  // const [BajajFinance, setBajajFinance] = useState(null);
-  // const [HindustanUnilever, setHindustanUnilever] = useState(null);
-  // const [TataMotors, setTataMotors] = useState(null);
-  // const [KotakBank, setKotakBank] = useState(null);
-  // const [Maruti, setMaruti] = useState(null);
-  // const [HdfcAmc, setHdfcAmc] = useState(null);
-  // const [IndusindBank, setIndusindBank] = useState(null);
-  // const [AdaniEnterprise, setAdaniEnterprise] = useState(null);
-  // const [TechMahindra, setTechMahindra] = useState(null);
-
-  // const allStocks = {
-  //   HDFCBANK: "1333",
-  //   RELIANCE: "2885",
-  //   ICICIBANK: "4963",
-  //   INFOSYS: "1594",
-  //   TCS: "11536",
-  //   LT: "11483",
-  //   ITC: "1660",
-  //   AXISBANK: "5900",
-  //   SBIBANK: "3045",
-  //   AIRTEL: "10604",
-  //   BAJAJFINANCE: "317",
-  //   HINDUNILVR: '1394',
-  //   TATAMOTORS: '3456',
-  //   KOTAKBANK: '1922',
-  //   MARUTI: '10999',
-  //   HDFCAMC: '4244',
-  //   INDUSINDBK: '5258',
-  //   ADANIENT: '25',
-  //   TECHM: '13538',
-  // }
-
-  const getSignal = async () => {
+  const connectWebSocket = async (socketToken) => {
     try {
-      const url = `signal/orderupdate/`;
-      const response = await axiosInstance.get(url, {
-        headers: { Authorization: `Bearer ${authState.access}` }
-      });
-      setData(response.data);
-      // console.log('fffdd',response.data)
-    } catch (error) {
-      console.error('Error calling signal API:', error);
-    }
-  };
-
-  const connectWebSocket = async (token) => {
-    try {
-      if (!token) {
+      if (!socketToken && !openOrdersTokens) {
         throw new Error('Token is required to connect WebSocket');
       }
-      const feedToken = token?.feedToken;
-      await socketForStocks(feedToken, ...Object.values(stockStates).map(([_, setState]) => setState));
-      // await socketForStocks(feedToken,
-      //   setHDFC,
-      //   setReliance,
-      //   setIcici,
-      //   setInfosys,
-      //   setTcs,
-      //   setLt,
-      //   setItc,
-      //   setAxisBank,
-      //   setSbi,
-      //   setAirtel,
-      //   setBajajFinance,
-      //   setHindustanUnilever,
-      //   setTataMotors,
-      //   setKotakBank,
-      //   setMaruti,
-      //   setHdfcAmc,
-      //   setIndusindBank,
-      //   setAdaniEnterprise,
-      //   setTechMahindra
-      // );
+      await socketForStocks(socketToken?.feedToken, setLivePrices, ...openOrdersTokens);
     } catch (error) {
-      console.error('Error in getting live price or setting up WebSocket:', error);
+      console.error('Error in authentication or setting up WebSocket:', error);
     }
   };
 
-  // -------------------GET CLOSED ORDERS----------------
+  // ---------------------GET CLOSED ORDERS----------------
   const getClosedOrders = async () => {
     try {
       let url = `signal/orderupdate/?status=closed`;
@@ -147,12 +45,11 @@ const Page = () => {
       });
       setClosedOrders(response.data);
     } catch (err) {
-      // console.log('error getting closed orders', err);
       handleResponceError()
     }
   };
 
-  // -------------------GET OPEN ORDERS----------------
+  // ---------------------GET OPEN ORDERS----------------
   const getOpenOrders = async () => {
     try {
       let url = `signal/orderupdate/?status=open`;
@@ -160,9 +57,11 @@ const Page = () => {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       setOpenOrders(response.data);
+      const tokens = response.data.map(order => order.token);
+      setOpenOrdersToken(tokens);
+
     } catch (err) {
       handleResponceError()
-      // console.log('error getting closed orders', err);
     }
   };
 
@@ -190,55 +89,17 @@ const Page = () => {
     return afterTrunc;
   };
 
-  // useEffect(() => {
-  //   if (socketToken) {
-  //     connectWebSocket(socketToken);
-  //   }
-  // }, [socketToken]);
-
-  // useEffect(() => {
-    // socketForOpenOrders();
-    // getSignal();
-  // }, []);
-
   useEffect(() => {
     getClosedOrders();
     getOpenOrders();
-  }, []);
-
-  // useEffect(() => {
-  //   const openOrderIds = new Set(openOrders.map(order => order.id));
-  
-  //   Object.entries(stockStates).forEach(([symbol, [livePrice, setLivePrice]]) => {
-  //     if (livePrice !== null && data.length > 0) {
-  //       data.forEach((item) => {
-  //         if (item.symbol === symbol && openOrderIds.has(item.id)) {
-  //           if (livePrice <= item.stop_loss || livePrice >= item.take_profit) {
-  //             const price = {};
-  //             const url = `signal/orderupdate/${item.id}`;
-  //             if (livePrice <= item.stop_loss) {
-  //               price.price = item.stop_loss;
-  //             } else if (livePrice >= item.take_profit) {
-  //               price.price = item.take_profit;
-  //             } 
-  //             try {
-  //               axiosInstance.patch(url, price, {
-  //                 headers: { Authorization: `Bearer ${authState.access}` }
-  //               });
-  //             } catch (error) {
-  //               console.log('Error in patch request:', error);
-  //             }
-  //           }
-  //         }
-  //       });
-  //     }
-  //   });
-  // }, [data, openOrders, capital]);
+    if (openOrdersTokens.length > 0 && socketToken) {
+      connectWebSocket(socketToken);
+    }
+  }, [openOrdersTokens]);
 
   const refreshBtn = () => {
     getClosedOrders();
     getOpenOrders();
-    // getSignal();
   };
 
 
@@ -246,7 +107,7 @@ const Page = () => {
     e.preventDefault();
     const capitalValueFromInput = document.getElementById('capital-id')?.value;
     if (!capitalValueFromInput) {
-      alert('Please enter your capital');
+      toast.error('Please enter your capital');
       return;
     }
     setCapital(capitalValueFromInput);
@@ -292,12 +153,12 @@ const Page = () => {
             <th>Signal Time</th>
             <th>Type</th>
             <th>Stock</th>
+            <th>Live Price</th>
             <th>Buy Price</th>
             <th>Sell Price</th>
             <th>Stop Loss</th>
             <th>Target</th>
             <th>Indicator</th>
-            {/* <th>Close Duration</th> */}
             <th>Status</th>
           </tr>
         </thead>
@@ -312,6 +173,7 @@ const Page = () => {
                 <td className='td-cell'>{new Date(item?.signal_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
                 <td className='order-icon td-cell'>{item.type === 'buy' ? <TbSquareLetterB size={25} style={{ color: 'green' }} /> : <TbSquareLetterS size={25} style={{ color: 'red' }} />}</td>
                 <td className='td-cell'>{item?.symbol}</td>
+                <td className='td-cell'>{livePrices[item.token] ? livePrices[item.token]/100 : 'fetching...'}</td> 
                 <td className='td-cell'>{item?.buy_price}</td>
                 <td className='td-cell'>{item?.sell_price ? item.sell_price?.toFixed(2) : ''}</td>
                 <td className='td-cell'>{item?.stop_loss?.toFixed(2)}</td>
@@ -392,7 +254,7 @@ const Page = () => {
             <tr>
               <td colSpan="8" className='td-cell'><strong>Total:</strong></td>
               <td className={calculateTotalAmount() < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}><strong>{calculateTotalAmount()}</strong></td>
-              <td colSpan="3" className='td-cell'></td>
+              <td colSpan="4" className='td-cell'></td>
               <td className={calculateTotalPercentageChange().toFixed(2) < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}><strong>{calculateTotalPercentageChange().toFixed(2)}%</strong></td>
             </tr>
           )}
