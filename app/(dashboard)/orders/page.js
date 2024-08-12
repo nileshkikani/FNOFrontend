@@ -18,6 +18,7 @@ const Page = () => {
   const authState = useAppSelector((state) => state.auth.authState);
   const socketToken = useAppSelector((state) => state.user.socketToken);
   const [closedOrders, setClosedOrders] = useState([]);
+  const [loading,isLoading] = useState(false);
   const [openOrders, setOpenOrders] = useState([]);
   const [capital, setCapital] = useState(100000);
   const [openOrdersTokens,setOpenOrdersToken] = useState([])
@@ -31,7 +32,7 @@ const Page = () => {
         throw new Error('Token is required to connect WebSocket');
       }
       await socketForStocks(socketToken?.feedToken, setLivePrices, ...openOrdersTokens);
-      console.log('socketCALL')
+      // console.log('socketCALL')
     } catch (error) {
       console.error('Error in authentication or setting up WebSocket:', error);
     }
@@ -53,6 +54,7 @@ const Page = () => {
   // ---------------------GET OPEN ORDERS----------------
   const getOpenOrders = async () => {
     try {
+      isLoading(false);
       let url = `signal/orderupdate/?status=open`;
       const response = await axiosInstance.get(url, {
         headers: { Authorization: `Bearer ${authState.access}` }
@@ -60,7 +62,7 @@ const Page = () => {
       setOpenOrders(response.data);
       const tokens = response.data.map(order => order.token);
       setOpenOrdersToken(tokens);
-
+      isLoading(true);
     } catch (err) {
       handleResponceError()
     }
@@ -93,15 +95,14 @@ const Page = () => {
   useEffect(() => {
     getClosedOrders();
     getOpenOrders();
-    if (socketToken) {
-      connectWebSocket(socketToken);
-    }
+    // if (socketToken && openOrdersTokens) {
+    //   connectWebSocket(socketToken);
+    // }
   }, []);
 
   useEffect(()=>{
-    if(openOrdersTokens)connectWebSocket(socketToken)
-
-  },[openOrdersTokens])
+    if(openOrdersTokens && socketToken)connectWebSocket(socketToken)
+  },[loading])
 
   const refreshBtn = () => {
     getClosedOrders();

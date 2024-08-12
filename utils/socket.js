@@ -93,7 +93,7 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
 
 // ------------------SOCKET FOR DISPLAYING OPEN ORDERS LIVE PRICE------------------
 export const socketForStocks = async (feedToken,setLivePrices,...tokenList) => {
-  console.log('tokenFromSOCKET',tokenList)
+  // console.log('tokenFromSOCKET',tokenList)
   if (typeof window !== 'undefined' && feedToken) {
     const webSocketUrl = 'wss://smartapisocket.angelone.in/smart-stream';
     const clientCode = 'HEEB1159';
@@ -106,7 +106,7 @@ export const socketForStocks = async (feedToken,setLivePrices,...tokenList) => {
 
     socket.onopen = (event) => {
       const param = {
-        correlationID: 'METD1460',
+        correlationID: 'HEEB1159',
         action: 1,
         params: {
           mode: 1,
