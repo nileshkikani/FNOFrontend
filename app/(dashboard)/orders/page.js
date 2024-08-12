@@ -27,10 +27,11 @@ const Page = () => {
 
   const connectWebSocket = async (socketToken) => {
     try {
-      if (!socketToken && !openOrdersTokens) {
+      if (!socketToken && openOrdersTokens.length>0) {
         throw new Error('Token is required to connect WebSocket');
       }
       await socketForStocks(socketToken?.feedToken, setLivePrices, ...openOrdersTokens);
+      console.log('socketCALL')
     } catch (error) {
       console.error('Error in authentication or setting up WebSocket:', error);
     }
@@ -92,10 +93,15 @@ const Page = () => {
   useEffect(() => {
     getClosedOrders();
     getOpenOrders();
-    if (openOrdersTokens.length > 0 && socketToken) {
+    if (socketToken) {
       connectWebSocket(socketToken);
     }
-  }, [openOrdersTokens]);
+  }, []);
+
+  useEffect(()=>{
+    if(openOrdersTokens)connectWebSocket(socketToken)
+
+  },[openOrdersTokens])
 
   const refreshBtn = () => {
     getClosedOrders();
@@ -124,6 +130,8 @@ const Page = () => {
   const numberOfProfitableTrades = closedOrders.filter((item) => item.outcome == 'profit');
   const dispalyPtrades = numberOfProfitableTrades.length / closedOrders.length;
 
+
+  // console.log('livePriceTOKenszz',livePrices)
   return (
     <div className="parent-div">
       <div className='capital-div'>

@@ -171,12 +171,12 @@ function Header() {
 
   async function getAccessToken() {
     const url = 'https://apiconnect.angelbroking.com/rest/auth/angelbroking/user/v1/loginByPassword';
-    const TOTP_SECRET_KEY = 'UKZUNOZS3WMKU33LJHSF3ZOZR4';
+    const TOTP_SECRET_KEY = '3SCGYC4SELGWAT5DH3RNXXRGP4';
 
     const token = await TOTP.generate(TOTP_SECRET_KEY, { algorithm: 'SHA-1' });
     const data = {
-      clientcode: 'METD1460',
-      password: '3636',
+      clientcode: 'HEEB1159',
+      password: '1212',
       totp: token.otp
     };
 
@@ -192,7 +192,7 @@ function Header() {
         'X-ClientLocalIP': 'CLIENT_LOCAL_IP',
         'X-ClientPublicIP': 'CLIENT_PUBLIC_IP',
         'X-MACAddress': 'MAC_ADDRESS',
-        'X-PrivateKey': 'mFDgvhuI'
+        'X-PrivateKey': '58gaUP75'
       },
       data: data
     };

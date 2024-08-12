@@ -3,8 +3,8 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
   // console.log('inside-function');
   if (typeof window !== 'undefined' && feedToken) {
     const webSocketUrl = 'wss://smartapisocket.angelone.in/smart-stream';
-    const clientCode = 'METD1460';
-    const apiKey = 'mFDgvhuI';
+    const clientCode = 'HEEB1159';
+    const apiKey = '58gaUP75';
 
     let socket = await new WebSocket(
       `${webSocketUrl}?clientCode=${clientCode}&feedToken=${feedToken}&apiKey=${apiKey}`
@@ -15,7 +15,7 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
       // console.log('WebSocket connection opened', event);
       setIsClosed(false);
       const param = {
-        correlationID: 'METD1460',
+        correlationID: 'HEEB1159',
         action: 1,
         params: {
           mode: 1,
@@ -39,6 +39,7 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
 
       // Check if the data length matches the expected length
       const parseData = (offset, length, method, littleEndian = true) => {
+        // console.log('insidePARSData')
         if (offset + length > dataLength) {
           console.warn(`Cannot read ${method} at offset ${offset}, data length is ${dataLength}`);
           return null;
@@ -83,7 +84,7 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
     };
 
     socket.onerror = (error) => {
-      // console.log('WebSocket error:');
+      // console.log('index WebSocket error:',error);
     };
   }
 };
@@ -92,10 +93,11 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
 
 // ------------------SOCKET FOR DISPLAYING OPEN ORDERS LIVE PRICE------------------
 export const socketForStocks = async (feedToken,setLivePrices,...tokenList) => {
+  console.log('tokenFromSOCKET',tokenList)
   if (typeof window !== 'undefined' && feedToken) {
     const webSocketUrl = 'wss://smartapisocket.angelone.in/smart-stream';
-    const clientCode = 'METD1460';
-    const apiKey = 'mFDgvhuI';
+    const clientCode = 'HEEB1159';
+    const apiKey = '58gaUP75';
     let socket = await new WebSocket(
       `${webSocketUrl}?clientCode=${clientCode}&feedToken=${feedToken}&apiKey=${apiKey}`
     );
@@ -124,35 +126,49 @@ export const socketForStocks = async (feedToken,setLivePrices,...tokenList) => {
       const dataLength = dataView.byteLength;
 
       const parseData = (offset, length, method, littleEndian = true) => {
+        // console.log('insidePARSData')
         if (offset + length > dataLength) {
           console.warn(`Cannot read ${method} at offset ${offset}, data length is ${dataLength}`);
           return null;
         }
         const value = dataView[method](offset, littleEndian);
+        // console.log('vallll',value)
         return value;
       };
       const tokenBytes = [];
+      // console.log('bytesss',tokenBytes)
       for (let i = 0; i < 25; i++) {
         const byte = parseData(2 + i, 1, 'getUint8');
+        // console.log('ddsdsds',byte)
         if (byte !== null) {
           tokenBytes.push(byte);
         }
       }
       const token = String.fromCharCode(...tokenBytes).replace(/\u0000/g, '');
       const lastTradedPrice = parseData(43, 8, 'getUint32');
+
+      // --------------SETTING LIVE PRICE FROM HERE-----------
+  // console.log('fromSOCKETsss',token);
+  // console.log('insideSOkcet')
+
       setLivePrices((prevPrices) => ({
         ...prevPrices,
         [token]: lastTradedPrice
       }));
+
+      // console.log('fromSocketFIle',lastTradedPrice)
     }
     
     socket.onclose = (event) => {
       // console.log('WebSocket connection closed');
       // setIsClosed(true);
     };
+
+    // console.log('Socket readyState:', socket.readyState);
+
     
     socket.onerror = (error) => {
-      console.log('WebSocket error:',error);
+      console.log('WebSocket errorrr:',error);
     };
   };
 };
