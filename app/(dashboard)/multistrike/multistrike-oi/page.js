@@ -11,6 +11,7 @@ import useAuth from '@/hooks/useAuth';
 //--------------------------CHARTS-------------------------
 const MultiStrikeChart = dynamic(() => import('@/component/MultiStrikeChart/MultiStrikeChart'), { ssr: false });
 const PremiumDecayChart = dynamic(() => import('@/component/PremiumDecay-Graphs/PremiumDecay'), { ssr: false });
+const PremiumDecayAreaChart = dynamic(() => import('@/component/PremiumDecay-Graphs/PremiumDecayArea'), { ssr: false });
 
 const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'), { ssr: false });
 
@@ -340,6 +341,7 @@ const Page = () => {
       ) : (
         <>
           <PremiumDecayChart data={pdChartData} isChecked={selectedPdStrikePrices} />
+          <PremiumDecayAreaChart data={pdChartData} isChecked={selectedPdStrikePrices} />
         </>
       )}
     </>

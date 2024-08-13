@@ -214,7 +214,7 @@ function Header() {
       }
       // console.log('feedToken', token?.feedToken);
 
-      await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed);
+      // await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed);
     } catch (error) {
       console.error('Error in authentication or setting up WebSocket:', error);
     }

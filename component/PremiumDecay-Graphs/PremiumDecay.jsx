@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+//import { AreaChart,Bar,linearGradient,ComposedChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import {
   ComposedChart,
   Line,
@@ -95,6 +96,7 @@ const PremiumDecayChart = ({ data, isChecked }) => {
         <Bar yAxisId="left" dataKey="put_decay" name="Put Decay" fill="#E96767" />
       </ComposedChart>
     </ResponsiveContainer>
+    
   );
 };
 

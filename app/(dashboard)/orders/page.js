@@ -31,8 +31,8 @@ const Page = () => {
       if (!socketToken && openOrdersTokens.length>0) {
         throw new Error('Token is required to connect WebSocket');
       }
-      await socketForStocks(socketToken?.feedToken, setLivePrices, ...openOrdersTokens);
-      // console.log('socketCALL')
+      // await initializeWebSocket(socketToken?.feedToken, null, null, null, setLivePrices, ...openOrdersTokens);
+
     } catch (error) {
       console.error('Error in authentication or setting up WebSocket:', error);
     }
@@ -132,7 +132,7 @@ const Page = () => {
   const dispalyPtrades = numberOfProfitableTrades.length / closedOrders.length;
 
 
-  // console.log('livePriceTOKenszz',livePrices)
+  // console.log('livePriceTOKenszzfromORDER',livePrices)
   return (
     <div className="parent-div">
       <div className='capital-div'>
