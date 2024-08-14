@@ -155,7 +155,7 @@ function Header() {
     return () => {
       window.removeEventListener('mousedown', handleOutsideClick);
     };
-  }, [analyseOn,moneyFlowOn, profilePopoverShow]);
+  }, [analyseOn, moneyFlowOn, profilePopoverShow]);
 
   async function generateToken() {
     const response = await getAccessToken();
@@ -207,6 +207,8 @@ function Header() {
     }
   }
 
+
+
   const connectWebSocket = async (token) => {
     try {
       if (!token) {
@@ -214,7 +216,7 @@ function Header() {
       }
       // console.log('feedToken', token?.feedToken);
 
-      // await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed);
+      await initializeWebSocket(token?.feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed);
     } catch (error) {
       console.error('Error in authentication or setting up WebSocket:', error);
     }
@@ -228,14 +230,6 @@ function Header() {
       console.error('Error fetching ADR data:', error);
     }
   };
-
-  // const togglePopover = useCallback(() => {
-  //   setPopoverShow((prevShow) => !prevShow);
-  // }, []);
-
-  // const toggleMfPopover = () => {
-  //   setPopoverMfShow((prevShow) => !prevShow);
-  // };
 
   const toggleProfilePopover = useCallback(() => {
     setProfilePopoverShow((prevShow) => !prevShow);
@@ -430,7 +424,7 @@ function Header() {
                     <button
                       onClick={(e) => {
                         setAnalyseOn(!analyseOn);
-                        
+
                         e.stopPropagation();
                         // togglePopover();
                       }}

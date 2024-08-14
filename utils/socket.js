@@ -1,20 +1,21 @@
 'use client';
 
-const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed, setLivePrices, additionalTokens = []) => {
+const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed, setLivePrices, additionalTokens) => {
   if (typeof window !== 'undefined' && feedToken) {
+    const token = feedToken.feedToken;
+    console.log('kokok',token);
     const webSocketUrl = 'wss://smartapisocket.angelone.in/smart-stream';
     const clientCode = 'HEEB1159';
     const apiKey = '58gaUP75';
 
-    const socket = new WebSocket(
-      `${webSocketUrl}?clientCode=${clientCode}&feedToken=${feedToken}&apiKey=${apiKey}`
-    );
+    const url = `${webSocketUrl}?clientCode=${clientCode}&feedToken=${feedToken.feedToken}&apiKey=${apiKey}`;
+    console.log('Attempting to connect to WebSocket URL:', url);
+
+    const socket = new WebSocket(url);
     socket.binaryType = 'arraybuffer';
 
-    const defaultTokens = ['99926000', '99926009'];
-    const tokenList = [...defaultTokens, ...additionalTokens];
-
     socket.onopen = () => {
+      console.log('WebSocket connection opened.');
       const param = {
         correlationID: clientCode,
         action: 1,
@@ -23,21 +24,21 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
           tokenList: [
             {
               exchangeType: 1,
-              tokens: tokenList
+              tokens: additionalTokens
             }
           ]
         }
       };
+      console.log('Sending Parameters:', JSON.stringify(param, null, 2));
       socket.send(JSON.stringify(param));
-      if (!additionalTokens.length) {
-        setIsClosed(false); 
-      }
     };
 
     socket.onmessage = (event) => {
       const arrayBuffer = event.data;
       const dataView = new DataView(arrayBuffer);
       const dataLength = dataView.byteLength;
+
+      console.log('Raw Data Received:', new Uint8Array(arrayBuffer));
 
       const parseData = (offset, length, method, littleEndian = true) => {
         if (offset + length > dataLength) {
@@ -55,32 +56,39 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
         }
       }
       const token = String.fromCharCode(...tokenBytes).replace(/\u0000/g, '');
+
       const lastTradedPrice = parseData(43, 8, 'getUint32');
 
-      if (additionalTokens.length) {
-        setLivePrices((prevPrices) => ({
-          ...prevPrices,
-          [token]: lastTradedPrice / 100
-        }));
-      }
-        if (token === '99926009') {
-          setBankNiftyPrice(lastTradedPrice / 100);
-        } else if (token === '99926000') {
-          setNiftyPrice(lastTradedPrice / 100);
+      console.log('Extracted Token:', token, 'Last Traded Price:', lastTradedPrice / 100);
+
+      if (additionalTokens.includes(token)) {
+        console.log('Updating Token:', token, 'Price:', lastTradedPrice / 100);
+        if (setLivePrices && typeof setLivePrices === 'function') {
+          setLivePrices((prevPrices) => ({
+            ...prevPrices,
+            [token]: lastTradedPrice / 100
+          }));
         }
+      }
+
+      if (token === '99926009') {
+        // setBankNiftyPrice(lastTradedPrice );
+      } else if (token === '99926000') {
+        // setNiftyPrice(lastTradedPrice );
       }
     };
 
     socket.onclose = () => {
-      if (!additionalTokens.length) {
-        setIsClosed(true); 
-      }
+      console.log('WebSocket connection closed.');
+      // if (!additionalTokens.length) {
+        setIsClosed(true);
+      // }
     };
 
     socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.error('WebSocket Error:', error.message || error);
     };
-  };
-
+  }
+};
 
 export { initializeWebSocket };
