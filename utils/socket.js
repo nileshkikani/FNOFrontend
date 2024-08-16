@@ -8,7 +8,7 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
     const clientCode = 'HEEB1159';
     const apiKey = '58gaUP75';
 
-    const url = `${webSocketUrl}?clientCode=${clientCode}&feedToken=${feedToken.feedToken}&apiKey=${apiKey}`;
+    const url = `${webSocketUrl}?clientCode=${clientCode}&feedToken=${token}&apiKey=${apiKey}`;
     console.log('Attempting to connect to WebSocket URL:', url);
 
     const socket = new WebSocket(url);
@@ -69,12 +69,12 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
             [token]: lastTradedPrice / 100
           }));
         }
-      }
-
-      if (token === '99926009') {
-        // setBankNiftyPrice(lastTradedPrice );
-      } else if (token === '99926000') {
-        // setNiftyPrice(lastTradedPrice );
+        
+        if (token === '99926009') {
+          setBankNiftyPrice(lastTradedPrice );
+        } else if (token === '99926000') {
+          setNiftyPrice(lastTradedPrice );
+        }
       }
     };
 

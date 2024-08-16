@@ -28,5 +28,6 @@ export const API_ROUTER = {
   PREMIUM_DECAY: `premium-decay-list/`,
   EXPIRIES: `dates-expiries-list/`,
   MOST_ACTIVE:`most-active-strikes/`,
-  TOP_GAINER_LOSSER:`top-gainers-losers/`
+  TOP_GAINER_LOSSER:`top-gainers-losers/`,
+  ORDERS_UPDATE :`signal/orderupdate/`
 };

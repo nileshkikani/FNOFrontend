@@ -42,6 +42,18 @@ th {
   background-color: #f0f0f0;
 }
 
+.thedate{
+    @apply bg-white border-2 border-black rounded-sm shadow-sm focus:outline-none focus:border-blue-500;
+}
+
+.exec-trades-div{
+  @apply flex items-center justify-between py-4 ;
+}
+
+.date-div{
+  @apply flex items-center ;
+}
+
 .check-button{
   @apply border-blue-400 border rounded-md px-4 py-1 text-blue-500;
 }

@@ -6,11 +6,19 @@ import { useAppSelector } from '@/store';
 import './global.css';
 import useAuth from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
+import { API_ROUTER } from '@/services/apiRouter';
+import dynamic from 'next/dynamic';
+
+// -----------DATE-PICKER STUFFS---------
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 // --------------ICONS--------------
 import { TbSquareLetterS } from "react-icons/tb";
 import { TbSquareLetterB } from "react-icons/tb";
 import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
+
+const PropagateLoader = dynamic(() => import('react-spinners/PropagateLoader'));
 
 const Page = () => {
   const authState = useAppSelector((state) => state.auth.authState);
@@ -20,12 +28,14 @@ const Page = () => {
   const [openOrders, setOpenOrders] = useState([]);
   const [capital, setCapital] = useState(100000);
   const [openOrdersTokens, setOpenOrdersToken] = useState([]);
+  const [closedOrderLoading, setClosedOrderLoading] = useState(false);
   const [livePrices, setLivePrices] = useState({});
+  const [selectedDate, setSelectedDate] = useState();
   const { handleResponceError } = useAuth();
 
 
 
-// ------------SOCKET CONNECTION FOR LIVE PRICE DISPLAY------------
+  // ------------SOCKET CONNECTION FOR LIVE PRICE DISPLAY------------
   const connectWebSocket = async (socketToken) => {
     try {
       if (!socketToken) {
@@ -40,11 +50,19 @@ const Page = () => {
   // ---------------------GET CLOSED ORDERS----------------
   const getClosedOrders = async () => {
     try {
-      let url = `signal/orderupdate/?status=closed`;
-      const response = await axiosInstance.get(url, {
+      setClosedOrderLoading(false);
+      let baseUrl = `${API_ROUTER.ORDERS_UPDATE}?status=closed`;
+      if (selectedDate) {
+        baseUrl += `&date=${selectedDate}`
+      }
+      const response = await axiosInstance.get(baseUrl, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       setClosedOrders(response.data);
+      if (response.data.length === 0) {
+        toast.error('no data available');
+      }
+      setClosedOrderLoading(true);
     } catch (err) {
       handleResponceError();
     }
@@ -54,8 +72,8 @@ const Page = () => {
   const getOpenOrders = async () => {
     try {
       // isLoading(false);
-      let url = `signal/orderupdate/?status=open`;
-      const response = await axiosInstance.get(url, {
+      let baseUrl = API_ROUTER.ORDERS_UPDATE;
+      const response = await axiosInstance.get(`${baseUrl}?status=open`, {
         headers: { Authorization: `Bearer ${authState.access}` }
       });
       setOpenOrders(response.data);
@@ -93,9 +111,14 @@ const Page = () => {
   };
 
   useEffect(() => {
+    // setSelectedDate('')
     getClosedOrders();
     getOpenOrders();
   }, []);
+
+  useEffect(() => {
+    selectedDate && getClosedOrders();
+  }, [selectedDate])
 
   useEffect(() => {
     if (socketToken && openOrdersTokens.length > 0) {
@@ -116,44 +139,58 @@ const Page = () => {
       return;
     }
     const parsedCapital = parseFloat(capitalValueFromInput);
-    setCapital(parsedCapital); 
+    setCapital(parsedCapital);
   };
 
   const calculatePL = (item) => {
-    const livePrice = parseFloat(livePrices[item.token]) ;
-    const buyPrice = parseFloat(item.buy_price) ;
+    const livePrice = parseFloat(livePrices[item.token]);
+    const buyPrice = parseFloat(item.buy_price);
     const sellPrice = parseFloat(item.sell_price);
-  
+
     let quantity = 0;
     let pl = 0;
-  
+
     if (sellPrice === null || isNaN(sellPrice)) {
-        // -----BUY ORDERS----
-        quantity = capital / buyPrice;
-        pl = (livePrice - buyPrice) * quantity;
+      // -----BUY ORDERS----
+      quantity = capital / buyPrice;
+      pl = (livePrice - buyPrice) * quantity;
       // }
-    } else {
+    } else if (buyPrice === null || isNaN(buyPrice)) {
       // -----SELL ORDERS----
       quantity = capital / sellPrice;
       pl = (sellPrice - livePrice) * quantity;
     }
-  
+
     return pl;
   };
-  
+
   const sortedOrders = closedOrders.slice().sort((a, b) => {
     const dateA = new Date(a.signal_time);
     const dateB = new Date(b.signal_time);
     return dateA - dateB;
   });
-  
+
 
   const calculateTotalPL = () => {
-    return openOrders.reduce((total, item) => total + calculatePL(item), 0).toFixed(2);
+    const total = openOrders.reduce((total, item) => total + calculatePL(item), 0);
+    return isNaN(total) ? '0.00' : total.toFixed(2);
   };
 
   const numberOfProfitableTrades = closedOrders.filter((item) => item.outcome == 'profit');
   const dispalyPtrades = numberOfProfitableTrades.length / closedOrders.length;
+
+
+  // console.log('datttte', selectedDate);
+
+  const handleDateChange = (date) => {
+    if (date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      setSelectedDate(formattedDate);
+    }
+  };
 
   return (
     <div className="parent-div">
@@ -198,12 +235,12 @@ const Page = () => {
         <tbody>
           {openOrders.map((item, index) => {
             const rowClass = index % 2 === 0 ? 'row-light-color' : 'row-dark-color';
-            const buyPrice = parseFloat(item.buy_price) ;
-            const livePrice = parseFloat(livePrices[item.token]) 
-            const sellPrice = parseFloat(item.sell_price) ;
+            const buyPrice = parseFloat(item.buy_price);
+            const livePrice = parseFloat(livePrices[item.token])
+            const sellPrice = parseFloat(item.sell_price);
 
             const quantity = buyPrice > 0 ? capital / buyPrice : sellPrice > 0 ? capital / sellPrice : 0;
-            const currentPrice = buyPrice > 0 ? livePrice : sellPrice;
+            // const currentPrice = buyPrice > 0 ? livePrice : sellPrice;
             const pl = calculatePL(item);
 
             return (
@@ -216,7 +253,7 @@ const Page = () => {
                   {item.type === 'buy' ? <TbSquareLetterB size={25} style={{ color: 'green' }} /> : <TbSquareLetterS size={25} style={{ color: 'red' }} />}
                 </td>
                 <td className='td-cell'>{item?.symbol}</td>
-                <td className='td-cell'>{!isNaN(livePrice) ? livePrice : 'fetching...'}</td>
+                <td className='td-cell'>{!isNaN(livePrice) ? livePrice : 0}</td>
                 <td className='td-cell'>{item?.buy_price}</td>
                 <td className='td-cell'>{Math.trunc(quantity)}</td>
                 <td className='td-cell'>{item?.sell_price ? item.sell_price?.toFixed(2) : ''}</td>
@@ -224,7 +261,10 @@ const Page = () => {
                 <td className='td-cell'>{item?.take_profit?.toFixed(2)}</td>
                 <td className='td-cell'>{item?.indicator}</td>
                 <td className='td-cell'>{item?.status}</td>
-                <td className={pl < 0 ? 'red-text td-cell' : 'green-text td-cell'}>{pl.toFixed(2)}</td>
+                <td className={isNaN(pl) || pl < 0 ? 'red-text td-cell' : 'green-text td-cell'}>
+                  {isNaN(pl) ? '0' : pl.toFixed(2)}
+                </td>
+
               </tr>
             );
           })}
@@ -240,81 +280,136 @@ const Page = () => {
           )}
         </tbody>
       </table>
-      {numberOfProfitableTrades && closedOrders &&
-        <label className='title'>Executed Trades ({numberOfProfitableTrades.length}/{closedOrders.length})</label>}
-      <label>
-        Profitable trade ratio is{' '}
-        {isNaN(dispalyPtrades) ? (
-          <span className='title'>0.00%</span>
-        ) : (
-          <span className='title'>{(dispalyPtrades * 100).toFixed(2)}%</span>
-        )}
-      </label>
-      <table >
-        <thead >
-          <tr>
-            <th>Duration</th>
-            <th>Time</th>
-            <th>Type</th>
-            <th>Stock</th>
-            <th>Buy Price</th>
-            <th>Qty</th>
-            <th>Sell Price</th>
-            <th>Price Difference</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Indicator</th>
-            <th>Close Duration</th>
-            <th>P/L</th>
-            <th>%</th>
-          </tr>
-        </thead>
-        {/* -------------EXECUTED ORDERS-------------- */}
-        <tbody>
-          {sortedOrders.map((item, index) => {
-            const buyPrice = item.buy_price;
-            const sellPrice = item.sell_price;
-            const quantity = capital / buyPrice;
-            const percentageChange = ((sellPrice - buyPrice) / buyPrice) * quantity;
-            const priceDifference = sellPrice - buyPrice;
-            let durationText;
-            if (item.duration === "ONE_HOUR") {
-              durationText = "1 hour";
-            } else {
-              durationText = item.duration === "FIVE_MINUTE" ? "5 minutes" : "15 minutes";
-            }
-            const rowClass = index % 2 === 0 ? 'row-light-color' : 'row-dark-color';
-            return (
-              <tr key={item.id} className={rowClass} >
-                <td className='td-cell'>{durationText}</td>
-                <td className='td-cell'>{new Date(item?.signal_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-                <td className='order-icon td-cell'>{item.type === 'buy' ? <TbSquareLetterB size={25} style={{ color: 'green' }} /> : <TbSquareLetterS size={25} style={{ color: 'red' }} />}</td>
-                <td className='td-cell'>{item.symbol}</td>
-                <td className='td-cell'>{Math.trunc(buyPrice)}</td>
-                <td className='td-cell'>{Math.trunc(quantity)}</td>
-                <td className='td-cell'>{Math.trunc(sellPrice)}</td>
-                <td className='td-cell'>{Math.trunc(priceDifference)}</td>
-                <td className={(priceDifference * quantity) < 0 ? 'red-text td-cell' : 'green-text td-cell'}>
-                  {(Math.trunc(priceDifference) * Math.trunc(quantity))}
-                </td>
-                <td className='green-text td-cell'>{item.status === 'closed' && 'success'}</td>
-                <td className='td-cell' >{item.indicator}</td>
-                <td className='td-cell' >{item.close_duration}</td>
-                <td className='order-icon td-cell'>{item.outcome == 'loss' ? <FaArrowTrendDown size={18} style={{ color: 'red' }} /> : <FaArrowTrendUp size={18} style={{ color: 'green' }} />}{item.outcome}</td>
-                <td className={percentageChange < 0 ? 'red-text td-cell' : 'green-text td-cell'}>{percentageChange.toFixed(2)}%</td>
-              </tr>
-            );
-          })}
-          {sortedOrders.length > 0 && (
-            <tr>
-              <td colSpan="8" className='td-cell'><strong>Total:</strong></td>
-              <td className={calculateTotalAmount() < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}><strong>{calculateTotalAmount()}</strong></td>
-              <td colSpan="4" className='td-cell'></td>
-              <td className={calculateTotalPercentageChange().toFixed(2) < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}><strong>{calculateTotalPercentageChange().toFixed(2)}%</strong></td>
-            </tr>
+      <div className='exec-trades-div'>
+        {numberOfProfitableTrades && closedOrders &&
+          <label className='title'>Executed Trades ({numberOfProfitableTrades.length}/{closedOrders.length})</label>}
+        <label>
+          Profitable trade ratio is{' '}
+          {isNaN(dispalyPtrades) ? (
+            <span className='title'>0.00%</span>
+          ) : (
+            <span className='title'>{(dispalyPtrades * 100).toFixed(2)}%</span>
           )}
-        </tbody>
-      </table>
+        </label>
+        <div className='date-div'>
+          <label className='title'>Trade History:</label>
+          <div className='thedate'>
+            <DatePicker
+              showIcon
+              maxDate={new Date() + 1}
+              dateFormat="yyyy-MM-dd"
+              onChange={handleDateChange}
+              selected={selectedDate}
+              placeholderText="Select a date"
+              customInput={<input readOnly />}
+              shouldCloseOnSelect
+              onKeyDown={(e) => {
+                e.preventDefault();
+              }}
+            />
+          </div>
+        </div>
+      </div>
+      {closedOrderLoading ?
+        <table >
+          <thead >
+            <tr>
+              <th>Duration</th>
+              <th>Time</th>
+              <th>Type</th>
+              <th>Stock</th>
+              <th>Buy Price</th>
+              <th>Qty</th>
+              <th>Sell Price</th>
+              <th>Price Difference</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Indicator</th>
+              <th>Close Duration</th>
+              <th>P/L</th>
+              <th>%</th>
+            </tr>
+          </thead>
+          {/* -------------EXECUTED ORDERS-------------- */}
+          <tbody>
+            {sortedOrders.map((item, index) => {
+              const buyPrice = item.buy_price;
+              const sellPrice = item.sell_price;
+              const quantity = capital / buyPrice;
+              const priceDifference = sellPrice - buyPrice;
+
+              let percentageChange;
+
+              if (item.type === 'buy') {
+                percentageChange = ((sellPrice - buyPrice) / buyPrice) * 100;
+              } else {
+                percentageChange = ((sellPrice - buyPrice) / sellPrice) * 100;
+              }
+
+              let durationText;
+              if (item.duration === "ONE_HOUR") {
+                durationText = "1 hour";
+              } else {
+                durationText = item.duration === "FIVE_MINUTE" ? "5 minutes" : "15 minutes";
+              }
+
+              const rowClass = index % 2 === 0 ? 'row-light-color' : 'row-dark-color';
+              return (
+                <tr key={item.id} className={rowClass}>
+                  <td className='td-cell'>{durationText}</td>
+                  <td className='td-cell'>{new Date(item?.signal_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                  <td className='order-icon td-cell'>
+                    {item.type === 'buy' ? <TbSquareLetterB size={25} style={{ color: 'green' }} /> : <TbSquareLetterS size={25} style={{ color: 'red' }} />}
+                  </td>
+                  <td className='td-cell'>{item.symbol}</td>
+                  <td className='td-cell'>{Math.trunc(buyPrice)}</td>
+                  <td className='td-cell'>{Math.trunc(quantity)}</td>
+                  <td className='td-cell'>{Math.trunc(sellPrice)}</td>
+                  <td className='td-cell'>{Math.trunc(priceDifference)}</td>
+                  <td className={(priceDifference * quantity) < 0 ? 'red-text td-cell' : 'green-text td-cell'}>
+                    {(Math.trunc(priceDifference) * Math.trunc(quantity))}
+                  </td>
+                  <td className='green-text td-cell'>{item.status === 'closed' && 'success'}</td>
+                  <td className='td-cell'>{item.indicator}</td>
+                  <td className='td-cell'>{item.close_duration}</td>
+                  <td className='order-icon td-cell'>
+                    {item.outcome === 'loss' ? <FaArrowTrendDown size={18} style={{ color: 'red' }} /> : <FaArrowTrendUp size={18} style={{ color: 'green' }} />}
+                    {item.outcome}
+                  </td>
+                  <td className={percentageChange < 0 ? 'red-text td-cell' : 'green-text td-cell'}>
+                    {percentageChange.toFixed(2)}%
+                  </td>
+                </tr>
+              );
+            })}
+
+            {sortedOrders.length > 0 && (
+              <tr>
+                <td colSpan="8" className='td-cell'><strong>Total:</strong></td>
+                <td className={isNaN(calculateTotalAmount()) || calculateTotalAmount() < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}>
+                  <strong>{isNaN(calculateTotalAmount()) ? 0 : calculateTotalAmount()}</strong>
+                </td>
+                <td colSpan="4" className='td-cell'></td>
+                <td className={isNaN(calculateTotalPercentageChange().toFixed(2)) || calculateTotalPercentageChange().toFixed(2) < 0 ? 'red-text total td-cell' : 'green-text total td-cell'}>
+                  <strong>{isNaN(calculateTotalPercentageChange().toFixed(2)) ? '0.00%' : calculateTotalPercentageChange().toFixed(2) + '%'}</strong>
+                </td>
+              </tr>
+            )}
+          </tbody>
+          
+        </table>: (<>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '80vh'
+              }}
+            >
+              <PropagateLoader color="#33a3e3" loading={!closedOrderLoading} size={15} />
+            </div>
+          </>
+          )}
     </div>
   );
 };
