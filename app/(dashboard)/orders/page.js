@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useMemo } from 'react';
 import axiosInstance from '@/utils/axios';
 import { initializeWebSocket } from '@/utils/socket';
 import { useAppSelector } from '@/store';
@@ -60,7 +60,7 @@ const Page = () => {
       });
       setClosedOrders(response.data);
       if (response.data.length === 0) {
-        toast.error('no data available');
+        toast.error('no data in closed orders');
       }
       setClosedOrderLoading(true);
     } catch (err) {
@@ -164,11 +164,9 @@ const Page = () => {
     return pl;
   };
 
-  const sortedOrders = closedOrders.slice().sort((a, b) => {
-    const dateA = new Date(a.signal_time);
-    const dateB = new Date(b.signal_time);
-    return dateA - dateB;
-  });
+  const sortedOrders = useMemo(() => {
+    return closedOrders.slice().sort((a, b) => new Date(a.signal_time) - new Date(b.signal_time));
+  }, [closedOrders]);
 
 
   const calculateTotalPL = () => {

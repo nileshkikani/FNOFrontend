@@ -3,13 +3,13 @@
 const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, setIsClosed, setLivePrices, additionalTokens) => {
   if (typeof window !== 'undefined' && feedToken) {
     const token = feedToken.feedToken;
-    console.log('kokok',token);
+    // console.log('kokok',token);
     const webSocketUrl = 'wss://smartapisocket.angelone.in/smart-stream';
     const clientCode = 'HEEB1159';
     const apiKey = '58gaUP75';
 
     const url = `${webSocketUrl}?clientCode=${clientCode}&feedToken=${token}&apiKey=${apiKey}`;
-    console.log('Attempting to connect to WebSocket URL:', url);
+    // console.log('Attempting to connect to WebSocket URL:', url);
 
     const socket = new WebSocket(url);
     socket.binaryType = 'arraybuffer';
@@ -29,7 +29,7 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
           ]
         }
       };
-      console.log('Sending Parameters:', JSON.stringify(param, null, 2));
+      // console.log('Sending Parameters:', JSON.stringify(param, null, 2));
       socket.send(JSON.stringify(param));
     };
 
@@ -38,11 +38,11 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
       const dataView = new DataView(arrayBuffer);
       const dataLength = dataView.byteLength;
 
-      console.log('Raw Data Received:', new Uint8Array(arrayBuffer));
+      // console.log('Raw Data Received:', new Uint8Array(arrayBuffer));
 
       const parseData = (offset, length, method, littleEndian = true) => {
         if (offset + length > dataLength) {
-          console.warn(`Cannot read ${method} at offset ${offset}, data length is ${dataLength}`);
+          // console.warn(`Cannot read ${method} at offset ${offset}, data length is ${dataLength}`);
           return null;
         }
         return dataView[method](offset, littleEndian);
@@ -59,10 +59,10 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
 
       const lastTradedPrice = parseData(43, 8, 'getUint32');
 
-      console.log('Extracted Token:', token, 'Last Traded Price:', lastTradedPrice / 100);
+      // console.log('Extracted Token:', token, 'Last Traded Price:', lastTradedPrice / 100);
 
       if (additionalTokens.includes(token)) {
-        console.log('Updating Token:', token, 'Price:', lastTradedPrice / 100);
+        // console.log('Updating Token:', token, 'Price:', lastTradedPrice / 100);
         if (setLivePrices && typeof setLivePrices === 'function') {
           setLivePrices((prevPrices) => ({
             ...prevPrices,
@@ -71,9 +71,9 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
         }
         
         if (token === '99926009') {
-          setBankNiftyPrice(lastTradedPrice );
+          // setBankNiftyPrice(lastTradedPrice / 100 );
         } else if (token === '99926000') {
-          setNiftyPrice(lastTradedPrice );
+          // setNiftyPrice(lastTradedPrice / 100 );
         }
       }
     };
@@ -81,7 +81,7 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
     socket.onclose = () => {
       console.log('WebSocket connection closed.');
       // if (!additionalTokens.length) {
-        setIsClosed(true);
+        // setIsClosed(true);
       // }
     };
 
