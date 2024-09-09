@@ -1,15 +1,12 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import {
-  AreaChart,
-  Bar,
-  linearGradient,
   ComposedChart,
   Area,
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   ResponsiveContainer
 } from 'recharts';
 
@@ -49,6 +46,28 @@ const groupAndSum = (dataArray) => {
     return acc;
   }, {});
 };
+const formatNumber = (value) => (typeof value === 'number' ? value.toFixed(2) : value);
+// -----------------------CUSTOM TOOLTIP-----------------------
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="custom-tooltip" style={{ backgroundColor: '#fff', border: '1px solid #ccc', padding: '10px' }}>
+          {payload.map((entry, index) => {
+            // Determine the color based on the data key
+            const color = entry.dataKey === 'total_put_decay' ? '#E96767' : 
+                          entry.dataKey === 'total_call_decay' ? '#63D168' : '#000';
+
+            return (
+              <div key={`item-${index}`} style={{ color: color, marginBottom: '5px' }}>
+                <strong>{entry.name}:</strong> {formatNumber(entry.value)}
+              </div>
+            );
+          })}
+        </div>
+    );
+  }
+  return null;
+};
 
 const PremiumDecayArea = ({ data, isChecked }) => {
   const [fullFinalData, setFullFinalData] = useState([]);
@@ -66,7 +85,7 @@ const PremiumDecayArea = ({ data, isChecked }) => {
     }
   }, [data, isChecked]);
 
-  const formatNumber = (value) => (typeof value === 'number' ? value.toFixed(2) : value);
+
 
   return (
     <ResponsiveContainer width="100%" height={350}>
@@ -79,7 +98,6 @@ const PremiumDecayArea = ({ data, isChecked }) => {
           bottom: 0
         }}
       >
-        {/* Define gradients */}
         <defs>
           <linearGradient id="gradPutDecay" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#E96767" stopOpacity={1} />
@@ -94,10 +112,8 @@ const PremiumDecayArea = ({ data, isChecked }) => {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="original_time" />
         <YAxis yAxisId="left" />
-        {/* <YAxis yAxisId="right" orientation="right" /> */}
-        <Tooltip formatter={formatNumber} />
+        <RechartsTooltip content={<CustomTooltip />} />
 
-        {/* Apply gradients */}
         <Area
           yAxisId="left"
           type="monotone"
@@ -112,8 +128,6 @@ const PremiumDecayArea = ({ data, isChecked }) => {
           dataKey="total_call_decay"
           fill="url(#gradCallDecay)"
         />
-        {/* <Bar yAxisId="left" dataKey="call_decay" name="Call Decay" fill="#63D168" /> */}
-        {/* <Bar yAxisId="left" dataKey="put_decay" name="Put Decay" fill="#E96767" /> */}
       </ComposedChart>
     </ResponsiveContainer>
   );
