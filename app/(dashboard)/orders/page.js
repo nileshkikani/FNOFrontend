@@ -41,7 +41,7 @@ const Page = () => {
       if (!socketToken) {
         throw new Error('Token is required to connect WebSocket');
       }
-      await initializeWebSocket(socketToken, null, null, null, setLivePrices, ['99926000', '99926009', ...openOrdersTokens]);
+      // await initializeWebSocket(socketToken, null, null, null, setLivePrices, ['99926000', '99926009', ...openOrdersTokens]);
     } catch (error) {
       console.error('Error in authentication or setting up WebSocket:', error);
     }

@@ -4,12 +4,12 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
   if (typeof window !== 'undefined' && feedToken) {
     const token = feedToken.feedToken;
     // console.log('kokok',token);
-    const webSocketUrl = 'wss://smartapisocket.angelone.in/smart-stream';
-    const clientCode = 'HEEB1159';
-    const apiKey = '58gaUP75';
+    // const webSocketUrl = 'wss://smartapisocket.angelone.in/smart-stream';
+    // const clientCode = 'HEEB1159';
+    // const apiKey = '58gaUP75';
 
     const url = `${webSocketUrl}?clientCode=${clientCode}&feedToken=${token}&apiKey=${apiKey}`;
-    // console.log('Attempting to connect to WebSocket URL:', url);
+    // console.log('finalurlll', url);
 
     const socket = new WebSocket(url);
     socket.binaryType = 'arraybuffer';
@@ -29,7 +29,7 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
           ]
         }
       };
-      // console.log('Sending Parameters:', JSON.stringify(param, null, 2));
+      // console.log('params', JSON.stringify(param, null, 2));
       socket.send(JSON.stringify(param));
     };
 
@@ -38,7 +38,6 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
       const dataView = new DataView(arrayBuffer);
       const dataLength = dataView.byteLength;
 
-      // console.log('Raw Data Received:', new Uint8Array(arrayBuffer));
 
       const parseData = (offset, length, method, littleEndian = true) => {
         if (offset + length > dataLength) {
@@ -59,10 +58,10 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
 
       const lastTradedPrice = parseData(43, 8, 'getUint32');
 
-      // console.log('Extracted Token:', token, 'Last Traded Price:', lastTradedPrice / 100);
+      // console.log('tokenizzThis', token, 'priceizzThis', lastTradedPrice / 100);
 
       if (additionalTokens.includes(token)) {
-        // console.log('Updating Token:', token, 'Price:', lastTradedPrice / 100);
+        // console.log('tokenizzThis', token, 'priceizzThis', lastTradedPrice / 100);
         if (setLivePrices && typeof setLivePrices === 'function') {
           setLivePrices((prevPrices) => ({
             ...prevPrices,

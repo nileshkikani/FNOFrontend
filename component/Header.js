@@ -69,14 +69,14 @@ function Header() {
   useEffect(() => {
     // setInterval(() => {
     //   console.log('isClosed', isClosed);
-    generateToken();
+    // generateToken();
     // }, 1000 * 60 * 5);
   }, []);
 
   useEffect(() => {
     // console.log('isClosed', isClosed);
     if (isClosed) {
-      generateToken();
+      // generateToken();
     }
   }, [!isClosed]);
 
@@ -159,12 +159,10 @@ function Header() {
 
   async function generateToken() {
     const response = await getAccessToken();
-    // console.log('RESPONSE---', response);
     if (response.status === 200) {
       const data = response?.data?.data;
       connectWebSocket(data);
       //---storing date in store so can use in orders page
-      // console.log('erqs',data)
       storeDispatch(setSocketToken(data));
     }
   }
@@ -216,7 +214,7 @@ function Header() {
       }
       // console.log('feedToken', token?.feedToken);
 
-      await initializeWebSocket(null, setBankNiftyPrice, setNiftyPrice, setIsClosed);
+      // await initializeWebSocket(null, setBankNiftyPrice, setNiftyPrice, setIsClosed);
     } catch (error) {
       console.error('Error in authentication or setting up WebSocket:', error);
     }
@@ -539,7 +537,7 @@ function Header() {
                   {/* <Link className="mobile-menu-item" onClick={() => setIsMobileMenuOpen(false)} href={item.path}> */}
                   <FaIcon size={18} color="#344054" className="mobile-menu-icon" /> {item.title}
                   {/* <a></a>
-                  </Link> */}
+                    </Link> */}
                 </li>
               );
             })}
