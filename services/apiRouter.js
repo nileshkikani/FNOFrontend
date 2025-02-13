@@ -29,5 +29,6 @@ export const API_ROUTER = {
   EXPIRIES: `dates-expiries-list/`,
   MOST_ACTIVE:`most-active-strikes/`,
   TOP_GAINER_LOSSER:`top-gainers-losers/`,
-  ORDERS_UPDATE :`signal/orderupdate/`
+  ORDERS_UPDATE :`signal/orderupdate/`,
+  FUTURE_UPDATE :`signal/futureorderupdate/`
 };

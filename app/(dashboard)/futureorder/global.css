@@ -1,0 +1,76 @@
+.parent-div {
+  @apply rounded-md p-5;
+}
+
+th {
+  @apply text-lg;
+}
+
+.title {
+  @apply text-2xl text-indigo-900;
+}
+
+.refresh-button {
+  @apply py-2 px-4 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300;
+}
+
+.green-text {
+  @apply text-[#0A8B3D];
+}
+
+.red-text {
+  @apply text-red-600;
+}
+
+.total {
+  @apply text-xl;
+}
+
+.td-cell {
+  @apply border-none py-4 text-center;
+}
+
+.order-icon {
+  @apply border-none py-4 flex items-center justify-center gap-2;
+}
+
+.row-light-color {
+  background-color: #f9f9f9;
+}
+
+.row-dark-color {
+  background-color: #f0f0f0;
+}
+
+.thedate{
+    @apply bg-white border-2 border-black rounded-sm shadow-sm focus:outline-none focus:border-blue-500;
+}
+
+.exec-trades-div{
+  @apply flex items-center justify-between py-4 ;
+}
+
+.date-div{
+  @apply flex items-center ;
+}
+
+.check-button{
+  @apply border-blue-400 border rounded-md px-4 py-1 text-blue-500;
+}
+
+.input-fld{
+  @apply border py-1 rounded-md px-4  ;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.capital-div{
+  @apply flex items-center gap-6 ;
+}
+
+.capital{
+  @apply flex gap-2;
+}

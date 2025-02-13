@@ -443,6 +443,7 @@ function Header() {
                   </li>
                   <li className="nav-li" onClick={() => router.push('/top-gainers-lossers')} >Top Gainers/Lossers</li>
                   <li className="nav-li" onClick={() => router.push('/orders')} >Orders</li>
+                  <li className="nav-li" onClick={() => router.push('/futureorder')} >Future Orders</li>
                 </div>
               ) : null}
             </ul>
