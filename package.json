@@ -15,7 +15,7 @@
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^2.2.3",
     "address": "^2.0.2",
-    "apexcharts": "^3.49.1",
+    "apexcharts": "^4.4.0",
     "axios": "^1.6.2",
     "babel-plugin-styled-components": "^2.1.4",
     "chart.js": "^4.4.3",

@@ -195,7 +195,7 @@ const Page = () => {
       <div className='capital-div'>
         <div>
           <button className="refresh-button" onClick={refreshBtn}>
-            Refresh
+            Refresh Orders
           </button>
         </div>
         <div>
