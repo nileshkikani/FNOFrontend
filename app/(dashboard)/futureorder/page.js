@@ -219,10 +219,8 @@ const Page = () => {
             <th>Signal Time</th>
             <th>Type</th>
             <th>Stock</th>
-            <th>Buy Price</th>
-            <th>Sell Price</th>
+            <th>Entry Price</th>
             <th>Qty</th>
-            <th>Spot Price</th>
             <th>TG1</th>
             <th>TG2</th>
             <th>TG3</th>
@@ -254,10 +252,8 @@ const Page = () => {
                   {item.type === 'buy' ? <TbSquareLetterB size={25} style={{ color: 'green' }} /> : <TbSquareLetterS size={25} style={{ color: 'red' }} />}
                 </td>
                 <td className='td-cell'>{item?.symbol}</td>
-                <td className='td-cell'>{item?.buy_price}</td>
-                <td className='td-cell'>{item?.sell_price ? item.sell_price?.toFixed(2) : ''}</td>
-                <td className='td-cell'>{item?.lot_size}</td>
                 <td className='td-cell'>{item?.spot_price ? item.spot_price?.toFixed(2) : ''}</td>
+                <td className='td-cell'>{item?.lot_size}</td>
                 <td className='td-cell'>{item?.tg1?.toFixed(2)}</td>
                 <td className='td-cell'>{item?.tg2?.toFixed(2)}</td>
                 <td className='td-cell'>{item?.tg3?.toFixed(2)}</td>
@@ -322,9 +318,9 @@ const Page = () => {
               <th>Time</th>
               <th>Type</th>
               <th>Stock</th>
-              <th>Buy Price</th>
+              <th>Entry Price</th>
               <th>Qty</th>
-              <th>Sell Price</th>
+              <th>Close Price</th>
               <th>Price Difference</th>
               <th>Spot Price</th>
               <th>Status</th>
