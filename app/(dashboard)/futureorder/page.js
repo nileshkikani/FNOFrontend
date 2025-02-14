@@ -272,8 +272,8 @@ const Page = () => {
           })}
           {openOrders.length > 0 && (
             <tr>
-              <td colSpan="12">
-                Total P/L
+              <td colSpan=" 14">
+                
               </td>
               <td className={calculateTotalPL() < 0 ? 'red-text td-cell' : 'green-text td-cell'}>
                 {calculateTotalPL()}
@@ -324,7 +324,7 @@ const Page = () => {
               <th>Qty</th>
               <th>Close Price</th>
               <th>Price Difference</th>
-              <th>Spot Price</th>
+              <th>Amount</th>
               <th>Status</th>
               <th>Indicator</th>
               <th>Close Duration</th>

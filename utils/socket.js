@@ -23,7 +23,7 @@ const initializeWebSocket = async (feedToken, setBankNiftyPrice, setNiftyPrice, 
           mode: 1,
           tokenList: [
             {
-              exchangeType: 1,
+              exchangeType: 2,
               tokens: additionalTokens
             }
           ]
