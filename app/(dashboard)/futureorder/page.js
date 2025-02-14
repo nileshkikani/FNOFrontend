@@ -88,8 +88,8 @@ const Page = () => {
   const calculateTotalPercentageChange = () => {
     let totalPercentageChange = 0;
     closedOrders.forEach((item) => {
-      const buyPrice = parseFloat(item.buy_price);
-      const sellPrice = parseFloat(item.sell_price);
+      const buyPrice = parseFloat(item.entry_price);
+      const sellPrice = parseFloat(item.close_price);
       const percentageChange = ((sellPrice - buyPrice) / buyPrice) * 100;
       totalPercentageChange += percentageChange;
     });
@@ -100,8 +100,8 @@ const Page = () => {
   const calculateTotalAmount = () => {
     let totalAmount = 0;
     sortedOrders.forEach((item) => {
-      const buyPrice = parseFloat(item.buy_price);
-      const sellPrice = parseFloat(item.sell_price);
+      const buyPrice = parseFloat(item.entry_price);
+      const sellPrice = parseFloat(item.close_price);
       const priceDifference = sellPrice - buyPrice;
       const quantity = capital / buyPrice;
       totalAmount += Math.trunc(priceDifference) * Math.trunc(quantity);
@@ -144,8 +144,8 @@ const Page = () => {
 
   const calculatePL = (item) => {
     const livePrice = parseFloat(livePrices[item.token]);
-    const buyPrice = parseFloat(item.buy_price);
-    const sellPrice = parseFloat(item.sell_price);
+    const buyPrice = parseFloat(item?.entry_price);
+    const sellPrice = parseFloat(item?.close_price);
 
     let quantity = 0;
     let pl = 0;
@@ -234,9 +234,9 @@ const Page = () => {
         <tbody>
           {openOrders.map((item, index) => {
             const rowClass = index % 2 === 0 ? 'row-light-color' : 'row-dark-color';
-            const buyPrice = parseFloat(item.buy_price);
-            const livePrice = parseFloat(livePrices[item.token])
-            const sellPrice = parseFloat(item.sell_price);
+            const buyPrice = parseFloat(item?.entry_price);
+            const livePrice = parseFloat(livePrices[item?.token])
+            const sellPrice = parseFloat(item?.close_price);
 
             const quantity = buyPrice > 0 ? capital / buyPrice : sellPrice > 0 ? capital / sellPrice : 0;
             // const currentPrice = buyPrice > 0 ? livePrice : sellPrice;
@@ -252,7 +252,7 @@ const Page = () => {
                   {item.type === 'buy' ? <TbSquareLetterB size={25} style={{ color: 'green' }} /> : <TbSquareLetterS size={25} style={{ color: 'red' }} />}
                 </td>
                 <td className='td-cell'>{item?.symbol}</td>
-                <td className='td-cell'>{item?.spot_price ? item.spot_price?.toFixed(2) : ''}</td>
+                <td className='td-cell'>{item?.entry_price ? item.entry_price?.toFixed(2) : ''}</td>
                 <td className='td-cell'>{item?.lot_size}</td>
                 <td className='td-cell'>{item?.tg1?.toFixed(2)}</td>
                 <td className='td-cell'>{item?.tg2?.toFixed(2)}</td>
@@ -333,8 +333,8 @@ const Page = () => {
           {/* -------------EXECUTED ORDERS-------------- */}
           <tbody>
             {sortedOrders.map((item, index) => {
-              const buyPrice = item.buy_price;
-              const sellPrice = item.sell_price;
+              const buyPrice = item?.entry_price;
+              const sellPrice = item?.close_price;
               const quantity = item?.lot_size;
               const priceDifference = sellPrice - buyPrice;
 
@@ -369,9 +369,9 @@ const Page = () => {
                   <td className={(priceDifference * quantity) < 0 ? 'red-text td-cell' : 'green-text td-cell'}>
                     {(Math.trunc(priceDifference) * Math.trunc(quantity))}
                   </td>
-                  <td className='green-text td-cell'>{item.status === 'closed' && 'success'}</td>
-                  <td className='td-cell'>{item.indicator}</td>
-                  <td className='td-cell'>{item.close_duration}</td>
+                  <td className='green-text td-cell'>{item?.status === 'closed' && 'success'}</td>
+                  <td className='td-cell'>{item?.indicator}</td>
+                  <td className='td-cell'>{item?.close_duration}</td>
                   <td className='order-icon td-cell'>
                     {item.outcome === 'loss' ? <FaArrowTrendDown size={18} style={{ color: 'red' }} /> : <FaArrowTrendUp size={18} style={{ color: 'green' }} />}
                     {item.outcome}
