@@ -90,7 +90,8 @@ const Page = () => {
     closedOrders.forEach((item) => {
       const buyPrice = parseFloat(item.entry_price);
       const sellPrice = parseFloat(item.close_price);
-      const percentageChange = ((sellPrice - buyPrice) / buyPrice) * 100;
+      let priceDifference = item?.type === 'buy' ? sellPrice - buyPrice : buyPrice - sellPrice;
+      const percentageChange = ((priceDifference) / buyPrice) * 100;
       totalPercentageChange += percentageChange;
     });
     return totalPercentageChange;
@@ -99,17 +100,23 @@ const Page = () => {
 
   const calculateTotalAmount = () => {
     let totalAmount = 0;
+  
     sortedOrders.forEach((item) => {
-      const buyPrice = parseFloat(item.entry_price);
-      const sellPrice = parseFloat(item.close_price);
-      const priceDifference = sellPrice - buyPrice;
-      const quantity = capital / buyPrice;
-      totalAmount += Math.trunc(priceDifference) * Math.trunc(quantity);
+      const buyPrice = parseFloat(item.entry_price) || 0;
+      const sellPrice = parseFloat(item.close_price) || 0;
+  
+      if (!buyPrice || !sellPrice) return; // Skip invalid data
+  
+      let priceDifference = item?.type === 'buy' ? sellPrice - buyPrice : buyPrice - sellPrice;
+      const quantity = item?.lot_size // Truncate after division
+  
+      totalAmount += Math.trunc(priceDifference) * Math.trunc(quantity); // Ensure same calculation as in <td>
     });
-    const afterTrunc = Math.trunc(totalAmount);
-    return afterTrunc;
+  
+    return totalAmount; // No need to truncate the final sum
   };
-
+  
+  
   useEffect(() => {
     // setSelectedDate('')
     getClosedOrders();
@@ -338,14 +345,19 @@ const Page = () => {
               const buyPrice = item?.entry_price;
               const sellPrice = item?.close_price;
               const quantity = item?.lot_size;
-              const priceDifference = sellPrice - buyPrice;
+              let priceDifference = 0.0
+              if (item.type === 'buy') {
+                priceDifference = sellPrice - buyPrice;
+              } else {
+                priceDifference = buyPrice - sellPrice;
+              }
 
               let percentageChange;
 
               if (item.type === 'buy') {
                 percentageChange = ((sellPrice - buyPrice) / buyPrice) * 100;
               } else {
-                percentageChange = ((sellPrice - buyPrice) / sellPrice) * 100;
+                percentageChange = ((buyPrice - sellPrice) / buyPrice) * 100;
               }
 
               let durationText;
