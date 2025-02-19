@@ -334,7 +334,7 @@ const Page = () => {
               <th>Amount</th>
               <th>Status</th>
               <th>Indicator</th>
-              <th>Close Duration</th>
+              <th>Close Time</th>
               <th>P/L</th>
               <th>%</th>
             </tr>
@@ -385,7 +385,9 @@ const Page = () => {
                   </td>
                   <td className='green-text td-cell'>{item?.status === 'closed' && 'success'}</td>
                   <td className='td-cell'>{item?.indicator}</td>
-                  <td className='td-cell'>{item?.close_duration}</td>
+                  <td className="td-cell">
+  {item?.close_time ? new Date(item.close_time).toLocaleString() : "N/A"}
+</td>
                   <td className='order-icon td-cell'>
                     {item.outcome === 'loss' ? <FaArrowTrendDown size={18} style={{ color: 'red' }} /> : <FaArrowTrendUp size={18} style={{ color: 'green' }} />}
                     {item.outcome}
